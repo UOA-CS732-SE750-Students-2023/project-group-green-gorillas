@@ -16,9 +16,9 @@ const bootstrap = async (port: string | number | undefined) => {
 };
 
 const startApp = async (
-    app: INestApplication,
-    port: string | number | undefined,
-    logger: Logger,
+  app: INestApplication,
+  port: string | number | undefined,
+  logger: Logger,
 ) => {
   if (!port) {
     throw new Error('Port is undefined. It is hard to start a web server now.');

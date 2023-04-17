@@ -6,15 +6,15 @@ import redisConfig from './redis.config';
 import { validate } from './validation/environment-validator';
 
 export const configFactories = [
-    baseConfig,
-    databaseConfig,
-    tokenConfig,
-    keyConfig,
-    redisConfig,
+  baseConfig,
+  databaseConfig,
+  tokenConfig,
+  keyConfig,
+  redisConfig,
 ];
 
 export default {
-    envFilePath: ['.env'],
-    validate,
-    load: configFactories,
+  envFilePath: ['.env'],
+  validate,
+  load: configFactories,
 };

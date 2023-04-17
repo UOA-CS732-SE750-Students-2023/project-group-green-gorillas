@@ -7,17 +7,17 @@ import * as path from 'path';
 import { Environment } from '../../config/types/environment';
 
 @Module({
-    imports: [
-        ConfigModule.forRoot(config),
-        InternalConfigModule,
-        I18nModule.forRoot({
-            fallbackLanguage: 'en',
-            parser: I18nJsonParser,
-            parserOptions: {
-                path: path.join(__dirname, '..', '..', 'i18n'),
-                watch: process.env.NODE_ENV === Environment.LOCAL,
-            },
-        }),
-    ],
+  imports: [
+    ConfigModule.forRoot(config),
+    InternalConfigModule,
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      parser: I18nJsonParser,
+      parserOptions: {
+        path: path.join(__dirname, '..', '..', 'i18n'),
+        watch: process.env.NODE_ENV === Environment.LOCAL,
+      },
+    }),
+  ],
 })
 export class GlobalModule {}

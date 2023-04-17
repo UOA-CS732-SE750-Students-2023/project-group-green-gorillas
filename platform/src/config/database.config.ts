@@ -11,11 +11,23 @@ export class DatabaseConfig {
   @IsString()
   @IsOptional()
   region?: string;
+
+  @IsString()
+  organisationTableName: string;
+
+  @IsString()
+  userTableName: string;
+
+  @IsString()
+  userAuthTableName: string;
 }
 
 export default registerAs(Config.DATABASE, () =>
   validateConfig(DatabaseConfig, {
     connectionString: process.env.DATABASE_CONNECTION_STRING,
     region: process.env.DATABASE_REGION,
+    organisationTableName: process.env.DATABASE_ORGANISATION_TABLE_NAME,
+    userTableName: process.env.DATABASE_USER_TABLE_NAME,
+    userAuthTableName: process.env.DATABASE_USER_AUTH_TABLE_NAME,
   }),
 );

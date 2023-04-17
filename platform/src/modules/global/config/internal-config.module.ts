@@ -4,8 +4,8 @@ import { InternalConfigService } from './internal-config.service';
 
 @Global()
 @Module({
-    providers: [InternalConfigService],
-    exports: [InternalConfigService],
-    imports: [ConfigModule],
+  providers: [InternalConfigService],
+  exports: [InternalConfigService],
+  imports: [ConfigModule],
 })
 export class InternalConfigModule {}

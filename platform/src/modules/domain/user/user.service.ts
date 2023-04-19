@@ -4,15 +4,15 @@ import { User, UserType } from './user';
 import { InternalException } from '../../../exceptions/internal-exception';
 import { UUID } from '../../../types/uuid.type';
 import { UserFactory } from './user.factory';
-import { UserAuthFactory } from './user-auth.factory';
-import { generatePwdSalt } from '../../../utils/encryption/generatePasswordSalt';
-import { UserAuthRepository } from './user-auth.repository';
+import { UserAuthService } from '../user-auth/user-auth.service';
+import { OrganisationService } from '../organisation/organisation.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly userAuthRepository: UserAuthRepository,
+    private readonly userAuthService: UserAuthService,
+    private readonly organisationService: OrganisationService,
   ) {}
 
   public async getByEmail(email: string): Promise<User | undefined> {
@@ -74,9 +74,6 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  // TODO
-  // public async getUserAuthById()
-
   public async create(
     email: string,
     organisationId: string,
@@ -86,26 +83,22 @@ export class UserService {
     type: UserType,
     password: string,
   ): Promise<User> {
-    const user = UserFactory.create(
-      email,
+    const organisation = await this.organisationService.getByIdOrThrow(
       organisationId,
-      displayName,
-      firstName,
-      lastName,
-      type,
     );
 
-    const userAuth = UserAuthFactory.create(
-      user.id,
-      user.organisationId,
-      password,
-      generatePwdSalt(),
+    const user = await this.userRepository.save(
+      UserFactory.create(
+        email,
+        organisation.id,
+        displayName,
+        firstName,
+        lastName,
+        type,
+      ),
     );
 
-    await Promise.all([
-      this.userRepository.save(user),
-      this.userAuthRepository.save(userAuth),
-    ]);
+    await this.userAuthService.create(user.id, user.organisationId, password);
 
     return user;
   }

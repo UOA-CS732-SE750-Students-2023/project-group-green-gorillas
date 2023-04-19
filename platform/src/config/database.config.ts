@@ -20,6 +20,9 @@ export class DatabaseConfig {
 
   @IsString()
   userAuthTableName: string;
+
+  @IsString()
+  tokenTableName: string;
 }
 
 export default registerAs(Config.DATABASE, () =>
@@ -29,5 +32,6 @@ export default registerAs(Config.DATABASE, () =>
     organisationTableName: process.env.DATABASE_ORGANISATION_TABLE_NAME,
     userTableName: process.env.DATABASE_USER_TABLE_NAME,
     userAuthTableName: process.env.DATABASE_USER_AUTH_TABLE_NAME,
+    tokenTableName: process.env.DATABASE_TOKEN_TABLE_NAME,
   }),
 );

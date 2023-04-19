@@ -6,7 +6,8 @@
   },
   "USER_AUTH": {
     "FAILED_TO_GET": "Failed to get user auth",
-    "FAILED_TO_SAVE": "Failed to save user auth"
+    "FAILED_TO_SAVE": "Failed to save user auth",
+    "NOT_FOUND": "user auth is not found"
   },
   "USER": {
     "FAILED_TO_GET": "Failed to get user.",
@@ -14,5 +15,15 @@
     "NOT_FOUND": "User is not found",
     "DUPLICATED_EMAIL": "User email is already existed",
     "FAILED_TO_LIST_BY_ORGANISATION_ID": "Failed to list by organisation id"
+  },
+  "AUTH": {
+    "SIGN_IN": "Sorry, you are failed to sign in because the information you provided to us is incorrect."
+  },
+  "TOKEN": {
+    "FAILED_TO_GET": "Failed to get token",
+    "FAILED_TO_SAVE": "Failed to save token",
+    "FAILED_TO_DELETE": "Failed to delete token",
+    "NOT_FOUND": "Token is not found",
+    "INVALID": "Token is invalid"
   }
 }

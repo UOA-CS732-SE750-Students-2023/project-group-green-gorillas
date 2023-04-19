@@ -34,6 +34,9 @@ export class EnvironmentVariables {
   @IsString()
   DATABASE_USER_AUTH_TABLE_NAME!: string;
 
+  @IsString()
+  DATABASE_TOKEN_TABLE_NAME!: string;
+
   // TOKEN
   @IsString()
   TOKEN_SECRET!: string;

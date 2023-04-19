@@ -3,17 +3,17 @@ import { Type } from 'class-transformer';
 import { DynamoTimestampTransformer } from '../../../utils/decorators/dynamo-date-transformer';
 import { DateTime } from 'luxon';
 
-export enum SecretType {
+export enum TokenType {
   ACCESS_TOKEN = 'ACCESS_TOKEN',
   REFRESH_TOKEN = 'REFRESH_TOKEN',
 }
 
-export class Secret {
+export class Token {
   public readonly userId: UUID;
 
   public readonly value: string;
 
-  public type: SecretType;
+  public type: TokenType;
 
   @Type(() => Number)
   @DynamoTimestampTransformer()
@@ -26,7 +26,7 @@ export class Secret {
   constructor(
     userId: UUID,
     value: string,
-    type: SecretType,
+    type: TokenType,
     expiryDate: DateTime,
   ) {
     this.userId = userId;

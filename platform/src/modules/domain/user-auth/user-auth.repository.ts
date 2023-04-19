@@ -27,12 +27,12 @@ export class UserAuthRepository extends DatabaseRepository<UserAuth> {
     }
   }
 
-  public async getById(
-    id: UUID,
+  public async getByUserId(
+    userId: UUID,
     organisationId: UUID,
   ): Promise<UserAuth | undefined> {
     try {
-      return this.getItem({ id, organisationId }, UserAuth);
+      return this.getItem({ userId, organisationId }, UserAuth);
     } catch (error) {
       throw new InternalException('USER_AUTH.FAILED_TO_GET', error.message);
     }
@@ -43,7 +43,7 @@ export class UserAuthRepository extends DatabaseRepository<UserAuth> {
       TableName: this.tableName,
       AttributeDefinitions: [
         {
-          AttributeName: 'id',
+          AttributeName: 'userId',
           AttributeType: 'S',
         },
         {
@@ -57,7 +57,7 @@ export class UserAuthRepository extends DatabaseRepository<UserAuth> {
           KeyType: 'HASH',
         },
         {
-          AttributeName: 'id',
+          AttributeName: 'userId',
           KeyType: 'RANGE',
         },
       ],

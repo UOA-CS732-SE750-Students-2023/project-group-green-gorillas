@@ -28,15 +28,25 @@ export class UserAuthService {
     return this.userAuthRepository.save(userAuth);
   }
 
-  public getById(
-    id: UUID,
-    organisationId: UUID,
-  ): Promise<UserAuth | undefined> {
-    return this.userAuthRepository.getById(id, organisationId);
+  public save(userAuth: UserAuth): Promise<UserAuth> {
+    return this.userAuthRepository.save(userAuth);
   }
 
-  public getByIdOrThrow(id: UUID, organisationId: UUID): Promise<UserAuth> {
-    const userAuth = this.userAuthRepository.getById(id, organisationId);
+  public getByUserId(
+    userId: UUID,
+    organisationId: UUID,
+  ): Promise<UserAuth | undefined> {
+    return this.userAuthRepository.getByUserId(userId, organisationId);
+  }
+
+  public getByUserIdOrThrow(
+    userId: UUID,
+    organisationId: UUID,
+  ): Promise<UserAuth> {
+    const userAuth = this.userAuthRepository.getByUserId(
+      userId,
+      organisationId,
+    );
 
     if (userAuth) {
       throw new InternalException(

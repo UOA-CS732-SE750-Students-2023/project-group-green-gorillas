@@ -74,6 +74,10 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  public save(user: User): Promise<User> {
+    return this.userRepository.save(user);
+  }
+
   public async create(
     email: string,
     organisationId: string,

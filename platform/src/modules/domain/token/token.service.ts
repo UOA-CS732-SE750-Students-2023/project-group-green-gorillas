@@ -9,6 +9,7 @@ import { InternalConfigService } from '../../global/config/internal-config.servi
 import { TokenFactory } from './token.factory';
 import { User } from '../user/user';
 import { UserService } from '../user/user.service';
+import { Organisation } from '../organisation/organisation';
 
 @Injectable()
 export class TokenService {
@@ -33,7 +34,7 @@ export class TokenService {
     userId: UUID,
     tokenValue: string,
   ): Promise<Token> {
-    const token = await this.tokenRepository.getByUserId(userId, tokenValue);
+    const token = await this.getByUserId(userId, tokenValue);
 
     if (!token) {
       throw new InternalException('TOKEN.NOT_FOUND', 'token is not found');
@@ -52,7 +53,7 @@ export class TokenService {
 
     const tokenValue = sign(
       {
-        exp: expiryDate.toMillis(),
+        exp: expiryDate.toSeconds(),
         data: JSON.stringify({
           userId,
           organisationId,
@@ -66,7 +67,7 @@ export class TokenService {
     );
   }
 
-  public async verify(tokenValue: string): Promise<User> {
+  public async verify(tokenValue: string, tokenType: TokenType): Promise<User> {
     try {
       const { data } = verify(tokenValue, this.tokenSecret) as JwtPayload;
 
@@ -81,7 +82,12 @@ export class TokenService {
 
       const tokenInDB = await this.getByUserIdOrThrow(userId, tokenValue);
 
+      if (tokenInDB.type !== tokenType) {
+        throw new InternalException('TOKEN.INVALID', 'Token type is incorrect');
+      }
+
       if (tokenInDB.expiryDate.toMillis() < DateTime.now().toMillis()) {
+        await this.delete(userId, tokenValue);
         throw new InternalException('TOKEN.INVALID', 'Token is expired');
       }
 
@@ -93,5 +99,9 @@ export class TokenService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+  }
+
+  public delete(userId: UUID, tokenValue: string): Promise<void> {
+    return this.tokenRepository.delete(userId, tokenValue);
   }
 }

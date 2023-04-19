@@ -17,7 +17,8 @@
     "FAILED_TO_LIST_BY_ORGANISATION_ID": "Failed to list by organisation id"
   },
   "AUTH": {
-    "SIGN_IN": "Sorry, you are failed to sign in because the information you provided to us is incorrect."
+    "SIGN_IN": "Sorry, you are failed to sign in because the information you provided to us is incorrect.",
+    "AUTHORIZATION_NOT_PROVIDED": "authorization is not provided"
   },
   "TOKEN": {
     "FAILED_TO_GET": "Failed to get token",

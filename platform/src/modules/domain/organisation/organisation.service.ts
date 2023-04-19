@@ -35,6 +35,10 @@ export class OrganisationService {
     return organisation;
   }
 
+  public save(organisation: Organisation): Promise<Organisation> {
+    return this.organisationRepository.save(organisation);
+  }
+
   public async activate(id: UUID): Promise<Organisation> {
     const organisation = await this.getByIdOrThrow(id);
 

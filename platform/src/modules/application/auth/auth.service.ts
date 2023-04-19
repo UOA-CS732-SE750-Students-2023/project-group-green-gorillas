@@ -24,7 +24,7 @@ export class AuthService {
     try {
       const user = await this.userService.getByEmailOrThrow(email);
 
-      const userAuth = await this.userAuthService.getByIdOrThrow(
+      const userAuth = await this.userAuthService.getByUserId(
         user.id,
         user.organisationId,
       );

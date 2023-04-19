@@ -1,9 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
 import { UserService } from '../../domain/user/user.service';
-import { UseAuthGuard } from '../guards/auth-guard/auth.guard';
+import { UseAuthGuard } from '../../../utils/guards/auth-guard/auth.guard';
 import {
   RequestUser,
-  UserWithOrganisation,
+  RequestUserType,
 } from '../../../utils/decorators/request-user';
 
 @Controller({
@@ -15,8 +15,8 @@ export class UserController {
   @Get('current')
   @UseAuthGuard()
   public getCurrentUserWithOrganisation(
-    @RequestUser() user: UserWithOrganisation,
-  ): UserWithOrganisation {
+    @RequestUser() user: RequestUserType,
+  ): RequestUserType {
     return user;
   }
 }

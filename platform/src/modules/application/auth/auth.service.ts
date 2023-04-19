@@ -6,13 +6,15 @@ import { sha256Encrypt } from '../../../utils/encryption/sha256Encrypt';
 import { TokenService } from '../../domain/token/token.service';
 import { TokenType } from '../../domain/token/token';
 import { InternalConfigService } from '../../global/config/internal-config.service';
-import { SignInResponse } from './dto/response';
+import { RefreshTokenResponse, SignInResponse } from './dto/response';
+import { OrganisationService } from '../../domain/organisation/organisation.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly userAuthService: UserAuthService,
+    private readonly organisationService: OrganisationService,
     private readonly tokenService: TokenService,
     private readonly internalConfigService: InternalConfigService,
   ) {}
@@ -24,7 +26,27 @@ export class AuthService {
     try {
       const user = await this.userService.getByEmailOrThrow(email);
 
-      const userAuth = await this.userAuthService.getByUserId(
+      if (!user.active) {
+        throw new InternalException(
+          'AUTH.SIGN_IN',
+          'User is inactive',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
+      const organisation = await this.organisationService.getByIdOrThrow(
+        user.organisationId,
+      );
+
+      if (!organisation.active) {
+        throw new InternalException(
+          'AUTH.SIGN_IN',
+          'Organisation is inactive',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
+      const userAuth = await this.userAuthService.getByUserIdOrThrow(
         user.id,
         user.organisationId,
       );
@@ -65,5 +87,40 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+  }
+
+  public async refreshToken(
+    refreshToken: string,
+  ): Promise<RefreshTokenResponse> {
+    const user = await this.tokenService.verify(
+      refreshToken,
+      TokenType.REFRESH_TOKEN,
+    );
+
+    const newAccessToken = await this.tokenService.create(
+      user.id,
+      user.organisationId,
+      TokenType.ACCESS_TOKEN,
+      this.internalConfigService.getTokenConfig().accessTokenTTL,
+    );
+
+    const newRefreshToken = await this.tokenService.create(
+      user.id,
+      user.organisationId,
+      TokenType.REFRESH_TOKEN,
+      this.internalConfigService.getTokenConfig().refreshTokenTTL,
+    );
+
+    await this.tokenService.delete(user.id, refreshToken);
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+      user,
+    };
+  }
+
+  public async revokeToken(userId: string, token: string): Promise<void> {
+    await this.tokenService.delete(userId, token);
   }
 }

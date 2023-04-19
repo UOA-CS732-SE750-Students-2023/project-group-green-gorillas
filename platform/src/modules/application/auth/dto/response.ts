@@ -6,3 +6,5 @@ export class SignInResponse {
   accessToken!: Token;
   refreshToken!: Token;
 }
+
+export class RefreshTokenResponse extends SignInResponse {}

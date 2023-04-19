@@ -7,11 +7,11 @@ import { User } from '../../modules/domain/user/user';
 import { Organisation } from '../../modules/domain/organisation/organisation';
 import { InternalException } from '../../exceptions/internal-exception';
 
-export type UserWithOrganisation = User & {
+export type RequestUserType = User & {
   organisation: Organisation;
 };
 
-export const RequestUser = createParamDecorator<UserWithOrganisation>(
+export const RequestUser = createParamDecorator<RequestUserType>(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
 

@@ -48,7 +48,7 @@ export class UserAuthService {
       organisationId,
     );
 
-    if (userAuth) {
+    if (!userAuth) {
       throw new InternalException(
         'USER_AUTH.NOT_FOUND',
         'user auth is not found',

@@ -3,16 +3,20 @@ import {
   ExecutionContext,
   HttpStatus,
   Injectable,
+  SetMetadata,
   UseGuards,
 } from '@nestjs/common';
-import { InternalException } from '../../../../exceptions/internal-exception';
-import { TokenService } from '../../../domain/token/token.service';
-import { TokenType } from '../../../domain/token/token';
-import { OrganisationService } from '../../../domain/organisation/organisation.service';
+import { InternalException } from '../../../exceptions/internal-exception';
+import { TokenService } from '../../../modules/domain/token/token.service';
+import { TokenType } from '../../../modules/domain/token/token';
+import { OrganisationService } from '../../../modules/domain/organisation/organisation.service';
+import { Reflector } from '@nestjs/core';
+import { UserType } from '../../../modules/domain/user/user';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
+    private readonly reflector: Reflector,
     private readonly tokenService: TokenService,
     private readonly organisationService: OrganisationService,
   ) {}
@@ -43,6 +47,15 @@ export class AuthGuard implements CanActivate {
       );
     }
 
+    const roles = this.reflector.get<UserType[]>('roles', context.getHandler());
+    if (roles && !roles.includes(user.type)) {
+      throw new InternalException(
+        'AUTH.ROLE_NOT_ALLOWED',
+        'role not allowed',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
     const organisation = await this.organisationService.getByIdOrThrow(
       user.organisationId,
     );
@@ -55,8 +68,6 @@ export class AuthGuard implements CanActivate {
       );
     }
 
-    // TODO: role control
-
     request.user = {
       ...user,
       organisation,
@@ -67,3 +78,4 @@ export class AuthGuard implements CanActivate {
 }
 
 export const UseAuthGuard = () => UseGuards(AuthGuard);
+export const AllowedRoles = (roles: UserType[]) => SetMetadata('roles', roles);

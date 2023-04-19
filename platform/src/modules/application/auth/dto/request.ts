@@ -7,3 +7,13 @@ export class SignInRequest {
   @IsString()
   password!: string;
 }
+
+export class RefreshTokenRequest {
+  @IsString()
+  refreshToken!: string;
+}
+
+export class RevokeTokenRequest {
+  @IsString()
+  token!: string;
+}

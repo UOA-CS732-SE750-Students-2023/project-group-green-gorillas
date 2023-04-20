@@ -1,6 +1,10 @@
 import React from "react";
-import { withAuthenticationRedirect } from "../../hoc/withAuthenticationRedirect";
+import { AuthenticationRedirect } from "../../AuthenticationRedirect";
 
-export const ForgotPassword = withAuthenticationRedirect(() => {
-  return <div>Forgot Password</div>;
-});
+export const ForgotPassword = () => {
+  return (
+    <AuthenticationRedirect>
+      <div>Forgot Password</div>
+    </AuthenticationRedirect>
+  );
+};

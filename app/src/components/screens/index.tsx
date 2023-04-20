@@ -1,8 +1,7 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Login } from "./Login";
 import { ForgotPassword } from "./ForgotPassword";
-import { Redirect } from "./Redirect";
 import { Main } from "./Main";
 
 export enum ScreenPath {
@@ -22,7 +21,7 @@ export const Screens = () => {
         <Route path={ScreenPath.Main} element={<Main />} />
         <Route
           path={ScreenPath.ANY}
-          element={<Redirect path={ScreenPath.Login} />}
+          element={<Navigate to={ScreenPath.Login} replace={true} />}
         />
       </Routes>
     </BrowserRouter>

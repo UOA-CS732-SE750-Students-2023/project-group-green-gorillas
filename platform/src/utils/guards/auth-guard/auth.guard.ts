@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
       throw new InternalException(
         'AUTH.AUTHORIZATION_NOT_PROVIDED',
         'token not found',
-        HttpStatus.FORBIDDEN,
+        HttpStatus.UNAUTHORIZED,
       );
     }
 

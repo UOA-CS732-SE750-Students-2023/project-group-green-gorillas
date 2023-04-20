@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { tokenService, TokenType } from "../../services/tokenService";
-import { ScreenPath } from "../screens";
-import { LoadingIndicator } from "../common/LoadingIndicator";
+import { tokenService, TokenType } from "../../../../services/tokenService";
+import { ScreenPath } from "../../index";
+import { LoadingIndicator } from "../../../common/LoadingIndicator";
 
 type Props = {
   children: JSX.Element;
@@ -16,7 +16,9 @@ export const AuthenticationRedirect: React.FC<Props> = ({ children }) => {
 
       if (pathName && pathName.startsWith(ScreenPath.Main)) {
         if (!accessToken) {
-          window.location.href = ScreenPath.Login;
+          window.location.href = `${
+            ScreenPath.Login
+          }?callback=${encodeURIComponent(window.location.href)}`;
           return resolve(true);
         }
       } else {

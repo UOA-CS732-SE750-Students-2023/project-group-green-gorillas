@@ -1,10 +1,14 @@
 import React from "react";
-import { AuthenticationRedirect } from "../../AuthenticationRedirect";
+import { AuthenticationRedirect } from "../utils/AuthenticationRedirect";
 
-export const ForgotPassword = () => {
+const ForgotPassword = () => {
+  return <div>Forgot Password</div>;
+};
+
+export const ForgotPasswordScreen = () => {
   return (
     <AuthenticationRedirect>
-      <div>Forgot Password</div>
+      <ForgotPassword />
     </AuthenticationRedirect>
   );
 };

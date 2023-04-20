@@ -22,6 +22,7 @@ export class AuthService {
   public async signIn(
     email: string,
     password: string,
+    isRememberMe?: boolean,
   ): Promise<SignInResponse> {
     try {
       const user = await this.userService.getByEmailOrThrow(email);
@@ -72,11 +73,12 @@ export class AuthService {
         user.id,
         user.organisationId,
         TokenType.REFRESH_TOKEN,
-        this.internalConfigService.getTokenConfig().refreshTokenTTL,
+        isRememberMe
+          ? this.internalConfigService.getTokenConfig().longRefreshTokenTTL
+          : this.internalConfigService.getTokenConfig().refreshTokenTTL,
       );
 
       return {
-        user,
         accessToken,
         refreshToken,
       };
@@ -116,7 +118,6 @@ export class AuthService {
     return {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
-      user,
     };
   }
 

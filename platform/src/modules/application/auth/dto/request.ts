@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsString, IsOptional } from 'class-validator';
 
 export class SignInRequest {
   @IsEmail()
@@ -6,6 +6,10 @@ export class SignInRequest {
 
   @IsString()
   password!: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isRememberMe?: boolean;
 }
 
 export class RefreshTokenRequest {

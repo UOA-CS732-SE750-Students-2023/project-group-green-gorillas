@@ -1,6 +1,6 @@
 version: '2'
 services:
-  retrospective-monster-api:
+  api:
     build:
       context: ../..
       dockerfile: ./bin/development/Dockerfile

@@ -47,6 +47,9 @@ export class EnvironmentVariables {
   @IsNumber({ maxDecimalPlaces: 0 })
   TOKEN_REFRESH_TTL!: number;
 
+  @IsNumber({ maxDecimalPlaces: 0 })
+  TOKEN_REFRESH_LONG_TTL!: number;
+
   // KEY
   @IsString()
   KEY_API!: string;

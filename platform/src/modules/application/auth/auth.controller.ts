@@ -20,9 +20,9 @@ export class AuthController {
 
   @Post('sign-in')
   public async signIn(
-    @Body() { email, password }: SignInRequest,
+    @Body() { email, password, isRememberMe }: SignInRequest,
   ): Promise<SignInResponse> {
-    return this.authService.signIn(email, password);
+    return this.authService.signIn(email, password, isRememberMe);
   }
 
   @Post('refresh-token')

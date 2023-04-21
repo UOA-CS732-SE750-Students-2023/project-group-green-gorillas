@@ -4,7 +4,7 @@ import { DynamoTimestampTransformer } from '../../../utils/decorators/dynamo-dat
 import { DateTime } from 'luxon';
 import { uuid } from '../../../utils/uuid/uuid';
 
-export enum UserType {
+export enum UserRole {
   ADMIN = 'ADMIN',
   USER = 'USER',
 }
@@ -22,7 +22,7 @@ export class User {
 
   public lastName: string;
 
-  public type: UserType;
+  public role: UserRole;
 
   public active: boolean;
 
@@ -40,7 +40,7 @@ export class User {
     displayName: string,
     firstName: string,
     lastName: string,
-    type: UserType,
+    role: UserRole,
   ) {
     this.id = uuid();
     this.email = email;
@@ -48,7 +48,7 @@ export class User {
     this.displayName = displayName;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.type = type;
+    this.role = role;
     this.active = true;
     this.createdAt = DateTime.now();
     this.updatedAt = DateTime.now();

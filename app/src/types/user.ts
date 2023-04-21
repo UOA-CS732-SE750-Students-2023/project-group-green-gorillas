@@ -1,4 +1,4 @@
-export enum UserType {
+export enum UseRole {
   ADMIN = "ADMIN",
   USER = "USER",
 }
@@ -10,7 +10,7 @@ export type User = {
   displayName: string;
   firstName: string;
   lastName: string;
-  type: UserType;
+  role: UseRole;
   active: boolean;
   createdAt: string;
   updatedAt: string;

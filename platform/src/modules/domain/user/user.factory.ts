@@ -1,4 +1,4 @@
-import { User, UserType } from './user';
+import { User, UserRole } from './user';
 
 export class UserFactory {
   static create(
@@ -7,7 +7,7 @@ export class UserFactory {
     displayName: string,
     firstName: string,
     lastName: string,
-    type: UserType,
+    role: UserRole,
   ): User {
     return new User(
       email,
@@ -15,7 +15,7 @@ export class UserFactory {
       displayName,
       firstName,
       lastName,
-      type,
+      role,
     );
   }
 }

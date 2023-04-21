@@ -11,7 +11,7 @@ import { TokenService } from '../../../modules/domain/token/token.service';
 import { TokenType } from '../../../modules/domain/token/token';
 import { OrganisationService } from '../../../modules/domain/organisation/organisation.service';
 import { Reflector } from '@nestjs/core';
-import { UserType } from '../../../modules/domain/user/user';
+import { UserRole } from '../../../modules/domain/user/user';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -47,8 +47,8 @@ export class AuthGuard implements CanActivate {
       );
     }
 
-    const roles = this.reflector.get<UserType[]>('roles', context.getHandler());
-    if (roles && !roles.includes(user.type)) {
+    const roles = this.reflector.get<UserRole[]>('roles', context.getHandler());
+    if (roles && !roles.includes(user.role)) {
       throw new InternalException(
         'AUTH.ROLE_NOT_ALLOWED',
         'role not allowed',
@@ -78,4 +78,4 @@ export class AuthGuard implements CanActivate {
 }
 
 export const UseAuthGuard = () => UseGuards(AuthGuard);
-export const AllowedRoles = (roles: UserType[]) => SetMetadata('roles', roles);
+export const AllowedRoles = (roles: UserRole[]) => SetMetadata('roles', roles);

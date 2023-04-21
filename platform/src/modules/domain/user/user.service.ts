@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { User, UserType } from './user';
+import { User, UserRole } from './user';
 import { InternalException } from '../../../exceptions/internal-exception';
 import { UUID } from '../../../types/uuid.type';
 import { UserFactory } from './user.factory';
@@ -84,7 +84,7 @@ export class UserService {
     displayName: string,
     firstName: string,
     lastName: string,
-    type: UserType,
+    role: UserRole,
     password: string,
   ): Promise<User> {
     const organisation = await this.organisationService.getByIdOrThrow(
@@ -98,7 +98,7 @@ export class UserService {
         displayName,
         firstName,
         lastName,
-        type,
+        role,
       ),
     );
 

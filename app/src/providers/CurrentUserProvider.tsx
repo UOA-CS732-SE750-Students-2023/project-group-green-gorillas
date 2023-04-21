@@ -28,7 +28,6 @@ export const CurrentUserContextProvider: React.FC<Props> = ({ children }) => {
 
   const getCurrentUser = async () => {
     const { data } = await request.get<CurrentUser>(CURRENT_USER);
-
     setCurrentUser(data);
   };
 

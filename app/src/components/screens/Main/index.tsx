@@ -4,9 +4,11 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import { ScreenPath } from "../index";
 import { HomeScreen } from "./Home";
 import { CurrentUserContextProvider } from "../../../providers/CurrentUserProvider";
+import { TeamScreen } from "./Team";
 
 export enum MainScreenPath {
   HOME = "/main/home",
+  TEAM = "/main/team",
   ANY = "/main/*",
 }
 
@@ -14,6 +16,7 @@ const MainSubScreens = () => {
   return (
     <Switch>
       <Route path={MainScreenPath.HOME} component={HomeScreen} />
+      <Route path={`${MainScreenPath.TEAM}/:teamId`} component={TeamScreen} />
       <Redirect from={ScreenPath.Main} to={MainScreenPath.HOME} />
       <Redirect from={MainScreenPath.ANY} to={MainScreenPath.HOME} />
     </Switch>

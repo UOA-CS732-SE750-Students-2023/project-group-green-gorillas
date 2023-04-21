@@ -1,15 +1,15 @@
-import { useSignOut } from "../../../../hooks/useSignOut";
-import { useCurrentUser } from "../../../../hooks/useCurrentUser";
+import React, { useEffect } from "react";
+import { Redirect, useHistory } from "react-router-dom";
+import { MainScreenPath } from "../index";
 
 export const HomeScreen = () => {
-  const { onSignOut } = useSignOut();
-  const { user } = useCurrentUser();
+  const history = useHistory();
 
-  return (
-    <div>
-      Hello, {user?.displayName}
-      <br />
-      <button onClick={onSignOut}>Sign out</button>
-    </div>
-  );
+  useEffect(() => {
+    if (true) {
+      history.replace(`${MainScreenPath.TEAM}/qweqwewqeqw`);
+    }
+  }, [history]);
+
+  return <div>There is no teams LOL....</div>;
 };

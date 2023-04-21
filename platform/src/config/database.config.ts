@@ -23,6 +23,12 @@ export class DatabaseConfig {
 
   @IsString()
   tokenTableName: string;
+
+  @IsString()
+  teamTableName: string;
+
+  @IsString()
+  userTeamTableName: string;
 }
 
 export default registerAs(Config.DATABASE, () =>
@@ -33,5 +39,7 @@ export default registerAs(Config.DATABASE, () =>
     userTableName: process.env.DATABASE_USER_TABLE_NAME,
     userAuthTableName: process.env.DATABASE_USER_AUTH_TABLE_NAME,
     tokenTableName: process.env.DATABASE_TOKEN_TABLE_NAME,
+    teamTableName: process.env.DATABASE_TEAM_TABLE_NAME,
+    userTeamTableName: process.env.DATABASE_USER_TEAM_TABLE_NAME,
   }),
 );

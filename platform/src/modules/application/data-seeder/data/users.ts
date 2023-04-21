@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { UserRole } from '../../../domain/user/user';
 
 export const users = [
   {
@@ -8,7 +9,7 @@ export const users = [
     displayName: 'Oliver',
     firstName: 'Oliver',
     lastName: 'Deng',
-    role: 'ADMIN',
+    role: UserRole.ADMIN,
     active: true,
     createdAt: DateTime.now().toMillis(),
     updatedAt: DateTime.now().toMillis(),
@@ -20,7 +21,7 @@ export const users = [
     displayName: 'Ethan',
     firstName: 'Ethan',
     lastName: 'Wang',
-    role: 'ADMIN',
+    role: UserRole.ADMIN,
     active: true,
     createdAt: DateTime.now().toMillis(),
     updatedAt: DateTime.now().toMillis(),
@@ -32,7 +33,7 @@ export const users = [
     displayName: 'Monica',
     firstName: 'Monica',
     lastName: 'Zhang',
-    role: 'ADMIN',
+    role: UserRole.ADMIN,
     active: true,
     createdAt: DateTime.now().toMillis(),
     updatedAt: DateTime.now().toMillis(),
@@ -44,7 +45,7 @@ export const users = [
     displayName: 'Philip',
     firstName: 'Philip',
     lastName: 'Wu',
-    role: 'ADMIN',
+    role: UserRole.ADMIN,
     active: true,
     createdAt: DateTime.now().toMillis(),
     updatedAt: DateTime.now().toMillis(),
@@ -56,7 +57,7 @@ export const users = [
     displayName: 'Chucky',
     firstName: 'Chucky',
     lastName: 'Li',
-    role: 'ADMIN',
+    role: UserRole.ADMIN,
     active: true,
     createdAt: DateTime.now().toMillis(),
     updatedAt: DateTime.now().toMillis(),
@@ -68,7 +69,7 @@ export const users = [
     displayName: 'Jenny',
     firstName: 'Jenny',
     lastName: 'Wong',
-    role: 'ADMIN',
+    role: UserRole.ADMIN,
     active: true,
     createdAt: DateTime.now().toMillis(),
     updatedAt: DateTime.now().toMillis(),

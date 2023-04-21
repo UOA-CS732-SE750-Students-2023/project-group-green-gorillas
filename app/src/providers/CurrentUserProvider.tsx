@@ -4,9 +4,11 @@ import { Organisation } from "../types/organisation";
 import { LoadingIndicator } from "../components/common/LoadingIndicator";
 import { request } from "../api/request";
 import { CURRENT_USER } from "../api/api";
+import { Team } from "../types/team";
 
 export type CurrentUser = User & {
   organisation: Organisation;
+  teams: Team[];
 };
 
 type CurrentUserContextType = {

@@ -10,6 +10,12 @@ import { userAuths } from './data/user-auths';
 import { UserAuthService } from '../../domain/user-auth/user-auth.service';
 import { sha256Encrypt } from '../../../utils/encryption/sha256Encrypt';
 import { UserAuth } from '../../domain/user-auth/user-auth';
+import { teams } from './data/teams';
+import { TeamService } from '../../domain/team/team.service';
+import { Team } from '../../domain/team/team';
+import { UserTeamService } from '../../domain/user-team/user-team.service';
+import { userTeams } from './data/user-teams';
+import { UserTeam } from '../../domain/user-team/user-team';
 
 @Injectable()
 export class DataSeederService {
@@ -17,6 +23,8 @@ export class DataSeederService {
     private readonly organisationService: OrganisationService,
     private readonly userService: UserService,
     private readonly userAuthService: UserAuthService,
+    private readonly teamService: TeamService,
+    private readonly userTeamService: UserTeamService,
   ) {}
 
   public async seed(): Promise<void> {
@@ -24,6 +32,8 @@ export class DataSeederService {
       this.seedOrganisations(),
       this.seedUsers(),
       this.seedUserAuths(),
+      this.seedTeams(),
+      this.seedUserTeams(),
     ]);
   }
 
@@ -50,6 +60,20 @@ export class DataSeederService {
             password: sha256Encrypt(userAuth.password, userAuth.passwordSalt),
           }),
         ),
+      ),
+    );
+  }
+
+  public async seedTeams(): Promise<void> {
+    await Promise.all(
+      teams.map((team) => this.teamService.save(plainToClass(Team, team))),
+    );
+  }
+
+  public async seedUserTeams(): Promise<void> {
+    await Promise.all(
+      userTeams.map((userTeam) =>
+        this.userTeamService.save(plainToClass(UserTeam, userTeam)),
       ),
     );
   }

@@ -37,6 +37,12 @@ export class EnvironmentVariables {
   @IsString()
   DATABASE_TOKEN_TABLE_NAME!: string;
 
+  @IsString()
+  DATABASE_TEAM_TABLE_NAME!: string;
+
+  @IsString()
+  DATABASE_USER_TEAM_TABLE_NAME!: string;
+
   // TOKEN
   @IsString()
   TOKEN_SECRET!: string;

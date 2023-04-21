@@ -1,10 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
-import { UserService } from '../../domain/user/user.service';
 import { UseAuthGuard } from '../../../utils/guards/auth-guard/auth.guard';
 import {
   RequestUser,
   RequestUserType,
 } from '../../../utils/decorators/request-user';
+import { UserService } from './user.service';
 
 @Controller({
   path: ['api/user'],
@@ -14,9 +14,12 @@ export class UserController {
 
   @Get('current')
   @UseAuthGuard()
-  public getCurrentUserWithOrganisation(
-    @RequestUser() user: RequestUserType,
-  ): RequestUserType {
-    return user;
+  public async getCurrentUser(@RequestUser() user: RequestUserType) {
+    const userTeams = await this.userService.getActiveUserTeams(user.id);
+
+    return {
+      ...user,
+      teams: userTeams,
+    };
   }
 }

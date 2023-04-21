@@ -5,6 +5,7 @@ import { ScreenPath } from "../index";
 import { HomeScreen } from "./Home";
 import { CurrentUserContextProvider } from "../../../providers/CurrentUserProvider";
 import { TeamScreen } from "./Team";
+import { TopNavBar } from "../../common/TopNavBar";
 
 export enum MainScreenPath {
   HOME = "/main/home",
@@ -26,7 +27,10 @@ const MainSubScreens = () => {
 const Main = () => {
   return (
     <CurrentUserContextProvider>
-      <MainSubScreens />
+      <>
+        <TopNavBar />
+        <MainSubScreens />
+      </>
     </CurrentUserContextProvider>
   );
 };

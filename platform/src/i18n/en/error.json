@@ -26,5 +26,18 @@
     "FAILED_TO_DELETE": "Failed to delete token",
     "NOT_FOUND": "Token is not found",
     "INVALID": "Token is invalid"
+  },
+  "TEAM": {
+    "FAILED_TO_GET": "Failed to get team",
+    "FAILED_TO_SAVE": "Failed to save team",
+    "FAILED_TO_LIST_BY_ORGANISATION_ID": "Failed to list teams by organisation id",
+    "NOT_FOUND": "Team is not found"
+  },
+  "USER_TEAM": {
+    "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list user teams by team id",
+    "FAILED_TO_LIST_BY_USER_ID": "Failed to list user teams by user id",
+    "FAILED_TO_GET": "Failed to get user teams",
+    "FAILED_TO_SAVE": "Failed to save user teams",
+    "FAILED_TO_DELETE": "Failed to delete user teams"
   }
 }

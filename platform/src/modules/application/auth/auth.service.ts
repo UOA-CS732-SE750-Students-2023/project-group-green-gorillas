@@ -52,7 +52,9 @@ export class AuthService {
       this.internalConfigService.getTokenConfig().resetPasswordTokenTTL,
     );
 
-    const resetPasswordClientUrl = `http://127.0.0.1:5173/reset-password?token=${value}`;
+    const resetPasswordClientUrl = `${
+      this.internalConfigService.getBaseConfig().clientHost
+    }/reset-password?token=${value}`;
 
     await this.sendGridMailClient.sendEmail({
       to: user.email, // Change to your recipient

@@ -9,6 +9,9 @@ export class EnvironmentVariables {
   @IsNumber({ maxDecimalPlaces: 0, allowInfinity: false, allowNaN: false })
   PORT!: number;
 
+  @IsString()
+  CLIENT_HOST!: string;
+
   // AWS Config
   @IsString()
   AWS_ACCESS_KEY_ID!: string;

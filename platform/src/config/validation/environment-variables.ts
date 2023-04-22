@@ -63,6 +63,9 @@ export class EnvironmentVariables {
   @IsString()
   KEY_API!: string;
 
+  @IsString()
+  KEY_SEND_GRID_API!: string;
+
   // REDIS
   @IsString()
   REDIS_HOST!: string;

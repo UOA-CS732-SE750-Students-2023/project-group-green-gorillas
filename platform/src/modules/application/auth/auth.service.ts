@@ -9,6 +9,8 @@ import { InternalConfigService } from '../../global/config/internal-config.servi
 import { RefreshTokenResponse, SignInResponse } from './dto/response';
 import { OrganisationService } from '../../domain/organisation/organisation.service';
 import { User } from '../../domain/user/user';
+import * as sgMail from '@sendgrid/mail';
+import { SendgridMailClient } from '../../external/sendgrid-mail/sendgrid-mail-client';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,7 @@ export class AuthService {
     private readonly organisationService: OrganisationService,
     private readonly tokenService: TokenService,
     private readonly internalConfigService: InternalConfigService,
+    private readonly sendGridMailClient: SendgridMailClient,
   ) {}
 
   public async verifyResetPasswordToken(token: string): Promise<User> {
@@ -42,12 +45,21 @@ export class AuthService {
   public async requestResetPassword(email: string): Promise<void> {
     const user = await this.userService.getByEmailOrThrow(email);
 
-    await this.tokenService.create(
+    const { value } = await this.tokenService.create(
       user.id,
       user.organisationId,
       TokenType.RESET_PASSWORD_TOKEN,
       this.internalConfigService.getTokenConfig().resetPasswordTokenTTL,
     );
+
+    const resetPasswordClientUrl = `http://127.0.0.1:5173/reset-password?token=${value}`;
+
+    await this.sendGridMailClient.sendEmail({
+      to: user.email, // Change to your recipient
+      from: 'oliverdeng1020@gmail.com', // Change to your verified sender
+      subject: 'Retrospective Monster - Reset Password Link',
+      html: `<a href="${resetPasswordClientUrl}">${resetPasswordClientUrl}</a>`,
+    });
   }
 
   public async signIn(

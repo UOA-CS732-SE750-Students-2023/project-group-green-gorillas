@@ -20,13 +20,15 @@ mv .env.sample .env
 # launch
 yarn start:docker-dev
 
-# Once the Backend App launch successfully, run the script below to seed data
+# Once the Backend App launch successfully, 
+# Please open another terminal and run the script below to seed data
 curl -X POST http://localhost:8080/api/data-seeder/seed
 ```
 
 
 ### How to launch the frontend app locally?
 ```bash
+# Please open a new terminal and
 # navigate to the frontend folder
 cd app
 

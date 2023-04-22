@@ -9,13 +9,6 @@ export class UserAuthFactory {
     password: string,
     passwordSalt: string,
   ): UserAuth {
-    const encryptedPassword = sha256Encrypt(password, passwordSalt);
-
-    return new UserAuth(
-      userId,
-      organisationId,
-      encryptedPassword,
-      passwordSalt,
-    );
+    return new UserAuth(userId, organisationId, password, passwordSalt);
   }
 }

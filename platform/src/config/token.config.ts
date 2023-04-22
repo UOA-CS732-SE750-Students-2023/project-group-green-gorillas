@@ -15,6 +15,9 @@ export class TokenConfig {
 
   @IsNumber()
   longRefreshTokenTTL!: number;
+
+  @IsNumber()
+  resetPasswordTokenTTL!: number;
 }
 
 export default registerAs(Config.TOKEN, () =>
@@ -23,5 +26,6 @@ export default registerAs(Config.TOKEN, () =>
     accessTokenTTL: process.env.TOKEN_ACCESS_TTL,
     refreshTokenTTL: process.env.TOKEN_REFRESH_TTL,
     longRefreshTokenTTL: process.env.TOKEN_REFRESH_LONG_TTL,
+    resetPasswordTokenTTL: process.env.TOKEN_RESET_PASSWORD_TTL,
   }),
 );

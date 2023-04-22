@@ -81,6 +81,7 @@ const Login = () => {
           component="form"
           onSubmit={onHandleSubmit}
           noValidate
+          width={"100%"}
           sx={{ mt: 1 }}
         >
           <TextField

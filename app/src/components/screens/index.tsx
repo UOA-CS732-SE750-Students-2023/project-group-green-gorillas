@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import { LoginScreen } from "./Login";
 import { ForgotPasswordScreen } from "./ForgotPassword";
 import { MainScreen } from "./Main";
+import { ResetPasswordScreen } from "./ResetPassword";
 
 export enum ScreenPath {
   Login = "/login",
@@ -10,6 +11,7 @@ export enum ScreenPath {
   ANY = "*",
   // Protected Route
   Main = "/main",
+  ResetPassword = "/reset-password",
 }
 
 export const Screens = () => {
@@ -20,6 +22,10 @@ export const Screens = () => {
         <Route
           path={ScreenPath.ForgotPassword}
           component={ForgotPasswordScreen}
+        />
+        <Route
+          path={ScreenPath.ResetPassword}
+          component={ResetPasswordScreen}
         />
         <Route path={ScreenPath.Main} component={MainScreen} />
         <Redirect from={ScreenPath.ANY} to={ScreenPath.Login} />

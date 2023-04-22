@@ -1,8 +1,11 @@
-import { Body, Controller, Delete, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import {
   RefreshTokenRequest,
+  RequestResetPasswordRequest,
+  ResetPasswordRequest,
   RevokeTokenRequest,
   SignInRequest,
+  VerifyResetPasswordTokenParams,
 } from './dto/request';
 import { AuthService } from './auth.service';
 import { RefreshTokenResponse, SignInResponse } from './dto/response';
@@ -17,6 +20,27 @@ import {
 })
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Post('request-reset-password')
+  public async requestResetPassword(
+    @Body() { email }: RequestResetPasswordRequest,
+  ): Promise<void> {
+    return this.authService.requestResetPassword(email);
+  }
+
+  @Get('verify-reset-password-token/:token')
+  public async verifyResetPasswordToken(
+    @Param() { token }: VerifyResetPasswordTokenParams,
+  ): Promise<void> {
+    await this.authService.verifyResetPasswordToken(token);
+  }
+
+  @Post('reset-password')
+  public async resetPassword(
+    @Body() { token, newPassword }: ResetPasswordRequest,
+  ): Promise<void> {
+    return this.authService.resetPassword(token, newPassword);
+  }
 
   @Post('sign-in')
   public async signIn(

@@ -17,7 +17,25 @@ export class RefreshTokenRequest {
   refreshToken!: string;
 }
 
+export class RequestResetPasswordRequest {
+  @IsEmail()
+  email!: string;
+}
+
 export class RevokeTokenRequest {
+  @IsString()
+  token!: string;
+}
+
+export class ResetPasswordRequest {
+  @IsString()
+  token!: string;
+
+  @IsString()
+  newPassword!: string;
+}
+
+export class VerifyResetPasswordTokenParams {
   @IsString()
   token!: string;
 }

@@ -8,6 +8,7 @@ import { TokenType } from '../../domain/token/token';
 import { InternalConfigService } from '../../global/config/internal-config.service';
 import { RefreshTokenResponse, SignInResponse } from './dto/response';
 import { OrganisationService } from '../../domain/organisation/organisation.service';
+import { User } from '../../domain/user/user';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,36 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly internalConfigService: InternalConfigService,
   ) {}
+
+  public async verifyResetPasswordToken(token: string): Promise<User> {
+    return this.tokenService.verify(token, TokenType.RESET_PASSWORD_TOKEN);
+  }
+
+  public async resetPassword(
+    token: string,
+    newPassword: string,
+  ): Promise<void> {
+    const user = await this.verifyResetPasswordToken(token);
+
+    await this.userAuthService.create(
+      user.id,
+      user.organisationId,
+      newPassword,
+    );
+
+    await this.tokenService.delete(user.id, token);
+  }
+
+  public async requestResetPassword(email: string): Promise<void> {
+    const user = await this.userService.getByEmailOrThrow(email);
+
+    await this.tokenService.create(
+      user.id,
+      user.organisationId,
+      TokenType.RESET_PASSWORD_TOKEN,
+      this.internalConfigService.getTokenConfig().resetPasswordTokenTTL,
+    );
+  }
 
   public async signIn(
     email: string,

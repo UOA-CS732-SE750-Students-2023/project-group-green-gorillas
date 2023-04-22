@@ -10,7 +10,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useMemo } from "react";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { Avatar } from "../Avatar";
 import { useSignOut } from "../../../hooks/useSignOut";
@@ -30,17 +30,19 @@ export const TopNavBar = () => {
 
   const { user } = useCurrentUser();
 
+  const userFullName = useMemo(() => {
+    if (!user) return "";
+
+    return `${user.firstName} ${user.lastName}`;
+  }, [user]);
+
   const { onSignOut } = useSignOut();
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="static">
-        <Toolbar
-          sx={{
-            pr: "24px", // keep right padding when drawer closed
-          }}
-        >
+        <Toolbar>
           <Typography
             sx={{ flexGrow: 1 }}
             component="h1"
@@ -58,7 +60,7 @@ export const TopNavBar = () => {
                 onClick={handleOpenUserMenu}
                 color="inherit"
               >
-                <Avatar text={user?.displayName ?? ""} />
+                <Avatar text={userFullName} />
               </IconButton>
             </Tooltip>
             <Menu

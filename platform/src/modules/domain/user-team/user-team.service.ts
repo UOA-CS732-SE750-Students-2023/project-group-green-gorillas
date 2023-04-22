@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { UserTeamRepository } from './user-team.repository';
 import { UUID } from '../../../types/uuid.type';
 import { UserTeam } from './user-team';
+import { InternalException } from '../../../exceptions/internal-exception';
 
 @Injectable()
 export class UserTeamService {
@@ -9,6 +10,20 @@ export class UserTeamService {
 
   public getById(userId: UUID, teamId: UUID): Promise<UserTeam | undefined> {
     return this.userTeamRepository.getById(userId, teamId);
+  }
+
+  public async getByIdOrThrow(userId: UUID, teamId: UUID): Promise<UserTeam> {
+    const userTeam = await this.getById(userId, teamId);
+
+    if (!userTeam) {
+      throw new InternalException(
+        'USER_TEAM.NOT_FOUND',
+        'User team is not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return userTeam;
   }
 
   public save(userTeam: UserTeam): Promise<UserTeam> {

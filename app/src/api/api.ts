@@ -7,3 +7,4 @@ export const REFRESH_TOKEN = `${apiBaseUrl}/auth/refresh-token`;
 
 // APIs called by axios
 export const CURRENT_USER = `${apiBaseUrl}/user/current`;
+export const TEAM_BY_ID = (teamId: string) => `${apiBaseUrl}/team/${teamId}`;

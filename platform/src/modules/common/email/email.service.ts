@@ -6,7 +6,7 @@ import { buildResetPasswordEmailTemplate } from './utils/buildResetPasswordEmail
 
 @Injectable()
 export class EmailService {
-  private readonly fromEmail = 'oliverdeng1020@gmail.com';
+  private readonly fromEmail = 'retrospective.monster@gmail.com';
 
   constructor(private readonly sendGridClient: SendgridMailClient) {}
 

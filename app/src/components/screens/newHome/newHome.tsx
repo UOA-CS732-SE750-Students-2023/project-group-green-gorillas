@@ -3,4 +3,3 @@ const newHome = () => {
 };
 
 export default newHome;
-<>Home</>;

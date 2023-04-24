@@ -13,6 +13,7 @@ export const buildResetPasswordEmailTemplate = (
       <a href="${resetPasswordLink}">Reset password</a>
       <p>Or copy and paste the URL into your browser</p>
       <a href="${resetPasswordLink}">${resetPasswordLink}</a>
+      <p>Note: The reset password link will be expired after 15 minutes</p>
       <br/>
       <br/>
       <div>Kind regards</div>

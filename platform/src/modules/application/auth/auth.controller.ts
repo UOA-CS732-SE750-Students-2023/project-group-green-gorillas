@@ -1,5 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import {
+  ChangePasswordRequest,
   RefreshTokenRequest,
   RequestResetPasswordRequest,
   ResetPasswordRequest,
@@ -63,5 +72,14 @@ export class AuthController {
     @RequestUser() user: RequestUserType,
   ): Promise<void> {
     return this.authService.revokeToken(user.id, token);
+  }
+
+  @Put('change-password')
+  @UseAuthGuard()
+  public async changePassword(
+    @RequestUser() user: RequestUserType,
+    @Body() { newPassword }: ChangePasswordRequest,
+  ): Promise<void> {
+    return this.authService.changePassword(user, newPassword);
   }
 }

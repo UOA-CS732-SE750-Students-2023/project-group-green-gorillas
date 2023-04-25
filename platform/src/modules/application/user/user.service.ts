@@ -3,12 +3,15 @@ import { UserTeamService } from '../../domain/user-team/user-team.service';
 import { TeamService } from '../../domain/team/team.service';
 import { UUID } from '../../../types/uuid.type';
 import { Team } from '../../domain/team/team';
+import { UserService as UserDomainService } from '../../domain/user/user.service';
+import { User, UserRole } from '../../domain/user/user';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userTeamService: UserTeamService,
     private readonly teamService: TeamService,
+    private readonly userDomainService: UserDomainService,
   ) {}
 
   public async getActiveUserTeams(userId: UUID): Promise<Team[]> {
@@ -21,5 +24,57 @@ export class UserService {
     );
 
     return teams.filter((team) => !!team && team.active);
+  }
+
+  public async updateUser(
+    userId: UUID,
+    organisationId: UUID,
+    displayName: string,
+    firstName: string,
+    lastName: string,
+    active: boolean,
+    role?: UserRole,
+  ): Promise<User> {
+    return this.userDomainService.update(
+      userId,
+      organisationId,
+      displayName,
+      firstName,
+      lastName,
+      active,
+      role,
+    );
+  }
+
+  public createUser(
+    email: string,
+    organisationId: string,
+    displayName: string,
+    firstName: string,
+    lastName: string,
+    role: UserRole,
+    password: string,
+  ): Promise<User> {
+    return this.userDomainService.create(
+      email,
+      organisationId,
+      displayName,
+      firstName,
+      lastName,
+      role,
+      password,
+    );
+  }
+
+  public updateUserActive(userId: UUID, organisationId: UUID, active: boolean) {
+    if (active) {
+      return this.userDomainService.activate(userId, organisationId);
+    }
+
+    return this.userDomainService.disable(userId, organisationId);
+  }
+
+  public listUsersByOrganisationId(organisationId: UUID): Promise<User[]> {
+    return this.userDomainService.listByOrganisationId(organisationId);
   }
 }

@@ -32,6 +32,9 @@ export class UpdateUserRequest {
 
   @IsEnum(UserRole)
   role!: UserRole;
+
+  @IsBoolean()
+  active!: boolean;
 }
 
 export class UpdateUserRequestParams {

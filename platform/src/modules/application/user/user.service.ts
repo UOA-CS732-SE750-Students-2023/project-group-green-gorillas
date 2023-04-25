@@ -32,6 +32,7 @@ export class UserService {
     displayName: string,
     firstName: string,
     lastName: string,
+    active: boolean,
     role?: UserRole,
   ): Promise<User> {
     return this.userDomainService.update(
@@ -40,6 +41,7 @@ export class UserService {
       displayName,
       firstName,
       lastName,
+      active,
       role,
     );
   }

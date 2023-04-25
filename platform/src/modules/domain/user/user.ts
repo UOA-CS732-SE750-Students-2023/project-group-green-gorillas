@@ -66,12 +66,14 @@ export class User {
     displayName: string,
     firstName: string,
     lastName: string,
+    active: boolean,
     role: UserRole,
   ): void {
     this.displayName = displayName;
     this.firstName = firstName;
     this.lastName = lastName;
     this.role = role;
+    this.active = active;
     this.updatedAt = DateTime.now();
   }
 }

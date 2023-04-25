@@ -29,6 +29,21 @@ export class DatabaseConfig {
 
   @IsString()
   userTeamTableName: string;
+
+  @IsString()
+  boardTableName: string;
+
+  @IsString()
+  boardSectionTableName: string;
+
+  @IsString()
+  boardNoteTableName: string;
+
+  @IsString()
+  actionItemTableName: string;
+
+  @IsString()
+  actionItemAssigneeTableName: string;
 }
 
 export default registerAs(Config.DATABASE, () =>
@@ -41,5 +56,11 @@ export default registerAs(Config.DATABASE, () =>
     tokenTableName: process.env.DATABASE_TOKEN_TABLE_NAME,
     teamTableName: process.env.DATABASE_TEAM_TABLE_NAME,
     userTeamTableName: process.env.DATABASE_USER_TEAM_TABLE_NAME,
+    boardTableName: process.env.DATABASE_BOARD_TABLE_NAME,
+    boardSectionTableName: process.env.DATABASE_BOARD_SECTION_TABLE_NAME,
+    boardNoteTableName: process.env.DATABASE_BOARD_NOTE_TABLE_NAME,
+    actionItemTableName: process.env.DATABASE_ACTION_ITEM_TABLE_NAME,
+    actionItemAssigneeTableName:
+      process.env.DATABASE_ACTION_ITEM_ASSIGNEE_TABLE_NAME,
   }),
 );

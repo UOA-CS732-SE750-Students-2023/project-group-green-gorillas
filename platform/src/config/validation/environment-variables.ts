@@ -46,6 +46,21 @@ export class EnvironmentVariables {
   @IsString()
   DATABASE_USER_TEAM_TABLE_NAME!: string;
 
+  @IsString()
+  DATABASE_BOARD_TABLE_NAME!: string;
+
+  @IsString()
+  DATABASE_BOARD_SECTION_TABLE_NAME!: string;
+
+  @IsString()
+  DATABASE_BOARD_NOTE_TABLE_NAME!: string;
+
+  @IsString()
+  DATABASE_ACTION_ITEM_TABLE_NAME!: string;
+
+  @IsString()
+  DATABASE_ACTION_ITEM_ASSIGNEE_TABLE_NAME!: string;
+
   // TOKEN
   @IsString()
   TOKEN_SECRET!: string;

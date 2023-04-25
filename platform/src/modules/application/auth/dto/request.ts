@@ -1,4 +1,10 @@
-import { IsBoolean, IsEmail, IsString, IsOptional } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsString,
+  IsOptional,
+  Length,
+} from 'class-validator';
 
 export class SignInRequest {
   @IsEmail()
@@ -38,4 +44,10 @@ export class ResetPasswordRequest {
 export class VerifyResetPasswordTokenParams {
   @IsString()
   token!: string;
+}
+
+export class ChangePasswordRequest {
+  @IsString()
+  @Length(8)
+  newPassword!: string;
 }

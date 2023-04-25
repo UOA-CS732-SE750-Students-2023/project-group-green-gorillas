@@ -44,7 +44,6 @@ export class UserRepository extends DatabaseRepository<User> {
   public async listByOrganisationId(organisationId: UUID): Promise<User[]> {
     const command = new QueryCommand({
       TableName: this.tableName,
-      IndexName: 'organisationIdIndex',
       ExpressionAttributeValues: marshall({
         ':organisationId': organisationId,
       }),

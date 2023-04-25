@@ -21,11 +21,12 @@ export class UserService {
     displayName: string,
     firstName: string,
     lastName: string,
+    active: boolean,
     role?: UserRole,
   ): Promise<User> {
     const user = await this.getByIdOrThrow(userId, organisationId);
 
-    user.update(displayName, firstName, lastName, role ?? user.role);
+    user.update(displayName, firstName, lastName, active, role ?? user.role);
 
     return this.save(user);
   }

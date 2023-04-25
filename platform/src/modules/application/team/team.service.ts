@@ -6,6 +6,8 @@ import { UserService } from '../../domain/user/user.service';
 import { RequestUserType } from '../../../utils/decorators/request-user';
 import { User, UserRole } from '../../domain/user/user';
 import * as Bluebird from 'bluebird';
+import { Team } from '../../domain/team/team';
+import { UserTeam, UserTeamRole } from '../../domain/user-team/user-team';
 
 @Injectable()
 export class TeamService {
@@ -70,5 +72,53 @@ export class TeamService {
         teamMembers,
       };
     });
+  }
+
+  public async updateTeam(
+    teamId: UUID,
+    organisationId: UUID,
+    name: string,
+    active: boolean,
+  ) {
+    return this.teamDomainService.update(teamId, organisationId, name, active);
+  }
+
+  public async updateTeamActive(
+    teamId: UUID,
+    organisationId: UUID,
+    active: boolean,
+  ): Promise<Team> {
+    if (active) {
+      return this.teamDomainService.activate(teamId, organisationId);
+    }
+
+    return this.teamDomainService.disable(teamId, organisationId);
+  }
+
+  public async addOrUpdateTeamUser(
+    teamId: UUID,
+    organisationId: UUID,
+    newTeamUserId: UUID,
+    newTeamUserRole: UserTeamRole,
+  ): Promise<void> {
+    const [team, user] = await Promise.all([
+      this.teamDomainService.getByIdOrThrow(teamId, organisationId),
+      this.userService.getByIdOrThrow(newTeamUserId, organisationId),
+    ]);
+
+    await this.userTeamService.create(
+      user.id,
+      team.id,
+      team.organisationId,
+      newTeamUserRole,
+    );
+  }
+
+  public removeTeamUser(userId: UUID, teamId: UUID): Promise<void> {
+    return this.userTeamService.delete(userId, teamId);
+  }
+
+  public getTeamRole(userId: UUID, teamId: UUID): Promise<UserTeam> {
+    return this.userTeamService.getByIdOrThrow(userId, teamId);
   }
 }

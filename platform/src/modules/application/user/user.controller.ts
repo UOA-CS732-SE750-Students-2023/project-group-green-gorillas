@@ -47,6 +47,7 @@ export class UserController {
       displayName,
       firstName,
       lastName,
+      true,
     );
   }
 
@@ -55,7 +56,8 @@ export class UserController {
   @AllowedRoles([UserRole.ADMIN])
   public async updateUser(
     @RequestUser() user: RequestUserType,
-    @Body() { displayName, firstName, lastName, role }: UpdateUserRequest,
+    @Body()
+    { displayName, firstName, lastName, role, active }: UpdateUserRequest,
     @Param() { userId }: UpdateUserRequestParams,
   ) {
     return this.userService.updateUser(
@@ -64,6 +66,7 @@ export class UserController {
       displayName,
       firstName,
       lastName,
+      active,
       role,
     );
   }

@@ -33,4 +33,33 @@ export class TeamService {
   public listByOrganisationId(organisationId: UUID): Promise<Team[]> {
     return this.teamRepository.listByOrganisationId(organisationId);
   }
+
+  public async update(
+    id: UUID,
+    organisationId: UUID,
+    name: string,
+    active: boolean,
+  ): Promise<Team> {
+    const team = await this.getByIdOrThrow(id, organisationId);
+
+    team.update(name, active);
+
+    return this.teamRepository.save(team);
+  }
+
+  public async activate(id: UUID, organisationId: UUID): Promise<Team> {
+    const team = await this.getByIdOrThrow(id, organisationId);
+
+    team.activate();
+
+    return this.teamRepository.save(team);
+  }
+
+  public async disable(id: UUID, organisationId: UUID): Promise<Team> {
+    const team = await this.getByIdOrThrow(id, organisationId);
+
+    team.disable();
+
+    return this.teamRepository.save(team);
+  }
 }

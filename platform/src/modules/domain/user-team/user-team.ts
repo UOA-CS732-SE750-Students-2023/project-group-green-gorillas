@@ -39,4 +39,8 @@ export class UserTeam {
     this.createdAt = DateTime.now();
     this.updatedAt = DateTime.now();
   }
+
+  public updateRole(role: UserTeamRole) {
+    this.role = role;
+  }
 }

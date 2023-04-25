@@ -10,6 +10,7 @@ import { UserManagementScreen } from "../UserManagement";
 import { TemplateScreen } from "../Template";
 import { ProfileScreen } from "../Profile";
 import { ScreenPath } from "..";
+import { RetroScreen } from "../Retro";
 
 export enum MainScreenPath {
   HOME = "/main/home",
@@ -20,6 +21,7 @@ export enum MainScreenPath {
   TeamManagement = "/main/team-management",
   Profile = "/main/profile",
   Template = "/main/template",
+  Retro = "/main/retro",
 }
 
 const MainSubScreens = () => {
@@ -37,6 +39,7 @@ const MainSubScreens = () => {
       />
       <Route path={MainScreenPath.Template} component={TemplateScreen} />
       <Route path={MainScreenPath.Profile} component={ProfileScreen} />
+      <Route path={MainScreenPath.Retro} component={RetroScreen} />
       <Redirect from={ScreenPath.Main} to={MainScreenPath.HOME} />
       <Redirect from={MainScreenPath.ANY} to={MainScreenPath.HOME} />
     </Switch>

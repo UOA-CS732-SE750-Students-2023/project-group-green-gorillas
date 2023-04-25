@@ -66,5 +66,10 @@
     "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list action items by team id",
     "FAILED_TO_LIST_BY_STATUS": "Failed to list action items by status",
     "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list action items by board id"
+  },
+  "ACTION_ITEM_ASSIGNEE": {
+    "FAILED_TO_SAVE": "Failed to save action item assignee",
+    "FAILED_TO_DELETE": "Failed to delete action item assignee",
+    "FAILED_TO_LIST_BY_ACTION_ITEM_ID": "Failed to list action item assignees by action item id"
   }
 }

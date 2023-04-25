@@ -3,6 +3,12 @@ import { Type } from 'class-transformer';
 import { DynamoTimestampTransformer } from '../../../utils/decorators/dynamo-date-transformer';
 import { DateTime } from 'luxon';
 import { uuid } from '../../../utils/uuid/uuid';
+import { DynamoNullableTransformer } from '../../../utils/decorators/dynamo-nullable-transformer';
+
+export enum BoardNoteType {
+  NORMAL = 'NORMAL',
+  GROUP = 'GROUP',
+}
 
 export class BoardNote {
   public readonly id: UUID;
@@ -14,6 +20,11 @@ export class BoardNote {
   public readonly organisationId: UUID;
 
   public readonly teamId: UUID;
+
+  public type: BoardNoteType;
+
+  @DynamoNullableTransformer()
+  public parentId: UUID | null;
 
   public note: string;
 
@@ -42,5 +53,7 @@ export class BoardNote {
     this.teamId = teamId;
     this.note = note;
     this.createdBy = createdBy;
+    this.parentId = null;
+    this.type = BoardNoteType.NORMAL;
   }
 }

@@ -40,5 +40,31 @@
     "FAILED_TO_SAVE": "Failed to save user teams",
     "FAILED_TO_DELETE": "Failed to delete user teams",
     "NOT_FOUND": "User team is not found"
+  },
+  "BOARD": {
+    "FAILED_TO_SAVE": "Failed to save board",
+    "FAILED_TO_GET": "Failed to get board",
+    "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list boards by team id"
+  },
+  "BOARD_SECTION": {
+    "FAILED_TO_SAVE": "Failed to save board section",
+    "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list board sections by board id",
+    "FAILED_TO_GET": "Failed to get board section",
+    "FAILED_TO_DELETE": "Failed to delete board section"
+  },
+  "BOARD_NOTE": {
+    "FAILED_TO_GET": "Failed to get board note",
+    "FAILED_TO_SAVE": "Failed to save board note",
+    "FAILED_TO_DELETE": "Failed to delete board note",
+    "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list board notes by board id",
+    "FAILED_TO_LIST_BOARD_SECTION_ID": "Failed to list board notes by board section id"
+  },
+  "ACTION_ITEM": {
+    "FAILED_TO_DELETE": "Failed to delete action item",
+    "FAILED_TO_GET": "Failed to get action item",
+    "FAILED_TO_SAVE": "Failed to save action item",
+    "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list action items by team id",
+    "FAILED_TO_LIST_BY_STATUS": "Failed to list action items by status",
+    "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list action items by board id"
   }
 }

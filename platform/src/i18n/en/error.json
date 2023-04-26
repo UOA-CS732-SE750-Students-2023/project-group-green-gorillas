@@ -44,7 +44,8 @@
   "BOARD": {
     "FAILED_TO_SAVE": "Failed to save board",
     "FAILED_TO_GET": "Failed to get board",
-    "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list boards by team id"
+    "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list boards by team id",
+    "NOT_FOUND": "Board is not found"
   },
   "BOARD_SECTION": {
     "FAILED_TO_SAVE": "Failed to save board section",

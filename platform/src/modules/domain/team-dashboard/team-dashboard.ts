@@ -1,5 +1,11 @@
 import { UUID } from '../../../types/uuid.type';
 
+export enum TeamDashboardCountKey {
+  OutstandingActionItemCount = 'outstandingActionItemCount',
+  CompletedActionItemCount = 'completedActionItemCount',
+  RetrospectiveCount = 'retrospectiveCount',
+}
+
 export class TeamDashboard {
   public readonly teamId: UUID;
 

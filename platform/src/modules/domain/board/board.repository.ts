@@ -68,10 +68,6 @@ export class BoardRepository extends DatabaseRepository<Board> {
           AttributeType: 'S',
         },
         {
-          AttributeName: 'organisationId',
-          AttributeType: 'S',
-        },
-        {
           AttributeName: 'teamId',
           AttributeType: 'S',
         },

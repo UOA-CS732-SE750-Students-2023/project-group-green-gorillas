@@ -8,6 +8,8 @@ import { User, UserRole } from '../../domain/user/user';
 import * as Bluebird from 'bluebird';
 import { Team } from '../../domain/team/team';
 import { UserTeam, UserTeamRole } from '../../domain/user-team/user-team';
+import { TeamDashboardService } from '../../domain/team-dashboard/team-dashboard.service';
+import { TeamDashboard } from '../../domain/team-dashboard/team-dashboard';
 
 @Injectable()
 export class TeamService {
@@ -15,6 +17,7 @@ export class TeamService {
     private readonly teamDomainService: TeamDomainService,
     private readonly userTeamService: UserTeamService,
     private readonly userService: UserService,
+    private readonly teamDashboardService: TeamDashboardService,
   ) {}
 
   private async getTeamRemembers(
@@ -120,5 +123,12 @@ export class TeamService {
 
   public getTeamRole(userId: UUID, teamId: UUID): Promise<UserTeam> {
     return this.userTeamService.getByIdOrThrow(userId, teamId);
+  }
+
+  public getTeamInsight(
+    teamId: UUID,
+    organisationId: UUID,
+  ): Promise<TeamDashboard> {
+    return this.teamDashboardService.getByTeamId(teamId, organisationId);
   }
 }

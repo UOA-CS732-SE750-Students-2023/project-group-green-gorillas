@@ -6,6 +6,7 @@ import { UserModule } from '../../domain/user/user.module';
 import { UserTeamModule } from '../../domain/user-team/user-team.module';
 import { TokenModule } from '../../domain/token/token.module';
 import { OrganisationModule } from '../../domain/organisation/organisation.module';
+import { TeamDashboardModule } from '../../domain/team-dashboard/team-dashboard.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { OrganisationModule } from '../../domain/organisation/organisation.modul
     UserTeamModule,
     TokenModule,
     OrganisationModule,
+    TeamDashboardModule,
   ],
   controllers: [TeamController],
   providers: [TeamService],

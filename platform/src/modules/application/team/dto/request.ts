@@ -53,3 +53,8 @@ export class GetTeamRoleRequestParams {
   @IsUUID()
   teamId: UUID;
 }
+
+export class GetTeamInsightRequestParams {
+  @IsUUID()
+  teamId: UUID;
+}

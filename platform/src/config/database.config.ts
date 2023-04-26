@@ -44,6 +44,9 @@ export class DatabaseConfig {
 
   @IsString()
   actionItemAssigneeTableName: string;
+
+  @IsString()
+  boardTemplateTableName: string;
 }
 
 export default registerAs(Config.DATABASE, () =>
@@ -62,5 +65,6 @@ export default registerAs(Config.DATABASE, () =>
     actionItemTableName: process.env.DATABASE_ACTION_ITEM_TABLE_NAME,
     actionItemAssigneeTableName:
       process.env.DATABASE_ACTION_ITEM_ASSIGNEE_TABLE_NAME,
+    boardTemplateTableName: process.env.DATABASE_BOARD_TEMPLATE_TABLE_NAME,
   }),
 );

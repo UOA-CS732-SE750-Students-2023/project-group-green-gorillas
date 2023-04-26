@@ -6,8 +6,15 @@ import { DataSeederModule } from './modules/application/data-seeder/data-seeder.
 import { Environment } from './config/types/environment';
 import { UserModule } from './modules/application/user/user.module';
 import { TeamModule } from './modules/application/team/team.module';
+import { RetrospectiveModule } from './modules/application/retrospective/retrospective.module';
 
-const modules = [GlobalModule, AuthModule, UserModule, TeamModule];
+const modules = [
+  GlobalModule,
+  AuthModule,
+  UserModule,
+  TeamModule,
+  RetrospectiveModule,
+];
 
 if (process.env.NODE_ENV === Environment.LOCAL) {
   modules.push(DataSeederModule);

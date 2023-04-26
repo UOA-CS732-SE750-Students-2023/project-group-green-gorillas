@@ -15,6 +15,7 @@ import {
 import {
   AddOrUpdateTeamUserRequest,
   GetTeamByIdRequestParams,
+  GetTeamInsightRequestParams,
   GetTeamRoleRequestParams,
   RemoveTeamUserRequest,
   UpdateTeamActiveRequest,
@@ -35,6 +36,14 @@ import { UserRole } from '../../domain/user/user';
 @UseAuthGuard()
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
+
+  @Get('insight/:teamId')
+  public getTeamInsight(
+    @RequestUser() user: RequestUserType,
+    @Param() { teamId }: GetTeamInsightRequestParams,
+  ) {
+    return this.teamService.getTeamInsight(teamId, user.organisationId);
+  }
 
   @Get('team-role/:teamId')
   public getCurrentUserTeamRole(

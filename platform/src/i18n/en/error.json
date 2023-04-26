@@ -76,5 +76,9 @@
     "FAILED_TO_LIST_BY_ORGANISATION_ID": "Failed to get board templates by organisation id",
     "FAILED_TO_SAVE": "Failed to save board template",
     "FAILED_TO_GET": "Failed to get board template"
+  },
+  "TEAM_DASHBOARD": {
+    "FAILED_TO_SAVE": "Failed to save team dashboard",
+    "FAILED_TO_GET": "Failed to get team dashboard"
   }
 }

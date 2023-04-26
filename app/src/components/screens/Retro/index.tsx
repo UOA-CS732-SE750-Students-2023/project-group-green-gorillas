@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { useTeam } from "../../../hooks/useTeam";
 import { Avatar } from "../../common/Avatar";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
+import Stage from "./Stage";
 
 export function RetroScreen() {
   const { teamId } = useParams<{ teamId: string }>();
@@ -68,13 +69,7 @@ export function RetroScreen() {
           </List>
         </Box>
       </Container>
-      {/* <Stage
-        retro={retro}
-        stage={retroStage}
-        setStage={setRetroStage}
-        actionItems={actionItems}
-        setActionItems={setActionItems}
-      /> */}
+      <Stage />
     </React.Fragment>
   );
 }

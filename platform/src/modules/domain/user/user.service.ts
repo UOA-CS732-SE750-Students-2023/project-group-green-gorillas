@@ -15,6 +15,22 @@ export class UserService {
     private readonly organisationService: OrganisationService,
   ) {}
 
+  public async update(
+    userId: UUID,
+    organisationId: UUID,
+    displayName: string,
+    firstName: string,
+    lastName: string,
+    active: boolean,
+    role?: UserRole,
+  ): Promise<User> {
+    const user = await this.getByIdOrThrow(userId, organisationId);
+
+    user.update(displayName, firstName, lastName, active, role ?? user.role);
+
+    return this.save(user);
+  }
+
   public async getByEmail(email: string): Promise<User | undefined> {
     return this.userRepository.getByEmail(email);
   }

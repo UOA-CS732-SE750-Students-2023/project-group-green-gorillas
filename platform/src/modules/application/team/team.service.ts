@@ -3,21 +3,27 @@ import { TeamService as TeamDomainService } from '../../domain/team/team.service
 import { UUID } from '../../../types/uuid.type';
 import { UserTeamService } from '../../domain/user-team/user-team.service';
 import { UserService } from '../../domain/user/user.service';
+import { RequestUserType } from '../../../utils/decorators/request-user';
+import { User, UserRole } from '../../domain/user/user';
+import * as Bluebird from 'bluebird';
+import { Team } from '../../domain/team/team';
+import { UserTeam, UserTeamRole } from '../../domain/user-team/user-team';
+import { TeamDashboardService } from '../../domain/team-dashboard/team-dashboard.service';
+import { TeamDashboard } from '../../domain/team-dashboard/team-dashboard';
 
 @Injectable()
 export class TeamService {
   constructor(
-    private readonly teamService: TeamDomainService,
+    private readonly teamDomainService: TeamDomainService,
     private readonly userTeamService: UserTeamService,
     private readonly userService: UserService,
+    private readonly teamDashboardService: TeamDashboardService,
   ) {}
 
-  public async getTeamById(teamId: UUID, organisationId: UUID, userId: UUID) {
-    const team = await this.teamService.getByIdOrThrow(teamId, organisationId);
-
-    // validate current user is in the current team or not
-    await this.userTeamService.getByIdOrThrow(userId, team.id);
-
+  private async getTeamRemembers(
+    teamId: UUID,
+    organisationId: UUID,
+  ): Promise<User[]> {
     const userTeams = await this.userTeamService.listByTeamId(
       teamId,
       organisationId,
@@ -29,9 +35,100 @@ export class TeamService {
       ),
     );
 
+    return users.filter((user) => !!user);
+  }
+
+  public async getUserTeamById(
+    teamId: UUID,
+    organisationId: UUID,
+    user: RequestUserType,
+  ) {
+    const team = await this.teamDomainService.getByIdOrThrow(
+      teamId,
+      organisationId,
+    );
+
+    if (user.role !== UserRole.ADMIN) {
+      // validate current user is in the current team or not
+      await this.userTeamService.getByIdOrThrow(user.id, team.id);
+    }
+
+    const teamMembers = await this.getTeamRemembers(teamId, organisationId);
+
     return {
       ...team,
-      teamMembers: users.filter((user) => !!user),
+      teamMembers,
     };
+  }
+
+  public async getOrganisationTeams(organisationId: UUID) {
+    const teams = this.teamDomainService.listByOrganisationId(organisationId);
+
+    return Bluebird.map(teams, async (team) => {
+      const teamMembers = await this.getTeamRemembers(
+        team.id,
+        team.organisationId,
+      );
+
+      return {
+        ...team,
+        teamMembers,
+      };
+    });
+  }
+
+  public async updateTeam(
+    teamId: UUID,
+    organisationId: UUID,
+    name: string,
+    active: boolean,
+  ) {
+    return this.teamDomainService.update(teamId, organisationId, name, active);
+  }
+
+  public async updateTeamActive(
+    teamId: UUID,
+    organisationId: UUID,
+    active: boolean,
+  ): Promise<Team> {
+    if (active) {
+      return this.teamDomainService.activate(teamId, organisationId);
+    }
+
+    return this.teamDomainService.disable(teamId, organisationId);
+  }
+
+  public async addOrUpdateTeamUser(
+    teamId: UUID,
+    organisationId: UUID,
+    newTeamUserId: UUID,
+    newTeamUserRole: UserTeamRole,
+  ): Promise<void> {
+    const [team, user] = await Promise.all([
+      this.teamDomainService.getByIdOrThrow(teamId, organisationId),
+      this.userService.getByIdOrThrow(newTeamUserId, organisationId),
+    ]);
+
+    await this.userTeamService.create(
+      user.id,
+      team.id,
+      team.organisationId,
+      newTeamUserRole,
+    );
+  }
+
+  public removeTeamUser(userId: UUID, teamId: UUID): Promise<void> {
+    return this.userTeamService.delete(userId, teamId);
+  }
+
+  public getTeamRole(userId: UUID, teamId: UUID): Promise<UserTeam> {
+    return this.userTeamService.getByIdOrThrow(userId, teamId);
+  }
+
+  public getTeamInsight(
+    teamId: UUID,
+    organisationId: UUID,
+  ): Promise<TeamDashboard> {
+    return this.teamDashboardService.getByTeamId(teamId, organisationId);
   }
 }

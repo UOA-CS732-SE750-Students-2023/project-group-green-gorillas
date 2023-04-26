@@ -10,6 +10,7 @@ import { RefreshTokenResponse, SignInResponse } from './dto/response';
 import { OrganisationService } from '../../domain/organisation/organisation.service';
 import { User } from '../../domain/user/user';
 import { EmailService } from '../../common/email/email.service';
+import { RequestUserType } from '../../../utils/decorators/request-user';
 
 @Injectable()
 export class AuthService {
@@ -39,6 +40,17 @@ export class AuthService {
     );
 
     await this.tokenService.delete(user.id, token);
+  }
+
+  public async changePassword(
+    user: RequestUserType,
+    newPassword: string,
+  ): Promise<void> {
+    await this.userAuthService.create(
+      user.id,
+      user.organisationId,
+      newPassword,
+    );
   }
 
   public async requestResetPassword(email: string): Promise<void> {

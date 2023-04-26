@@ -29,4 +29,17 @@ export class Team {
     this.createdAt = DateTime.now();
     this.updatedAt = DateTime.now();
   }
+
+  public update(name: string, active: boolean): void {
+    this.name = name;
+    this.active = active;
+  }
+
+  public activate(): void {
+    this.active = true;
+  }
+
+  public disable(): void {
+    this.active = false;
+  }
 }

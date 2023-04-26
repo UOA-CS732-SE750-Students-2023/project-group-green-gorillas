@@ -1,8 +1,9 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { UserTeamRepository } from './user-team.repository';
 import { UUID } from '../../../types/uuid.type';
-import { UserTeam } from './user-team';
+import { UserTeam, UserTeamRole } from './user-team';
 import { InternalException } from '../../../exceptions/internal-exception';
+import { UserTeamFactory } from './user-team.factory';
 
 @Injectable()
 export class UserTeamService {
@@ -10,6 +11,17 @@ export class UserTeamService {
 
   public getById(userId: UUID, teamId: UUID): Promise<UserTeam | undefined> {
     return this.userTeamRepository.getById(userId, teamId);
+  }
+
+  public async create(
+    userId: UUID,
+    teamId: UUID,
+    organisationId: UUID,
+    role: UserTeamRole,
+  ): Promise<UserTeam> {
+    return this.userTeamRepository.save(
+      UserTeamFactory.create(userId, teamId, organisationId, role),
+    );
   }
 
   public async getByIdOrThrow(userId: UUID, teamId: UUID): Promise<UserTeam> {

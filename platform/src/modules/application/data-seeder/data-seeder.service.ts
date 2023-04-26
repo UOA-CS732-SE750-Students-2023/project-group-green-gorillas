@@ -16,6 +16,9 @@ import { Team } from '../../domain/team/team';
 import { UserTeamService } from '../../domain/user-team/user-team.service';
 import { userTeams } from './data/user-teams';
 import { UserTeam } from '../../domain/user-team/user-team';
+import { BoardTemplateService } from '../../domain/board-template/board-template.service';
+import { boardTemplates } from './data/board-templates';
+import { BoardTemplate } from '../../domain/board-template/board-template';
 
 @Injectable()
 export class DataSeederService {
@@ -25,6 +28,7 @@ export class DataSeederService {
     private readonly userAuthService: UserAuthService,
     private readonly teamService: TeamService,
     private readonly userTeamService: UserTeamService,
+    private readonly boardTemplateService: BoardTemplateService,
   ) {}
 
   public async seed(): Promise<void> {
@@ -34,6 +38,7 @@ export class DataSeederService {
       this.seedUserAuths(),
       this.seedTeams(),
       this.seedUserTeams(),
+      this.seedBoardTemplates(),
     ]);
   }
 
@@ -74,6 +79,16 @@ export class DataSeederService {
     await Promise.all(
       userTeams.map((userTeam) =>
         this.userTeamService.save(plainToClass(UserTeam, userTeam)),
+      ),
+    );
+  }
+
+  public async seedBoardTemplates(): Promise<void> {
+    await Promise.all(
+      boardTemplates.map((boardTemplate) =>
+        this.boardTemplateService.save(
+          plainToClass(BoardTemplate, boardTemplate),
+        ),
       ),
     );
   }

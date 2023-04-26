@@ -61,6 +61,9 @@ export class EnvironmentVariables {
   @IsString()
   DATABASE_ACTION_ITEM_ASSIGNEE_TABLE_NAME!: string;
 
+  @IsString()
+  DATABASE_BOARD_TEMPLATE_TABLE_NAME!: string;
+
   // TOKEN
   @IsString()
   TOKEN_SECRET!: string;

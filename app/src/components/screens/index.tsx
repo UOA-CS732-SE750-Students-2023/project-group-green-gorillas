@@ -4,6 +4,8 @@ import { LoginScreen } from "./Login";
 import { ForgotPasswordScreen } from "./ForgotPassword";
 import { MainScreen } from "./Main";
 import { ResetPasswordScreen } from "./ResetPassword";
+import { UserManagementScreen } from "./UserManagement";
+
 
 export enum ScreenPath {
   Login = "/login",
@@ -12,6 +14,9 @@ export enum ScreenPath {
   // Protected Route
   Main = "/main",
   ResetPassword = "/reset-password",
+  UserManagement = "/user-management",
+  UserManagementTeam = "/user-management-team",
+  UserManagementUser = "/user-management-user"
 }
 
 export const Screens = () => {
@@ -27,6 +32,12 @@ export const Screens = () => {
           path={ScreenPath.ResetPassword}
           component={ResetPasswordScreen}
         />
+        <Route
+          path={ScreenPath.UserManagement}
+          component={UserManagementScreen}
+        />
+
+
         <Route path={ScreenPath.Main} component={MainScreen} />
         <Redirect from={ScreenPath.ANY} to={ScreenPath.Login} />
       </Switch>

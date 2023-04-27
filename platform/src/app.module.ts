@@ -7,6 +7,7 @@ import { Environment } from './config/types/environment';
 import { UserModule } from './modules/application/user/user.module';
 import { TeamModule } from './modules/application/team/team.module';
 import { RetrospectiveModule } from './modules/application/retrospective/retrospective.module';
+import { ActionItemModule } from './modules/application/action-item/action-item.module';
 
 const modules = [
   GlobalModule,
@@ -14,6 +15,7 @@ const modules = [
   UserModule,
   TeamModule,
   RetrospectiveModule,
+  ActionItemModule,
 ];
 
 if (process.env.NODE_ENV === Environment.LOCAL) {

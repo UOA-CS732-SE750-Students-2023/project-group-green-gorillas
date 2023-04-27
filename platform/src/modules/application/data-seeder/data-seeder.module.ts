@@ -7,6 +7,9 @@ import { DataSeederController } from './data-seeder.controller';
 import { TeamModule } from '../../domain/team/team.module';
 import { UserTeamModule } from '../../domain/user-team/user-team.module';
 import { BoardTemplateModule } from '../../domain/board-template/board-template.module';
+import { BoardModule } from '../../domain/board/board.module';
+import { ActionItemModule } from '../../domain/action-item/action-item.module';
+import { ActionItemAssigneeModule } from '../../domain/action-item-assignee/action-item-assignee.module';
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { BoardTemplateModule } from '../../domain/board-template/board-template.
     TeamModule,
     UserTeamModule,
     BoardTemplateModule,
+    BoardModule,
+    ActionItemModule,
+    ActionItemAssigneeModule,
   ],
   providers: [DataSeederService],
   controllers: [DataSeederController],

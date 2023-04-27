@@ -13,8 +13,8 @@ import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 70 },
   { field: 'name', headerName: 'Name', width: 130, editable: true},
-  { field: 'createdAt', headerName: 'CREATE', width: 130 },
-  { field: 'updatedAt', headerName: 'UPDATE', width: 130 },
+  { field: 'createdAt', headerName: 'CREATE', width: 180 },
+  { field: 'updatedAt', headerName: 'UPDATE', width: 180 },
   { field: 'active', headerName: 'Active', width: 130 },
 ];
 

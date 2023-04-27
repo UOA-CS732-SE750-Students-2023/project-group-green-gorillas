@@ -17,15 +17,15 @@ import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'email', headerName: 'Email', width: 130 },
+  { field: 'email', headerName: 'Email', width: 130, editable: true },
   { field: 'organisationId', headerName: 'OrgID', width: 70 },
-  { field: 'displayName', headerName: 'DisplayName', width: 130},
-  { field: 'firstName', headerName: 'FirstName', width: 130 },
-  { field: 'lastName', headerName: 'LastName', width: 130 },
+  { field: 'displayName', headerName: 'DisplayName', width: 130, editable: true},
+  { field: 'firstName', headerName: 'FirstName', width: 130, editable: true },
+  { field: 'lastName', headerName: 'LastName', width: 130, editable: true },
   { field: 'role', headerName: 'Role', width: 130 },
   { field: 'active', headerName: 'Active', width: 130 },
-  { field: 'createdAt', headerName: 'CreatedAt', width: 130 },
-  { field: 'updatedAt', headerName: 'UpdatedAt', width: 130 },
+  { field: 'createdAt', headerName: 'CreatedAt', width: 180 },
+  { field: 'updatedAt', headerName: 'UpdatedAt', width: 180},
 ];
 
 const rows = [

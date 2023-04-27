@@ -1,5 +1,8 @@
 import { Box, Container } from "@mui/material";
 import React, { useState } from "react";
+import stageStyles from "./styles/stage.module.css";
+import styles from "./styles/styles.module.css";
+import Think from "./Think";
 import { Timer } from "./Timer";
 
 const stages = ["Think", "Group", "Vote", "Discuss"];
@@ -12,31 +15,20 @@ function Stage() {
   const stageDigits = ["One", "Two", "Three", "Four"];
   // breadcrumbStages = stages.slice(0, stage);
 
-  // const stageDisplay = [
-  //   <Think retro={retro} retroData={retroData} setRetroData={setRetroData} />,
-  //   <Group retro={retro} retroData={retroData} setGroups={setGroups} />,
-  //   <Vote retro={retro} groups={groups} setDiscItems={setDiscItems} />,
-  //   <Discuss
-  //     retro={retro}
-  //     items={discItems}
-  //     actionItems={actionItems}
-  //     setActionItems={setActionItems}
-  //   />,
-  // ];
-
-  console.log(groups);
-
+  const stageDisplay = [
+    <Think retroData={retroData} setRetroData={setRetroData} />,
+    // <Group retro={retro} retroData={retroData} setGroups={setGroups} />,
+    // <Vote retro={retro} groups={groups} setDiscItems={setDiscItems} />,
+    // <Discuss
+    //   retro={retro}
+    //   items={discItems}
+    //   actionItems={actionItems}
+    //   setActionItems={setActionItems}
+    // />,
+  ];
   return (
-    <Container
-      maxWidth="xl"
-      sx={{
-        height: "calc(100% - 80px)",
-        position: "relative",
-        boxSizing: "border-box",
-        padding: 4,
-      }}
-    >
-      <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+    <Container className={stageStyles.stage__wrapper}>
+      <Box className={styles.flex__right}>
         {/* {stage > 0 && (
           <div className="stage__breadcrumbs">
             {breadcrumbStages.map((breadcrumb) => (
@@ -47,20 +39,13 @@ function Stage() {
             ))}
           </div>
         )} */}
-        <Box
-          sx={{
-            fontSize: 24,
-            color: "#333333",
-            fontWeight: "bold",
-            paddingRight: 3,
-          }}
-        >
+        <Box className={styles.heading}>
           {/* Stage {stageDigits[stage]}: {stages[stage]} */}
           Stage
         </Box>
         <Timer startTime={180} />
       </Box>
-      {/* {stageDisplay[stage]} */}
+      {stageDisplay[0]}
       {/* <Toolbar stage={stage} setStage={setStage} /> */}
     </Container>
   );

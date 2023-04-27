@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { useTeam } from "../../../hooks/useTeam";
 import { Avatar } from "../../common/Avatar";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
+import retroStyles from "./styles/retro.module.css";
 import Stage from "./Stage";
 
 export function RetroScreen() {
@@ -26,41 +27,14 @@ export function RetroScreen() {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Container
-        maxWidth="xl"
-        sx={{
-          height: 80,
-          background: "#f2f2f2",
-          width: "100%",
-          display: "flex",
-          boxSizing: "border-box",
-          alignItems: "center",
-          padding: 4,
-        }}
-      >
-        <Box sx={{ marginright: 32 }}>
-          <Typography
-            sx={{ fontSize: 14, fontWeight: "bold", color: "#333333" }}
-          >
+      <Container maxWidth="xl" className={retroStyles.retro__header}>
+        <Box className={retroStyles.header__section}>
+          <Typography className={retroStyles.header__title}>
             Participants
           </Typography>
-          <List sx={{ display: "flex" }}>
+          <List className={retroStyles.participants__list}>
             {team?.teamMembers?.map((member) => (
-              <ListItem
-                sx={{
-                  marginLeft: -16,
-                  height: 36,
-                  width: 36,
-                  border: "2px solid #f2f2f2",
-                  boxSizing: "border-box",
-                  borderRadius: "50%",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center center",
-                  cursor: "pointer",
-                  transition: ".2s ease all",
-                }}
-                key={member.id}
-              >
+              <ListItem className={retroStyles.participant} key={member.id}>
                 <ListItemAvatar>
                   <Avatar text={`${member.firstName} ${member.lastName}`} />
                 </ListItemAvatar>

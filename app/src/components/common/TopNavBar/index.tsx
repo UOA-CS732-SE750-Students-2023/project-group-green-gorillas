@@ -15,6 +15,7 @@ import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { Avatar } from "../Avatar";
 import { useSignOut } from "../../../hooks/useSignOut";
 import { useHistory } from "react-router-dom";
+import { MainScreenPath } from "../../screens/Main";
 
 export const TopNavBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -42,7 +43,7 @@ export const TopNavBar = () => {
   const { location } = useHistory();
 
   const shouldShowMenu = useMemo(() => {
-    return location.pathname.startsWith("/main/team");
+    return location.pathname.startsWith(MainScreenPath.TEAM);
   }, [location]);
 
   return (

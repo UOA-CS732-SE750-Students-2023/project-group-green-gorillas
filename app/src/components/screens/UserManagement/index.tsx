@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
-import Demo from "./demo";
-import { Container } from "@mui/material";
-import { TopNavBar } from "../../common/TopNavBar";
+import User from "./user";
 
 export const UserManagementScreen = () => {
-  return <Container><TopNavBar></TopNavBar><Demo /></Container>;
+  return <div><User /></div>;
 };

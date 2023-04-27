@@ -5,6 +5,8 @@ import { ForgotPasswordScreen } from "./ForgotPassword";
 import { MainScreen } from "./Main";
 import { ResetPasswordScreen } from "./ResetPassword";
 import { UserManagementScreen } from "./UserManagement";
+import { OrgManagementScreen } from "./OrgManagement";
+import { TeamManagementScreen } from "./TeamManagement";
 
 
 export enum ScreenPath {
@@ -15,8 +17,8 @@ export enum ScreenPath {
   Main = "/main",
   ResetPassword = "/reset-password",
   UserManagement = "/user-management",
-  UserManagementTeam = "/user-management-team",
-  UserManagementUser = "/user-management-user"
+  TeamManagement = "/team-management",
+  OrgManagement = "/org-management"
 }
 
 export const Screens = () => {
@@ -35,6 +37,16 @@ export const Screens = () => {
         <Route
           path={ScreenPath.UserManagement}
           component={UserManagementScreen}
+        />
+
+        <Route
+          path={ScreenPath.TeamManagement}
+          component={TeamManagementScreen}
+        />
+
+        <Route
+          path={ScreenPath.OrgManagement}
+          component={OrgManagementScreen}
         />
 
 

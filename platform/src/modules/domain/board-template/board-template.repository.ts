@@ -1,59 +1,71 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseRepository } from '../database/database.repository';
-import { Board } from './board';
+import { BoardTemplate } from './board-template';
 import {
   CreateTableCommandInput,
   DynamoDBClient,
   QueryCommand,
 } from '@aws-sdk/client-dynamodb';
 import { InternalConfigService } from '../../global/config/internal-config.service';
-import { InternalException } from '../../../exceptions/internal-exception';
 import { UUID } from '../../../types/uuid.type';
+import { InternalException } from '../../../exceptions/internal-exception';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { plainToClass } from 'class-transformer';
 
 @Injectable()
-export class BoardRepository extends DatabaseRepository<Board> {
+export class BoardTemplateRepository extends DatabaseRepository<BoardTemplate> {
   constructor(client: DynamoDBClient, config: InternalConfigService) {
     super(
-      config.getDatabaseConfig().boardTableName,
+      config.getDatabaseConfig().boardTemplateTableName,
       config.getBaseConfig().environment,
       client,
     );
   }
 
-  public save(board: Board): Promise<Board> {
+  public async getById(
+    id: UUID,
+    organisationId: UUID,
+  ): Promise<BoardTemplate | undefined> {
     try {
-      return this.putItem(board);
+      return this.getItem({ id, organisationId }, BoardTemplate);
     } catch (error) {
-      throw new InternalException('BOARD.FAILED_TO_SAVE', error.message);
+      throw new InternalException(
+        'BOARD_TEMPLATE.FAILED_TO_GET',
+        error.message,
+      );
     }
   }
 
-  public getById(id: UUID, teamId: UUID): Promise<Board | undefined> {
+  public async save(boardTemplate: BoardTemplate): Promise<BoardTemplate> {
     try {
-      return this.getItem({ id, teamId }, Board);
+      return this.putItem(boardTemplate);
     } catch (error) {
-      throw new InternalException('BOARD.FAILED_TO_GET', error.message);
+      throw new InternalException(
+        'BOARD_TEMPLATE.FAILED_TO_SAVE',
+        error.message,
+      );
     }
   }
 
-  public async listByTeamId(teamId: UUID): Promise<Board[]> {
+  public async listByOrganisationId(
+    organisationId: UUID,
+  ): Promise<BoardTemplate[]> {
     const command = new QueryCommand({
       TableName: this.tableName,
       ExpressionAttributeValues: marshall({
-        ':teamId': teamId,
+        ':organisationId': organisationId,
       }),
-      KeyConditionExpression: 'teamId = :teamId',
+      KeyConditionExpression: 'organisationId = :organisationId',
     });
-
     try {
       const { Items } = await this.client.send(command);
-
-      return Items?.map((item) => plainToClass(Board, unmarshall(item))) ?? [];
+      return (
+        Items?.map((item) => plainToClass(BoardTemplate, unmarshall(item))) ??
+        []
+      );
     } catch (error) {
       throw new InternalException(
-        'BOARD.FAILED_TO_LIST_BY_TEAM_ID',
+        'BOARD_TEMPLATE.FAILED_TO_LIST_BY_ORGANISATION_ID',
         error.message,
       );
     }
@@ -68,13 +80,13 @@ export class BoardRepository extends DatabaseRepository<Board> {
           AttributeType: 'S',
         },
         {
-          AttributeName: 'teamId',
+          AttributeName: 'organisationId',
           AttributeType: 'S',
         },
       ],
       KeySchema: [
         {
-          AttributeName: 'teamId',
+          AttributeName: 'organisationId',
           KeyType: 'HASH',
         },
         {

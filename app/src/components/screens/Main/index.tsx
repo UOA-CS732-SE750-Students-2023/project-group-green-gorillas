@@ -7,6 +7,8 @@ import { TeamScreen } from "./Team";
 import { TopNavBar } from "../../common/TopNavBar";
 import { RetroHistoryScreen } from "../RetroHistory";
 import { UserManagementScreen } from "../UserManagement";
+import { OrgManagementScreen } from "../OrgManagement";
+import { TeamManagementScreen } from "../TeamManagement";
 import { TemplateScreen } from "../Template";
 import { ProfileScreen } from "../Profile";
 import { ScreenPath } from "..";
@@ -18,6 +20,7 @@ export enum MainScreenPath {
   RetroHistory = "/main/retro-history",
   UserManagement = "/main/user-management",
   TeamManagement = "/main/team-management",
+  OrgManagement = "/main/org-management",
   Profile = "/main/profile",
   Template = "/main/template",
 }
@@ -34,6 +37,14 @@ const MainSubScreens = () => {
       <Route
         path={MainScreenPath.UserManagement}
         component={UserManagementScreen}
+      />
+      <Route
+        path={MainScreenPath.TeamManagement}
+        component={TeamManagementScreen}
+      />
+      <Route
+        path={MainScreenPath.OrgManagement}
+        component={OrgManagementScreen}
       />
       <Route path={MainScreenPath.Template} component={TemplateScreen} />
       <Route path={MainScreenPath.Profile} component={ProfileScreen} />

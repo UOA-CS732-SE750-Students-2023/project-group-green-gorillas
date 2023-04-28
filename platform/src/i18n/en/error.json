@@ -14,7 +14,8 @@
     "FAILED_TO_SAVE": "Failed to save user.",
     "NOT_FOUND": "User is not found",
     "DUPLICATED_EMAIL": "User email is already existed",
-    "FAILED_TO_LIST_BY_ORGANISATION_ID": "Failed to list by organisation id"
+    "FAILED_TO_LIST_BY_ORGANISATION_ID": "Failed to list by organisation id",
+    "EMAIL_EXISTED": "Email is already existed"
   },
   "AUTH": {
     "SIGN_IN": "Sorry, you are failed to sign in because the information you provided to us is incorrect.",
@@ -44,7 +45,8 @@
   "BOARD": {
     "FAILED_TO_SAVE": "Failed to save board",
     "FAILED_TO_GET": "Failed to get board",
-    "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list boards by team id"
+    "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list boards by team id",
+    "NOT_FOUND": "Board is not found"
   },
   "BOARD_SECTION": {
     "FAILED_TO_SAVE": "Failed to save board section",
@@ -71,5 +73,14 @@
     "FAILED_TO_SAVE": "Failed to save action item assignee",
     "FAILED_TO_DELETE": "Failed to delete action item assignee",
     "FAILED_TO_LIST_BY_ACTION_ITEM_ID": "Failed to list action item assignees by action item id"
+  },
+  "BOARD_TEMPLATE": {
+    "FAILED_TO_LIST_BY_ORGANISATION_ID": "Failed to get board templates by organisation id",
+    "FAILED_TO_SAVE": "Failed to save board template",
+    "FAILED_TO_GET": "Failed to get board template"
+  },
+  "TEAM_DASHBOARD": {
+    "FAILED_TO_SAVE": "Failed to save team dashboard",
+    "FAILED_TO_GET": "Failed to get team dashboard"
   }
 }

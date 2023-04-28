@@ -25,6 +25,8 @@ import {
 } from "@mui/material";
 import { Avatar } from "../../../../components/common/Avatar/index";
 import { useTeam } from "../../../../hooks/useTeam";
+import { useActionItems } from "../../../../hooks/useActionItems";
+import { useInsight } from "../../../../hooks/useInsight";
 import { useParams } from "react-router-dom";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 
@@ -70,7 +72,13 @@ export const TeamScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
 
   const { team, loading } = useTeam(teamId);
-  console.log(team);
+  // console.log(team);
+
+  // const { actionItems, isLoading } = useActionItems(teamId);
+  // console.log(actionItems);
+
+  const { insight, insightLoading } = useInsight(teamId);
+  console.log(insight);
 
   if (loading) {
     return <LoadingIndicator />;
@@ -127,6 +135,7 @@ export const TeamScreen = () => {
       <Box component="main" sx={{ flexGrow: 1, marginLeft: 0 }}>
         {" "}
         <Toolbar />
+        {/* Team Member list & New Retro Button */}
         <Grid
           container
           direction="row"

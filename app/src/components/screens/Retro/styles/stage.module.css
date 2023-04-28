@@ -1,5 +1,5 @@
 .stage__wrapper {
-  height: calc(100% - 80px);
+  height: 83vh;
   position: relative;
   box-sizing: border-box;
   padding: 32px;
@@ -196,7 +196,7 @@
   width: 100%;
 }
 
-.note__wrapper--combining {
+.note__wrapper__combining {
   transform: scale(0.98);
 }
 
@@ -230,7 +230,7 @@
   position: relative;
 }
 
-.note__container--group {
+.note__container__group {
   display: flex;
   align-items: center;
   padding: 12px 12px 12px 12px;

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
+import User from "./user";
 
 export const UserManagementScreen = () => {
-  return <div>UserManagement page</div>;
+  return <div><User /></div>;
 };

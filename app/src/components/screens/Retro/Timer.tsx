@@ -1,4 +1,6 @@
+import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import stageStyles from "../Retro/styles/stage.module.css";
 
 export const Timer = ({ startTime }: any) => {
   const [time, setTime] = useState(startTime);
@@ -29,5 +31,9 @@ export const Timer = ({ startTime }: any) => {
     };
   });
 
-  return <div className={`timer timer--${color}`}>{formatTime(time)}</div>;
+  return (
+    <Box className={[stageStyles.timer, stageStyles[`timer--${color}`]] as any}>
+      {formatTime(time)}
+    </Box>
+  );
 };

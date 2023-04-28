@@ -221,7 +221,7 @@
 
 .note__container {
   width: 100%;
-  background-image: url("../assets/noise.png");
+  background-image: url("../../../../assets/noise.png");
   background-position: center center;
   background-size: cover;
   border-radius: 8px;
@@ -254,15 +254,15 @@
   top: -8px;
 }
 
-.note__container--pink {
+.note__container__pink {
   background-color: #ff6fb0;
 }
 
-.note__container--blue {
+.note__container__blue {
   background-color: #71ffcd;
 }
 
-.note__container--yellow {
+.note__container__yellow {
   background-color: #fbfd88;
 }
 

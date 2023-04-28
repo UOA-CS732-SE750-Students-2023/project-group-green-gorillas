@@ -5,10 +5,18 @@ import styles from "./styles/styles.module.css";
 import Think from "./Think";
 import { Timer } from "./Timer";
 
+type Props = {
+  retro: any;
+  stage: any;
+  setStage: any;
+  actionItems: any;
+  setActionItems: any;
+};
+
 const stages = ["Think", "Group", "Vote", "Discuss"];
 // let breadcrumbStages = [];
 
-function Stage() {
+function Stage({ retro, stage, setStage, actionItems, setActionItems }: Props) {
   const [retroData, setRetroData] = useState([]);
   const [groups, setGroups] = useState({});
   const [discItems, setDiscItems] = useState([]);
@@ -16,7 +24,7 @@ function Stage() {
   // breadcrumbStages = stages.slice(0, stage);
 
   const stageDisplay = [
-    <Think retroData={retroData} setRetroData={setRetroData} />,
+    <Think retro={retro} retroData={retroData} setRetroData={setRetroData} />,
     // <Group retro={retro} retroData={retroData} setGroups={setGroups} />,
     // <Vote retro={retro} groups={groups} setDiscItems={setDiscItems} />,
     // <Discuss
@@ -27,7 +35,11 @@ function Stage() {
     // />,
   ];
   return (
-    <Container className={stageStyles.stage__wrapper}>
+    <Container
+      className={stageStyles.stage__wrapper}
+      disableGutters
+      maxWidth="false"
+    >
       <Box className={styles.flex__right}>
         {/* {stage > 0 && (
           <div className="stage__breadcrumbs">
@@ -41,11 +53,11 @@ function Stage() {
         )} */}
         <Box className={styles.heading}>
           {/* Stage {stageDigits[stage]}: {stages[stage]} */}
-          Stage
+          Stage {stageDigits[stage]}: {stages[stage]}
         </Box>
         <Timer startTime={180} />
       </Box>
-      {stageDisplay[0]}
+      {stageDisplay[stage]}
       {/* <Toolbar stage={stage} setStage={setStage} /> */}
     </Container>
   );

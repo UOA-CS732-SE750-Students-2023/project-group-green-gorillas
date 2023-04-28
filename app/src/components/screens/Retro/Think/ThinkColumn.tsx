@@ -3,10 +3,9 @@ import React, { useState } from "react";
 import stageStyles from "../styles/stage.module.css";
 import styles from "../styles/styles.module.css";
 import addIcon from "../../../../assets/add.svg";
+import { ThinkNote } from "./ThinkNote";
 
-// import ThinkNote from "./ThinkNote";
-
-function ThinkColumn({ title, desc, retroData, setRetroData }: any) {
+const ThinkColumn = ({ title, desc, retroData, setRetroData }: any) => {
   const [newestNote, setNewestNote] = useState(0);
   const colors = ["pink", "blue", "yellow"];
 
@@ -23,20 +22,19 @@ function ThinkColumn({ title, desc, retroData, setRetroData }: any) {
     setRetroData(newRetroData);
   }
 
-  function updateNote(i, e) {
+  function updateNote(i: number, e: any) {
     let newRetroData = [...retroData];
     newRetroData[i].value = e.target.value;
     setRetroData(newRetroData);
   }
 
-  function deleteNote(i) {
+  function deleteNote(i: number) {
     let newRetroData = [...retroData];
     newRetroData.splice(i, 1);
     setRetroData(newRetroData);
   }
-
   return (
-    <Container className={stageStyles.column}>
+    <Container className={stageStyles.column} disableGutters maxWidth="false">
       <Box className={stageStyles.column__header}>
         <Box>
           <Box className={styles.select__heading}>{desc}</Box>
@@ -50,20 +48,21 @@ function ThinkColumn({ title, desc, retroData, setRetroData }: any) {
           <img src={addIcon} alt="" className={stageStyles.add__button__img} />
         </Box>
       </Box>
-      {/* {retroData
-        .filter((item) => item.column === title)
-        .map((note, i) => (
-          <ThinkNote
-            note={note}
-            i={retroData.indexOf(note)}
-            updateNote={updateNote}
-            deleteNote={deleteNote}
-            newestNote={newestNote}
-            key={i}
-          />
-        ))} */}
+      {!!retroData &&
+        retroData
+          .filter((item: any) => item.column === title)
+          .map((note: any, i: number) => (
+            <ThinkNote
+              note={note}
+              i={retroData.indexOf(note)}
+              updateNote={updateNote}
+              deleteNote={deleteNote}
+              newestNote={newestNote}
+              key={i}
+            />
+          ))}
     </Container>
   );
-}
+};
 
 export default ThinkColumn;

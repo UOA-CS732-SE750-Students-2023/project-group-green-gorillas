@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AuthenticationRedirect } from "../utils/AuthenticationRedirect";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { HomeScreen } from "./Home";
@@ -11,6 +11,7 @@ import { TemplateScreen } from "../Template";
 import { ProfileScreen } from "../Profile";
 import { ScreenPath } from "..";
 import { RetroScreen } from "../Retro";
+import { retros } from "./defaultData";
 
 export enum MainScreenPath {
   HOME = "/main/home",
@@ -25,6 +26,8 @@ export enum MainScreenPath {
 }
 
 const MainSubScreens = () => {
+  const [selectedRetro, setSelectedRetro] = useState(0);
+  const [actionItems, setActionItems] = useState([]);
   return (
     <Switch>
       <Route path={MainScreenPath.HOME} component={HomeScreen} />
@@ -39,7 +42,14 @@ const MainSubScreens = () => {
       />
       <Route path={MainScreenPath.Template} component={TemplateScreen} />
       <Route path={MainScreenPath.Profile} component={ProfileScreen} />
-      <Route path={MainScreenPath.Retro} component={RetroScreen} />
+      <Route path={MainScreenPath.Retro}>
+        <RetroScreen
+          retro={retros[selectedRetro]}
+          actionItems={actionItems}
+          setActionItems={setActionItems}
+        />
+      </Route>
+
       <Redirect from={ScreenPath.Main} to={MainScreenPath.HOME} />
       <Redirect from={MainScreenPath.ANY} to={MainScreenPath.HOME} />
     </Switch>

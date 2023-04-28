@@ -15,11 +15,17 @@ import { LoadingIndicator } from "../../common/LoadingIndicator";
 import retroStyles from "./styles/retro.module.css";
 import Stage from "./Stage";
 
-export function RetroScreen() {
+type Props = {
+  retro: any;
+  actionItems: any;
+  setActionItems: any;
+};
+
+export const RetroScreen = ({ retro, actionItems, setActionItems }: Props) => {
   const { teamId } = useParams<{ teamId: string }>();
 
   const { team, loading } = useTeam(teamId);
-
+  const [retroStage, setRetroStage] = useState(0);
   if (loading) {
     return <LoadingIndicator />;
   }
@@ -27,7 +33,11 @@ export function RetroScreen() {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Container maxWidth="xl" className={retroStyles.retro__header}>
+      <Container
+        maxWidth="false"
+        disableGutters
+        className={retroStyles.retro__header}
+      >
         <Box className={retroStyles.header__section}>
           <Typography className={retroStyles.header__title}>
             Participants
@@ -43,7 +53,13 @@ export function RetroScreen() {
           </List>
         </Box>
       </Container>
-      <Stage />
+      <Stage
+        retro={retro}
+        stage={retroStage}
+        setStage={setRetroStage}
+        actionItems={actionItems}
+        setActionItems={setActionItems}
+      />
     </React.Fragment>
   );
-}
+};

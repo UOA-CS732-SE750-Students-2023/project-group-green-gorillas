@@ -4,6 +4,7 @@ import stageStyles from "./styles/stage.module.css";
 import styles from "./styles/styles.module.css";
 import Think from "./Think";
 import { Timer } from "./Timer";
+import Toolbar from "./Toolbar";
 
 type Props = {
   retro: any;
@@ -40,7 +41,7 @@ function Stage({ retro, stage, setStage, actionItems, setActionItems }: Props) {
       disableGutters
       maxWidth="false"
     >
-      <Box className={styles.flex__right}>
+      <Box className={styles.flex__right} component="div">
         {/* {stage > 0 && (
           <div className="stage__breadcrumbs">
             {breadcrumbStages.map((breadcrumb) => (
@@ -51,14 +52,14 @@ function Stage({ retro, stage, setStage, actionItems, setActionItems }: Props) {
             ))}
           </div>
         )} */}
-        <Box className={styles.heading}>
+        <Box className={styles.heading} component="div">
           {/* Stage {stageDigits[stage]}: {stages[stage]} */}
           Stage {stageDigits[stage]}: {stages[stage]}
         </Box>
         <Timer startTime={180} />
       </Box>
       {stageDisplay[stage]}
-      {/* <Toolbar stage={stage} setStage={setStage} /> */}
+      <Toolbar stage={stage} setStage={setStage} />
     </Container>
   );
 }

@@ -164,7 +164,7 @@ button {
   margin-bottom: 8px;
 }
 
-.flex--center {
+.flex__center {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -183,7 +183,7 @@ button {
   margin-right: 0px;
 }
 
-.flex--left {
+.flex__left {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;

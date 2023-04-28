@@ -27,7 +27,7 @@ export const actionItems = [
   {
     id: '04d5439a-0da7-470b-a438-f98e3b1dfc68',
     organisationId: '53eec30c-db79-474a-83cd-5c0ae42cca2b',
-    teamId: '53eec30c-db79-474a-83cd-5c0ae42cca2b',
+    teamId: '86144d5b-81fa-4556-b0d6-01b0f4836512',
     boardId: '1d8dc2b7-5976-4a9c-a5b6-0591ca5b2ef2',
     note: 'This is action item C',
     status: ActionItemStatus.IN_PROGRESS,
@@ -38,7 +38,7 @@ export const actionItems = [
   {
     id: 'cbdc15ce-ba17-4362-ba20-28751066998e',
     organisationId: '53eec30c-db79-474a-83cd-5c0ae42cca2b',
-    teamId: '53eec30c-db79-474a-83cd-5c0ae42cca2b',
+    teamId: '86144d5b-81fa-4556-b0d6-01b0f4836512',
     boardId: '1d8dc2b7-5976-4a9c-a5b6-0591ca5b2ef2',
     note: 'This is action item D',
     status: ActionItemStatus.IN_PROGRESS,

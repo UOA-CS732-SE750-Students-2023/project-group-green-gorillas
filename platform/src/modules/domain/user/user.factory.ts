@@ -7,6 +7,9 @@ export class UserFactory {
     displayName: string,
     firstName: string,
     lastName: string,
+    phone: string,
+    address: string,
+    gender: boolean,
     role: UserRole,
   ): User {
     return new User(
@@ -15,6 +18,9 @@ export class UserFactory {
       displayName,
       firstName,
       lastName,
+      phone,
+      address,
+      gender,
       role,
     );
   }

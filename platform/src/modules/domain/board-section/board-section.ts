@@ -51,4 +51,14 @@ export class BoardSection {
     this.createdAt = DateTime.now();
     this.createdBy = createdBy;
   }
+
+  public updateName(name: string): void {
+    this.name = name;
+    this.updatedAt = DateTime.now();
+  }
+
+  public updateDescription(description: string): void {
+    this.description = description;
+    this.updatedAt = DateTime.now();
+  }
 }

@@ -19,7 +19,8 @@
   },
   "AUTH": {
     "SIGN_IN": "Sorry, you are failed to sign in because the information you provided to us is incorrect.",
-    "AUTHORIZATION_NOT_PROVIDED": "authorization is not provided"
+    "AUTHORIZATION_NOT_PROVIDED": "authorization is not provided",
+    "INCORRECT_OLD_PASSWORD": "Old password is incorrect"
   },
   "TOKEN": {
     "FAILED_TO_GET": "Failed to get token",
@@ -46,13 +47,16 @@
     "FAILED_TO_SAVE": "Failed to save board",
     "FAILED_TO_GET": "Failed to get board",
     "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list boards by team id",
-    "NOT_FOUND": "Board is not found"
+    "FAILED_TO_DELETE": "Failed to delete board",
+    "NOT_FOUND": "Board is not found",
+    "FAILED_TO_CREATE_RETRO": "There is already a in progress retro"
   },
   "BOARD_SECTION": {
     "FAILED_TO_SAVE": "Failed to save board section",
     "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list board sections by board id",
     "FAILED_TO_GET": "Failed to get board section",
-    "FAILED_TO_DELETE": "Failed to delete board section"
+    "FAILED_TO_DELETE": "Failed to delete board section",
+    "NOT_FOUND": "Board section is not found"
   },
   "BOARD_NOTE": {
     "FAILED_TO_GET": "Failed to get board note",

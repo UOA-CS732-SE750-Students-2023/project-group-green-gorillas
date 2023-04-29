@@ -42,10 +42,36 @@ export class AuthService {
     await this.tokenService.delete(user.id, token);
   }
 
-  public async changePassword(
+  public async changeCurrentUserPassword(
     user: RequestUserType,
+    oldPassword: string,
     newPassword: string,
   ): Promise<void> {
+    const existingUserAuth = await this.userAuthService.getByUserId(
+      user.id,
+      user.organisationId,
+    );
+
+    if (!existingUserAuth) {
+      await this.userAuthService.create(
+        user.id,
+        user.organisationId,
+        newPassword,
+      );
+      return;
+    }
+
+    if (
+      existingUserAuth.password !==
+      sha256Encrypt(oldPassword, existingUserAuth.passwordSalt)
+    ) {
+      throw new InternalException(
+        'AUTH.INCORRECT_OLD_PASSWORD',
+        'Old password is incorrect',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     await this.userAuthService.create(
       user.id,
       user.organisationId,

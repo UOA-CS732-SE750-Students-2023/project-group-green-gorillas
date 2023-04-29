@@ -38,6 +38,14 @@ export class BoardRepository extends DatabaseRepository<Board> {
     }
   }
 
+  public delete(id: UUID, teamId: UUID): Promise<void> {
+    try {
+      return this.deleteItem({ id, teamId });
+    } catch (error) {
+      throw new InternalException('BOARD.FAILED_TO_DELETE', error.message);
+    }
+  }
+
   public async listByTeamId(teamId: UUID): Promise<Board[]> {
     const command = new QueryCommand({
       TableName: this.tableName,

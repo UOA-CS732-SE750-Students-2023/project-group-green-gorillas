@@ -49,4 +49,14 @@ export class ActionItem {
     this.createdAt = DateTime.now();
     this.createdBy = createdBy;
   }
+
+  public updateNote(note: string): void {
+    this.note = note;
+    this.updatedAt = DateTime.now();
+  }
+
+  public updateStatus(status: ActionItemStatus): void {
+    this.status = status;
+    this.updatedAt = DateTime.now();
+  }
 }

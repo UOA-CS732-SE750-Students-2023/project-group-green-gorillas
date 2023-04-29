@@ -24,8 +24,6 @@ export class Board {
 
   public stage: BoardStage;
 
-  public active: boolean;
-
   public readonly createdBy: UUID;
 
   @Type(() => Number)
@@ -47,9 +45,12 @@ export class Board {
     this.teamId = teamId;
     this.name = name;
     this.stage = BoardStage.THINK;
-    this.active = true;
     this.updatedAt = DateTime.now();
     this.createdAt = DateTime.now();
     this.createdBy = createdBy;
+  }
+
+  public updateName(name: string): void {
+    this.name = name;
   }
 }

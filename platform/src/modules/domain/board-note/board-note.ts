@@ -55,5 +55,12 @@ export class BoardNote {
     this.createdBy = createdBy;
     this.parentId = null;
     this.type = BoardNoteType.NORMAL;
+    this.updatedAt = DateTime.now();
+    this.createdAt = DateTime.now();
+  }
+
+  public updateNote(note: string): void {
+    this.note = note;
+    this.updatedAt = DateTime.now();
   }
 }

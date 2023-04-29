@@ -7,6 +7,7 @@ import { ActionItemService } from './action-item.service';
 import { ActionItemModule as ActionItemDomainModule } from '../../domain/action-item/action-item.module';
 import { BoardModule } from '../../domain/board/board.module';
 import { ActionItemAssigneeModule } from '../../domain/action-item-assignee/action-item-assignee.module';
+import { TeamDashboardModule } from '../../domain/team-dashboard/team-dashboard.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ActionItemAssigneeModule } from '../../domain/action-item-assignee/acti
     ActionItemDomainModule,
     BoardModule,
     ActionItemAssigneeModule,
+    TeamDashboardModule,
   ],
   controllers: [ActionItemController],
   providers: [ActionItemService],

@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
-import User from "./user";
-import { Grid } from "@mui/material";
+import Org from "./org";
 import { LeftNavBar } from "../../common/LeftNavBar";
+import { Box, Grid } from "@mui/material";
 
-export const UserManagementScreen = () => {
+export const OrgManagementScreen = () => {
+
   return (
     <Grid container>
       <Grid item xs={2}>
         <LeftNavBar />
       </Grid>
       <Grid item xs={10}>
-        <User />
+        <Org />
       </Grid>
     </Grid>
   );

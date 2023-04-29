@@ -14,7 +14,8 @@
     "FAILED_TO_SAVE": "Failed to save user.",
     "NOT_FOUND": "User is not found",
     "DUPLICATED_EMAIL": "User email is already existed",
-    "FAILED_TO_LIST_BY_ORGANISATION_ID": "Failed to list by organisation id"
+    "FAILED_TO_LIST_BY_ORGANISATION_ID": "Failed to list by organisation id",
+    "EMAIL_EXISTED": "Email is already existed"
   },
   "AUTH": {
     "SIGN_IN": "Sorry, you are failed to sign in because the information you provided to us is incorrect.",

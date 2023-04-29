@@ -1,4 +1,4 @@
-import { IsString, IsUUID } from 'class-validator';
+import { IsNumber, IsString, IsUUID } from 'class-validator';
 import { UUID } from '../../../../types/uuid.type';
 
 export class CreateRetroRequestRequest {
@@ -67,4 +67,45 @@ export class UpdateNoteRequest {
 
   @IsString()
   note: string;
+}
+
+export class AddSectionRequest {
+  @IsUUID()
+  boardId: UUID;
+
+  @IsUUID()
+  teamId: UUID;
+
+  @IsNumber()
+  order: number;
+}
+
+export class DeleteSectionParams {
+  @IsUUID()
+  boardSectionId: UUID;
+
+  @IsUUID()
+  boardId: UUID;
+}
+
+export class UpdateSectionNameRequest {
+  @IsUUID()
+  boardSectionId: UUID;
+
+  @IsUUID()
+  boardId: UUID;
+
+  @IsString()
+  name!: string;
+}
+
+export class UpdateSectionDescriptionRequest {
+  @IsUUID()
+  boardSectionId: UUID;
+
+  @IsUUID()
+  boardId: UUID;
+
+  @IsString()
+  description!: string;
 }

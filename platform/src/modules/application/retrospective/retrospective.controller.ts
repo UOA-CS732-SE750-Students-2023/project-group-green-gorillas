@@ -15,12 +15,16 @@ import {
 } from '../../../utils/decorators/request-user';
 import {
   AddNoteRequest,
+  AddSectionRequest,
   CreateRetroRequestRequest,
   DeleteNoteRequestParams,
   DeleteRetrospectiveRequestParams,
+  DeleteSectionParams,
   GetRetrospectiveRequestParam,
   UpdateNoteRequest,
   UpdateRetroNameRequest,
+  UpdateSectionDescriptionRequest,
+  UpdateSectionNameRequest,
 } from './dto/request';
 
 @Controller({
@@ -72,6 +76,20 @@ export class RetrospectiveController {
     );
   }
 
+  @Post('add-section')
+  public async addSection(
+    @Body() { boardId, teamId, order }: AddSectionRequest,
+    @RequestUser() user: RequestUserType,
+  ) {
+    return this.retrospectiveService.addSection(
+      boardId,
+      user.organisationId,
+      teamId,
+      order,
+      user.id,
+    );
+  }
+
   @Patch('update-name')
   public async updateRetroName(
     @Body() { id, teamId, name }: UpdateRetroNameRequest,
@@ -90,6 +108,29 @@ export class RetrospectiveController {
     );
   }
 
+  @Patch('update-section-name')
+  public async updateSectionName(
+    @Body() { boardSectionId, boardId, name }: UpdateSectionNameRequest,
+  ) {
+    return this.retrospectiveService.updateSectionName(
+      boardSectionId,
+      boardId,
+      name,
+    );
+  }
+
+  @Patch('update-section-description')
+  public async updateSectionDescription(
+    @Body()
+    { boardSectionId, boardId, description }: UpdateSectionDescriptionRequest,
+  ) {
+    return this.retrospectiveService.updateSectionDescription(
+      boardSectionId,
+      boardId,
+      description,
+    );
+  }
+
   @Delete(':id/team/:teamId')
   public async deleteRetrospective(
     @Param() { id, teamId }: DeleteRetrospectiveRequestParams,
@@ -102,5 +143,12 @@ export class RetrospectiveController {
     @Param() { boardNoteId, boardSectionId }: DeleteNoteRequestParams,
   ) {
     return this.retrospectiveService.deleteNote(boardNoteId, boardSectionId);
+  }
+
+  @Delete('delete-section/:boardSectionId/board/:boardId')
+  public async deleteSection(
+    @Param() { boardSectionId, boardId }: DeleteSectionParams,
+  ) {
+    return this.retrospectiveService.deleteSection(boardSectionId, boardId);
   }
 }

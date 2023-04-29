@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { BoardRepository } from './board.repository';
-import { Board } from './board';
+import { Board, BoardStage } from './board';
 import { UUID } from '../../../types/uuid.type';
 import { BoardFactory } from './board.factory';
 import { InternalException } from '../../../exceptions/internal-exception';
@@ -54,11 +54,17 @@ export class BoardService {
     return this.save(board);
   }
 
-  public async deleteBoard(id: UUID, teamId: UUID): Promise<Board> {
-    const board = await this.getByIdOrThrow(id, teamId);
+  public async delete(id: UUID, teamId: UUID): Promise<void> {
+    return this.boardRepository.delete(id, teamId);
+  }
 
-    board.updateActive(false);
+  public listByTeamId(teamId: UUID): Promise<Board[]> {
+    return this.boardRepository.listByTeamId(teamId);
+  }
 
-    return this.save(board);
+  public async hasInProgressBoardByTeamId(team: UUID): Promise<boolean> {
+    const boards = await this.listByTeamId(team);
+
+    return !!boards.find((board) => board.stage !== BoardStage.FINALIZE);
   }
 }

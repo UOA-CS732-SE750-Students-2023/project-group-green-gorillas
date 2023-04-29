@@ -38,10 +38,7 @@ export class TeamDashboardService {
     organisationId: UUID,
     key: TeamDashboardCountKey,
   ): Promise<void> {
-    const teamDashboard = await this.teamDashboardRepository.getById(
-      teamId,
-      organisationId,
-    );
+    const teamDashboard = await this.getByTeamId(teamId, organisationId);
 
     teamDashboard[key] = teamDashboard[key] + 1;
 
@@ -53,10 +50,7 @@ export class TeamDashboardService {
     organisationId: UUID,
     key: TeamDashboardCountKey,
   ): Promise<void> {
-    const teamDashboard = await this.teamDashboardRepository.getById(
-      teamId,
-      organisationId,
-    );
+    const teamDashboard = await this.getByTeamId(teamId, organisationId);
 
     teamDashboard[key] = teamDashboard[key] - 1;
 

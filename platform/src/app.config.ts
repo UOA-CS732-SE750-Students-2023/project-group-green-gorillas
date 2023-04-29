@@ -5,7 +5,12 @@ import { InternalExceptionFilter } from './middlewares/filters/internal-exceptio
 export const configureApp = (app: INestApplication) => {
   configureValidation(app);
   configureExceptionFilters(app);
+  configSocketRedisAdaptor(app);
   configCors(app);
+};
+
+const configSocketRedisAdaptor = (app: INestApplication) => {
+  // app.useWebSocketAdapter();
 };
 
 const configCors = (app: INestApplication) => {

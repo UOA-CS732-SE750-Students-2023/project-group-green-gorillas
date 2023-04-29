@@ -59,7 +59,8 @@
     "FAILED_TO_SAVE": "Failed to save board note",
     "FAILED_TO_DELETE": "Failed to delete board note",
     "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list board notes by board id",
-    "FAILED_TO_LIST_BOARD_SECTION_ID": "Failed to list board notes by board section id"
+    "FAILED_TO_LIST_BOARD_SECTION_ID": "Failed to list board notes by board section id",
+    "NOT_FOUND": "Board note is not found"
   },
   "ACTION_ITEM": {
     "FAILED_TO_DELETE": "Failed to delete action item",
@@ -67,7 +68,8 @@
     "FAILED_TO_SAVE": "Failed to save action item",
     "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list action items by team id",
     "FAILED_TO_LIST_BY_STATUS": "Failed to list action items by status",
-    "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list action items by board id"
+    "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list action items by board id",
+    "NOT_FOUND": "Action item is not found"
   },
   "ACTION_ITEM_ASSIGNEE": {
     "FAILED_TO_SAVE": "Failed to save action item assignee",
@@ -77,7 +79,8 @@
   "BOARD_TEMPLATE": {
     "FAILED_TO_LIST_BY_ORGANISATION_ID": "Failed to get board templates by organisation id",
     "FAILED_TO_SAVE": "Failed to save board template",
-    "FAILED_TO_GET": "Failed to get board template"
+    "FAILED_TO_GET": "Failed to get board template",
+    "NOT_FOUND": "Board Template is not found"
   },
   "TEAM_DASHBOARD": {
     "FAILED_TO_SAVE": "Failed to save team dashboard",

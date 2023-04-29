@@ -41,4 +41,24 @@ export class BoardService {
 
     return board;
   }
+
+  public async updateName(
+    id: UUID,
+    teamId: UUID,
+    name: string,
+  ): Promise<Board> {
+    const board = await this.getByIdOrThrow(id, teamId);
+
+    board.updateName(name);
+
+    return this.save(board);
+  }
+
+  public async deleteBoard(id: UUID, teamId: UUID): Promise<Board> {
+    const board = await this.getByIdOrThrow(id, teamId);
+
+    board.updateActive(false);
+
+    return this.save(board);
+  }
 }

@@ -14,6 +14,8 @@ import React, { useMemo } from "react";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { Avatar } from "../Avatar";
 import { useSignOut } from "../../../hooks/useSignOut";
+import {Link} from "react-router-dom";
+import {MainScreenPath} from "../../screens/Main";
 
 export const TopNavBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -82,9 +84,9 @@ export const TopNavBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={() => {}}>
+              <Link to={MainScreenPath.Profile} >
                 <Typography textAlign="center">Profile</Typography>
-              </MenuItem>
+              </Link>
               <MenuItem onClick={onSignOut}>
                 <Typography textAlign="center">Sign Out</Typography>
               </MenuItem>

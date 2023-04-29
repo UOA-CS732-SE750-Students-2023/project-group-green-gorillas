@@ -107,6 +107,15 @@ export class UserService {
       organisationId,
     );
 
+    const existingUser = await this.getByEmail(email);
+
+    if (existingUser) {
+      throw new InternalException(
+        'USER.EMAIL_EXISTED',
+        'email is already existed',
+      );
+    }
+
     const user = await this.userRepository.save(
       UserFactory.create(
         email,

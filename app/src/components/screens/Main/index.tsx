@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AuthenticationRedirect } from "../utils/AuthenticationRedirect";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { HomeScreen } from "./Home";
@@ -7,9 +7,13 @@ import { TeamScreen } from "./Team";
 import { TopNavBar } from "../../common/TopNavBar";
 import { RetroHistoryScreen } from "../RetroHistory";
 import { UserManagementScreen } from "../UserManagement";
-import {TemplateScreen} from "../Template";
+import { OrgManagementScreen } from "../OrgManagement";
+import { TeamManagementScreen } from "../TeamManagement";
+import { TemplateScreen } from "../Template";
 import { ProfileScreen } from "../Profile";
 import { ScreenPath } from "..";
+import { RetroScreen } from "../Retro";
+import { retros } from "./defaultData";
 
 export enum MainScreenPath {
   HOME = "/main/home",
@@ -18,11 +22,15 @@ export enum MainScreenPath {
   RetroHistory = "/main/retro-history",
   UserManagement = "/main/user-management",
   TeamManagement = "/main/team-management",
+  OrgManagement = "/main/org-management",
   Profile = "/main/profile",
   Template = "/main/template",
+  Retro = "/main/retro",
 }
 
 const MainSubScreens = () => {
+  const [selectedRetro, setSelectedRetro] = useState(0);
+  const [actionItems, setActionItems] = useState([]);
   return (
     <Switch>
       <Route path={MainScreenPath.HOME} component={HomeScreen} />
@@ -35,8 +43,24 @@ const MainSubScreens = () => {
         path={MainScreenPath.UserManagement}
         component={UserManagementScreen}
       />
+      <Route
+        path={MainScreenPath.TeamManagement}
+        component={TeamManagementScreen}
+      />
+      <Route
+        path={MainScreenPath.OrgManagement}
+        component={OrgManagementScreen}
+      />
       <Route path={MainScreenPath.Template} component={TemplateScreen} />
       <Route path={MainScreenPath.Profile} component={ProfileScreen} />
+      <Route path={MainScreenPath.Retro}>
+        <RetroScreen
+          retro={retros[selectedRetro]}
+          actionItems={actionItems}
+          setActionItems={setActionItems}
+        />
+      </Route>
+
       <Redirect from={ScreenPath.Main} to={MainScreenPath.HOME} />
       <Redirect from={MainScreenPath.ANY} to={MainScreenPath.HOME} />
     </Switch>

@@ -48,6 +48,9 @@ export class VerifyResetPasswordTokenParams {
 
 export class ChangePasswordRequest {
   @IsString()
+  oldPassword!: string;
+
+  @IsString()
   @Length(8)
   newPassword!: string;
 }

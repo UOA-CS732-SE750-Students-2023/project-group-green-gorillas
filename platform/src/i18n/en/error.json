@@ -19,7 +19,8 @@
   },
   "AUTH": {
     "SIGN_IN": "Sorry, you are failed to sign in because the information you provided to us is incorrect.",
-    "AUTHORIZATION_NOT_PROVIDED": "authorization is not provided"
+    "AUTHORIZATION_NOT_PROVIDED": "authorization is not provided",
+    "INCORRECT_OLD_PASSWORD": "Old password is incorrect"
   },
   "TOKEN": {
     "FAILED_TO_GET": "Failed to get token",

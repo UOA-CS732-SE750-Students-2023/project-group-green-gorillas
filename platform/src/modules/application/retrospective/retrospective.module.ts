@@ -7,6 +7,8 @@ import { OrganisationModule } from '../../domain/organisation/organisation.modul
 import { BoardTemplateModule } from '../../domain/board-template/board-template.module';
 import { BoardModule } from '../../domain/board/board.module';
 import { TeamDashboardModule } from '../../domain/team-dashboard/team-dashboard.module';
+import { BoardSectionModule } from '../../domain/board-section/board-section.module';
+import { BoardNoteModule } from '../../domain/board-note/board-note.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { TeamDashboardModule } from '../../domain/team-dashboard/team-dashboard.
     BoardTemplateModule,
     BoardModule,
     TeamDashboardModule,
+    BoardSectionModule,
+    BoardNoteModule,
   ],
   controllers: [RetrospectiveController],
   providers: [RetrospectiveService],

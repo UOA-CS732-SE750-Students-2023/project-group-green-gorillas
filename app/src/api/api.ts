@@ -14,3 +14,4 @@ export const CURRENT_USER = `${apiBaseUrl}/user/current`;
 export const TEAM_BY_ID = (teamId: string) => `${apiBaseUrl}/team/${teamId}`;
 export const ACTIONITEMS_BY_ID = (teamId: string) => `${apiBaseUrl}/action-item/list-outstanding/${teamId}`;
 export const INSIGHT_BY_ID = (teamId: string) => `${apiBaseUrl}/team/insight/${teamId}`;
+export const TEMPLATE =()=> `${apiBaseUrl}/retrospective/template/list`;

@@ -52,4 +52,12 @@ export class Board {
     this.createdAt = DateTime.now();
     this.createdBy = createdBy;
   }
+
+  public updateName(name: string): void {
+    this.name = name;
+  }
+
+  public updateActive(active: boolean): void {
+    this.active = active;
+  }
 }

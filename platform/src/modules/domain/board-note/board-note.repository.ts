@@ -41,7 +41,7 @@ export class BoardNoteRepository extends DatabaseRepository<BoardNote> {
     }
   }
 
-  public async delete(id: UUID, boardSectionId): Promise<void> {
+  public async delete(id: UUID, boardSectionId: UUID): Promise<void> {
     try {
       await this.deleteItem({ id, boardSectionId });
     } catch (error) {

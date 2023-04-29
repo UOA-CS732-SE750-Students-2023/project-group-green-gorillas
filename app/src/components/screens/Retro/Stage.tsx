@@ -6,6 +6,7 @@ import styles from "./styles/styles.module.css";
 import Think from "./Think";
 import { Timer } from "./Timer";
 import Toolbar from "./Toolbar";
+import Vote from "./Vote";
 
 type Props = {
   retro: any;
@@ -28,7 +29,7 @@ function Stage({ retro, stage, setStage, actionItems, setActionItems }: Props) {
   const stageDisplay = [
     <Think retro={retro} retroData={retroData} setRetroData={setRetroData} />,
     <Group retro={retro} retroData={retroData} setGroups={setGroups} />,
-    // <Vote retro={retro} groups={groups} setDiscItems={setDiscItems} />,
+    <Vote retro={retro} groups={groups} setDiscItems={setDiscItems} />,
     // <Discuss
     //   retro={retro}
     //   items={discItems}

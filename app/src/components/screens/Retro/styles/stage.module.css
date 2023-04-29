@@ -333,7 +333,7 @@
   margin-right: 8px;
 }
 
-.vote__button--disabled {
+.vote__button__disabled {
   display: none;
 }
 
@@ -341,7 +341,7 @@
   transform: scale(0.9);
 }
 
-.vote__button--img {
+.vote__button__img {
   height: 16px;
 }
 

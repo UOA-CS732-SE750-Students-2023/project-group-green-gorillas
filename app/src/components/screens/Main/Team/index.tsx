@@ -25,6 +25,8 @@ import {
 } from "@mui/material";
 import { Avatar } from "../../../../components/common/Avatar/index";
 import { useTeam } from "../../../../hooks/useTeam";
+import { useActionItems } from "../../../../hooks/useActionItems";
+import { useInsight } from "../../../../hooks/useInsight";
 import { useParams } from "react-router-dom";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 
@@ -34,6 +36,7 @@ import LayersIcon from "@mui/icons-material/Layers";
 import HistoryIcon from "@mui/icons-material/History";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AddIcon from "@mui/icons-material/Add";
+import { actionItems } from "../../../../../../platform/src/modules/application/data-seeder/data/action-items";
 
 // {****styleBadge*****}
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -70,7 +73,13 @@ export const TeamScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
 
   const { team, loading } = useTeam(teamId);
-  console.log(team);
+  // console.log(team);
+
+  const { actionItems, isLoading } = useActionItems(teamId);
+  // console.log(actionItems);
+
+  const { insight, insightLoading } = useInsight(teamId);
+  console.log(insight);
 
   if (loading) {
     return <LoadingIndicator />;
@@ -127,6 +136,7 @@ export const TeamScreen = () => {
       <Box component="main" sx={{ flexGrow: 1, marginLeft: 0 }}>
         {" "}
         <Toolbar />
+        {/* Team Member list & New Retro Button */}
         <Grid
           container
           direction="row"
@@ -197,105 +207,50 @@ export const TeamScreen = () => {
                 component="div"
                 sx={{ marginBottom: 2 }}
               >
-                Action Items
+                Outstanding Action Items
               </Typography>
               <Stack spacing={2}>
-                <Card sx={{ maxWidth: 450 }}>
-                  <CardContent>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      Action Items One
-                    </Typography>
-                    <Typography variant="h5" component="div">
-                      Fix HomePage Bug
-                    </Typography>
-                    <Typography variant="body2">
-                      well meaning and kindly.well meaning and kindly.well
-                      meaning and kindly.well meaning and kindly.well meaning
-                      and kindly.well meaning and kindly.
-                      <br />
-                      {'"a benevolent smile"'}
-                    </Typography>
-                  </CardContent>
-                  {/* <CardActions>
-                    <AvatarGroup max={4} sx={{ marginRight: 15 }}>
-                      {" "}
-                      <Avatar
-                        alt="Remy Sharp"
-                        src="/static/images/avatar/1.jpg"
-                        sx={{ width: 24, height: 24 }}
-                      />
-                      <Avatar
-                        alt="Travis Howard"
-                        src="/static/images/avatar/2.jpg"
-                        sx={{ width: 24, height: 24 }}
-                      />
-                    </AvatarGroup>
-                    <Button size="small">Details</Button>
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      size="small"
-                      disabled={true}
-                    >
-                      Delete
-                    </Button>
-                    <Button variant="contained" size="small">
-                      Complete
-                    </Button>
-                  </CardActions> */}
-                </Card>
-                <Card>
-                  <CardContent>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      Action Items One
-                    </Typography>
-                    <Typography variant="h5" component="div">
-                      Fix HomePage Bug
-                    </Typography>
-                    <Typography variant="body2">
-                      well meaning and kindly.well meaning and kindly.well
-                      meaning and kindly.well meaning and kindly.well meaning
-                      and kindly.well meaning and kindly.
-                      <br />
-                      {'"a benevolent smile"'}
-                    </Typography>
-                  </CardContent>
-                  {/* <CardActions>
-                    <AvatarGroup max={4} sx={{ width: 50, marginRight: 15 }}>
-                      {" "}
-                      <Avatar
-                        alt="Remy Sharp"
-                        src="/static/images/avatar/1.jpg"
-                        sx={{ width: 24, height: 24 }}
-                      />
-                      <Avatar
-                        alt="Travis Howard"
-                        src="/static/images/avatar/2.jpg"
-                        sx={{ width: 24, height: 24 }}
-                      />
-                    </AvatarGroup>
-                    <Button size="small">Details</Button>
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      size="small"
-                      disabled={true}
-                    >
-                      Delete
-                    </Button>
-                    <Button variant="contained" size="small">
-                      Complete
-                    </Button>
-                  </CardActions> */}
-                </Card>
+                {actionItems?.map((actionItem) => (
+                  <Card key={actionItem.id} sx={{ maxWidth: 450 }}>
+                    <CardContent>
+                      <Typography variant="h6" component="div">
+                        {actionItem.note}
+                      </Typography>
+                      <Typography sx={{ color: "green" }}>
+                        {actionItem.status}
+                      </Typography>
+                      <Typography
+                        sx={{ mb: 1.5 }}
+                        color="text.secondary"
+                        component="div"
+                      >
+                        {actionItem.createdAt.slice(0, 10)}
+                      </Typography>
+                    </CardContent>
+                    <CardActions>
+                      <AvatarGroup max={4} sx={{ width: 50 }}>
+                        {actionItem.assignees?.map((assignee) => (
+                          <Avatar
+                            key={assignee.id}
+                            text={`${assignee.firstName} ${assignee.lastName}`}
+                          />
+                        ))}
+                      </AvatarGroup>
+
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        disabled={true}
+                      >
+                        Delete
+                      </Button>
+                      <Button variant="contained" size="small">
+                        Complete
+                      </Button>
+                    </CardActions>
+                  </Card>
+                ))}
               </Stack>
             </Box>
           </Grid>
@@ -324,7 +279,8 @@ export const TeamScreen = () => {
                   }}
                 >
                   {" "}
-                  Total Action Items
+                  Total Outstanding Action Items
+                  <Typography>{insight?.outstandingActionItemCount}</Typography>
                 </Paper>
               </Grid>
               <Grid item xs={4}>
@@ -338,6 +294,7 @@ export const TeamScreen = () => {
                 >
                   {" "}
                   Completed Action Items
+                  <Typography>{insight?.completedActionItemCount}</Typography>
                 </Paper>
               </Grid>
               <Grid item xs={4}>
@@ -351,6 +308,11 @@ export const TeamScreen = () => {
                 >
                   {" "}
                   Left Action Items
+                  <Typography>
+                    {insight?.outstandingActionItemCount &&
+                      insight?.outstandingActionItemCount -
+                        insight?.completedActionItemCount}
+                  </Typography>
                 </Paper>
               </Grid>
               <Grid item xs={8}>

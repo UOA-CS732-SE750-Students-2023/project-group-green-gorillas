@@ -74,12 +74,16 @@ export class AuthController {
     return this.authService.revokeToken(user.id, token);
   }
 
-  @Put('change-password')
+  @Put('current/change-password')
   @UseAuthGuard()
-  public async changePassword(
+  public async changeCurrentUserPassword(
     @RequestUser() user: RequestUserType,
-    @Body() { newPassword }: ChangePasswordRequest,
+    @Body() { newPassword, oldPassword }: ChangePasswordRequest,
   ): Promise<void> {
-    return this.authService.changePassword(user, newPassword);
+    return this.authService.changeCurrentUserPassword(
+      user,
+      oldPassword,
+      newPassword,
+    );
   }
 }

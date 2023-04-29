@@ -39,7 +39,15 @@ export class UserController {
   @UseAuthGuard()
   public async updateCurrentUser(
     @RequestUser() user: RequestUserType,
-    @Body() { displayName, firstName, lastName }: UpdateCurrentUser,
+    @Body()
+    {
+      displayName,
+      firstName,
+      lastName,
+      phone,
+      address,
+      gender,
+    }: UpdateCurrentUser,
   ) {
     return this.userService.updateUser(
       user.id,
@@ -48,6 +56,9 @@ export class UserController {
       firstName,
       lastName,
       true,
+      phone,
+      gender,
+      address,
     );
   }
 
@@ -57,7 +68,16 @@ export class UserController {
   public async updateUser(
     @RequestUser() user: RequestUserType,
     @Body()
-    { displayName, firstName, lastName, role, active }: UpdateUserRequest,
+    {
+      displayName,
+      firstName,
+      lastName,
+      role,
+      active,
+      phone,
+      address,
+      gender,
+    }: UpdateUserRequest,
     @Param() { userId }: UpdateUserRequestParams,
   ) {
     return this.userService.updateUser(
@@ -67,6 +87,9 @@ export class UserController {
       firstName,
       lastName,
       active,
+      phone,
+      gender,
+      address,
       role,
     );
   }
@@ -84,6 +107,9 @@ export class UserController {
       lastName,
       role,
       temporaryPassword,
+      phone,
+      address,
+      gender,
     }: CreateUserRequest,
   ) {
     return this.userService.createUser(
@@ -92,6 +118,9 @@ export class UserController {
       displayName,
       firstName,
       lastName,
+      phone,
+      address,
+      gender,
       role,
       temporaryPassword,
     );

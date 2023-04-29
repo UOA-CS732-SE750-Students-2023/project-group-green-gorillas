@@ -22,11 +22,23 @@ export class UserService {
     firstName: string,
     lastName: string,
     active: boolean,
+    phone: string,
+    gender: boolean,
+    address: string,
     role?: UserRole,
   ): Promise<User> {
     const user = await this.getByIdOrThrow(userId, organisationId);
 
-    user.update(displayName, firstName, lastName, active, role ?? user.role);
+    user.update(
+      displayName,
+      firstName,
+      lastName,
+      active,
+      phone,
+      gender,
+      address,
+      role ?? user.role,
+    );
 
     return this.save(user);
   }
@@ -100,12 +112,24 @@ export class UserService {
     displayName: string,
     firstName: string,
     lastName: string,
+    phone: string,
+    address: string,
+    gender: boolean,
     role: UserRole,
     password: string,
   ): Promise<User> {
     const organisation = await this.organisationService.getByIdOrThrow(
       organisationId,
     );
+
+    const existingUser = await this.getByEmail(email);
+
+    if (existingUser) {
+      throw new InternalException(
+        'USER.EMAIL_EXISTED',
+        'email is already existed',
+      );
+    }
 
     const user = await this.userRepository.save(
       UserFactory.create(
@@ -114,6 +138,9 @@ export class UserService {
         displayName,
         firstName,
         lastName,
+        phone,
+        address,
+        gender,
         role,
       ),
     );

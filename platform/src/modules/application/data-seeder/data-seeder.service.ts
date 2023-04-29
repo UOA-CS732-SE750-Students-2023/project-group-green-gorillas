@@ -19,6 +19,15 @@ import { UserTeam } from '../../domain/user-team/user-team';
 import { BoardTemplateService } from '../../domain/board-template/board-template.service';
 import { boardTemplates } from './data/board-templates';
 import { BoardTemplate } from '../../domain/board-template/board-template';
+import { BoardService } from '../../domain/board/board.service';
+import { boards } from './data/boards';
+import { Board } from '../../domain/board/board';
+import { ActionItemService } from '../../domain/action-item/action-item.service';
+import { actionItems } from './data/action-items';
+import { ActionItem } from '../../domain/action-item/action-item';
+import { actionItemAssignees } from './data/action-item-assignees';
+import { ActionItemAssigneeService } from '../../domain/action-item-assignee/action-item-assignee.service';
+import { ActionItemAssignee } from '../../domain/action-item-assignee/action-item-assignee';
 
 @Injectable()
 export class DataSeederService {
@@ -29,6 +38,9 @@ export class DataSeederService {
     private readonly teamService: TeamService,
     private readonly userTeamService: UserTeamService,
     private readonly boardTemplateService: BoardTemplateService,
+    private readonly boardService: BoardService,
+    private readonly actionItemService: ActionItemService,
+    private readonly actionItemAssigneeService: ActionItemAssigneeService,
   ) {}
 
   public async seed(): Promise<void> {
@@ -39,6 +51,9 @@ export class DataSeederService {
       this.seedTeams(),
       this.seedUserTeams(),
       this.seedBoardTemplates(),
+      this.seedBoards(),
+      this.seedActionItems(),
+      this.seedActionItemAssignees(),
     ]);
   }
 
@@ -88,6 +103,30 @@ export class DataSeederService {
       boardTemplates.map((boardTemplate) =>
         this.boardTemplateService.save(
           plainToClass(BoardTemplate, boardTemplate),
+        ),
+      ),
+    );
+  }
+
+  public async seedBoards(): Promise<void> {
+    await Promise.all(
+      boards.map((board) => this.boardService.save(plainToClass(Board, board))),
+    );
+  }
+
+  public async seedActionItems(): Promise<void> {
+    await Promise.all(
+      actionItems.map((actionItem) =>
+        this.actionItemService.save(plainToClass(ActionItem, actionItem)),
+      ),
+    );
+  }
+
+  public async seedActionItemAssignees(): Promise<void> {
+    await Promise.all(
+      actionItemAssignees.map((actionItemAssignee) =>
+        this.actionItemAssigneeService.save(
+          plainToClass(ActionItemAssignee, actionItemAssignee),
         ),
       ),
     );

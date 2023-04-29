@@ -16,6 +16,8 @@ import { Avatar } from "../Avatar";
 import { useSignOut } from "../../../hooks/useSignOut";
 import {Link} from "react-router-dom";
 import {MainScreenPath} from "../../screens/Main";
+import { useHistory } from "react-router-dom";
+import { MainScreenPath } from "../../screens/Main";
 
 export const TopNavBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -40,11 +42,17 @@ export const TopNavBar = () => {
 
   const { onSignOut } = useSignOut();
 
+  const { location } = useHistory();
+
+  const shouldShowMenu = useMemo(() => {
+    return location.pathname.startsWith(MainScreenPath.TEAM);
+  }, [location]);
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
-        position="fixed"
+        position={shouldShowMenu ? "fixed" : "static"}
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>

@@ -25,7 +25,7 @@ export const useTeam = (id: string) => {
   };
 
   useEffect(() => {
-    (async () => {
+   (async () => {
       await getTeam();
     })();
   }, []);

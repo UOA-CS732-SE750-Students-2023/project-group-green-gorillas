@@ -18,6 +18,15 @@ export class UpdateCurrentUser {
 
   @IsString()
   lastName!: string;
+
+  @IsString()
+  phone: string;
+
+  @IsString()
+  address: string;
+
+  @IsBoolean()
+  gender: boolean;
 }
 
 export class UpdateUserRequest {
@@ -35,6 +44,15 @@ export class UpdateUserRequest {
 
   @IsBoolean()
   active!: boolean;
+
+  @IsString()
+  phone: string;
+
+  @IsString()
+  address: string;
+
+  @IsBoolean()
+  gender: boolean;
 }
 
 export class UpdateUserRequestParams {
@@ -61,6 +79,15 @@ export class CreateUserRequest {
   @IsString()
   @Length(8)
   temporaryPassword: string;
+
+  @IsString()
+  phone: string;
+
+  @IsString()
+  address: string;
+
+  @IsBoolean()
+  gender: boolean;
 }
 
 export class UpdateUserActiveRequest {

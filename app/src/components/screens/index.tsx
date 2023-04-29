@@ -2,8 +2,9 @@ import React from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import { LoginScreen } from "./Login";
 import { ForgotPasswordScreen } from "./ForgotPassword";
-import { MainScreen } from "./Main";
+import {MainScreen, MainScreenPath} from "./Main";
 import { ResetPasswordScreen } from "./ResetPassword";
+import {TemplateScreen} from "./Template";
 
 export enum ScreenPath {
   Login = "/login",

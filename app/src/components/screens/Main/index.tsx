@@ -7,7 +7,7 @@ import { TeamScreen } from "./Team";
 import { TopNavBar } from "../../common/TopNavBar";
 import { RetroHistoryScreen } from "../RetroHistory";
 import { UserManagementScreen } from "../UserManagement";
-import { TemplateScreen } from "../Template";
+import {TemplateScreen} from "../Template";
 import { ProfileScreen } from "../Profile";
 import { ScreenPath } from "..";
 

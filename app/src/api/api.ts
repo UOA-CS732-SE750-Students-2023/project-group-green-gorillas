@@ -12,3 +12,5 @@ export const RESET_PASSWORD = `${apiBaseUrl}/auth/reset-password`;
 // APIs called by axios
 export const CURRENT_USER = `${apiBaseUrl}/user/current`;
 export const TEAM_BY_ID = (teamId: string) => `${apiBaseUrl}/team/${teamId}`;
+
+export const TEMPLATE = () => `${apiBaseUrl}/retrospective/template/list`;

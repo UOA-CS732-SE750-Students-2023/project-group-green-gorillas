@@ -48,7 +48,6 @@ export const TemplateScreen = () => {
             }
         })
     }
-    console.log(previewTemp);
 
     useEffect(() => {
         const fetchTemplates = async () => {

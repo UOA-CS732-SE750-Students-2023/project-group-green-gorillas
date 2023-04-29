@@ -53,7 +53,7 @@ const MainSubScreens = () => {
       />
       <Route path={MainScreenPath.Template} component={TemplateScreen} />
       <Route path={MainScreenPath.Profile} component={ProfileScreen} />
-      <Route path={MainScreenPath.Retro}>
+      <Route path={`${MainScreenPath.Retro}/:retroId/team/:teamId/`}>
         <RetroScreen
           retro={retros[selectedRetro]}
           actionItems={actionItems}

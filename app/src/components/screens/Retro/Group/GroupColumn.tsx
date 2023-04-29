@@ -17,17 +17,20 @@ function GroupColumn({ id, column, setGroupName }: any) {
           <Box className={styles.heading}>{column.name}</Box>
         </div>
       </Box>
-      {column.groups.map((group, index) => (
-        <Group
-          colId={id}
-          id={group.id}
-          index={index}
-          items={group.items}
-          key={group.id}
-          setGroupName={setGroupName}
-          name={group.name}
-        />
-      ))}
+      {column.groups.map(
+        (group, index) =>
+          group.items.length !== 0 && (
+            <Group
+              colId={id}
+              id={group.id}
+              index={index}
+              items={group.items}
+              key={group.id}
+              setGroupName={setGroupName}
+              name={group.name}
+            />
+          )
+      )}
       <Droppable droppableId={id} isCombineEnabled>
         {(provided, snapshot) => {
           return (

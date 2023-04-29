@@ -1,8 +1,9 @@
 import { ActionItemRepository } from './action-item.repository';
 import { UUID } from '../../../types/uuid.type';
 import { ActionItem, ActionItemStatus } from './action-item';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { ActionItemFactory } from './action-item.factory';
+import { InternalException } from '../../../exceptions/internal-exception';
 
 @Injectable()
 export class ActionItemService {
@@ -39,5 +40,46 @@ export class ActionItemService {
         createdBy,
       ),
     );
+  }
+
+  public delete(id: UUID): Promise<void> {
+    return this.actionItemRepository.delete(id);
+  }
+
+  public getById(id: UUID): Promise<ActionItem | undefined> {
+    return this.actionItemRepository.getById(id);
+  }
+
+  public async getByIdOrThrow(id: UUID): Promise<ActionItem> {
+    const actionItem = await this.getById(id);
+
+    if (!actionItem) {
+      throw new InternalException(
+        'ACTION_ITEM.NOT_FOUND',
+        'action action is not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return actionItem;
+  }
+
+  public async updateNote(id: UUID, note: string): Promise<ActionItem> {
+    const actionItem = await this.getByIdOrThrow(id);
+
+    actionItem.updateNote(note);
+
+    return this.actionItemRepository.save(actionItem);
+  }
+
+  public async updateStatus(
+    id: UUID,
+    status: ActionItemStatus,
+  ): Promise<ActionItem> {
+    const actionItem = await this.getByIdOrThrow(id);
+
+    actionItem.updateStatus(status);
+
+    return this.actionItemRepository.save(actionItem);
   }
 }

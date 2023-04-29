@@ -1,5 +1,6 @@
-import { IsUUID } from 'class-validator';
+import { IsEnum, IsString, IsUUID } from 'class-validator';
 import { UUID } from '../../../../types/uuid.type';
+import { ActionItemStatus } from '../../../domain/action-item/action-item';
 
 export class ListOutstandingActionItemsParams {
   @IsUUID()
@@ -20,4 +21,25 @@ export class CreateActionItemRequest {
 
   @IsUUID()
   retroId!: UUID;
+}
+
+export class DeleteActionItemRequestParams {
+  @IsUUID()
+  actionItemId!: UUID;
+}
+
+export class UpdateActionItemNoteRequest {
+  @IsUUID()
+  actionItemId!: UUID;
+
+  @IsString()
+  note!: string;
+}
+
+export class UpdateActionStatusRequest {
+  @IsUUID()
+  actionItemId!: UUID;
+
+  @IsEnum(ActionItemStatus)
+  status!: ActionItemStatus;
 }

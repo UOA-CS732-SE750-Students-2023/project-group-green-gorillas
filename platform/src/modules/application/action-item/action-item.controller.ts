@@ -1,10 +1,20 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { UseAuthGuard } from '../../../utils/guards/auth-guard/auth.guard';
 import { ActionItemService } from './action-item.service';
 import {
   CreateActionItemRequest,
   ListOutstandingActionItemsParams,
   ListRetroActionItemsParams,
+  UpdateActionItemNoteRequest,
+  UpdateActionStatusRequest,
 } from './dto/request';
 import {
   RequestUser,
@@ -43,5 +53,24 @@ export class ActionItemController {
       retroId,
       user.id,
     );
+  }
+
+  @Delete('/:actionItemId')
+  public async deleteActionItem(@Param() { actionItemId }: any) {
+    return this.actionItemService.deleteActionItem(actionItemId);
+  }
+
+  @Patch('update-note')
+  public async updateActionItemNote(
+    @Body() { actionItemId, note }: UpdateActionItemNoteRequest,
+  ) {
+    return this.actionItemService.updateActionItemNote(actionItemId, note);
+  }
+
+  @Patch('update-status')
+  public async updateActionStatus(
+    @Body() { actionItemId, status }: UpdateActionStatusRequest,
+  ) {
+    return this.actionItemService.updateActionItemStatus(actionItemId, status);
   }
 }

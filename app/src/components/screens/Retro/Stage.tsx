@@ -1,5 +1,6 @@
 import { Box, Container } from "@mui/material";
 import React, { useState } from "react";
+import Discuss from "./Discuss";
 import Group from "./Group";
 import stageStyles from "./styles/stage.module.css";
 import styles from "./styles/styles.module.css";
@@ -30,12 +31,12 @@ function Stage({ retro, stage, setStage, actionItems, setActionItems }: Props) {
     <Think retro={retro} retroData={retroData} setRetroData={setRetroData} />,
     <Group retro={retro} retroData={retroData} setGroups={setGroups} />,
     <Vote retro={retro} groups={groups} setDiscItems={setDiscItems} />,
-    // <Discuss
-    //   retro={retro}
-    //   items={discItems}
-    //   actionItems={actionItems}
-    //   setActionItems={setActionItems}
-    // />,
+    <Discuss
+      retro={retro}
+      items={discItems}
+      actionItems={actionItems}
+      setActionItems={setActionItems}
+    />,
   ];
   return (
     <Container

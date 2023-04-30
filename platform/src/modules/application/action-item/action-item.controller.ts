@@ -11,6 +11,7 @@ import { UseAuthGuard } from '../../../utils/guards/auth-guard/auth.guard';
 import { ActionItemService } from './action-item.service';
 import {
   CreateActionItemRequest,
+  DeleteActionItemRequestParams,
   ListOutstandingActionItemsParams,
   ListRetroActionItemsParams,
   UpdateActionItemNoteRequest,
@@ -20,13 +21,22 @@ import {
   RequestUser,
   RequestUserType,
 } from '../../../utils/decorators/request-user';
+import { SocketEventService } from '../../gateway/socket/socket-event.service';
+import { ClientSocketMessageEvent } from '../../gateway/socket/socket.gateway';
+import {
+  buildSocketEvent,
+  SocketEventOperation,
+} from '../../../utils/builders/buildSocketEvent';
 
 @Controller({
   path: ['api/action-item'],
 })
 @UseAuthGuard()
 export class ActionItemController {
-  constructor(private readonly actionItemService: ActionItemService) {}
+  constructor(
+    private readonly actionItemService: ActionItemService,
+    private readonly socketEventService: SocketEventService,
+  ) {}
 
   @Get('/list-outstanding/:teamId')
   public async listOutstandingActionItems(
@@ -47,30 +57,72 @@ export class ActionItemController {
     @RequestUser() user: RequestUserType,
     @Body() { teamId, retroId }: CreateActionItemRequest,
   ) {
-    return this.actionItemService.createActionItem(
+    const actionItem = await this.actionItemService.createActionItem(
       teamId,
       user.organisationId,
       retroId,
       user.id,
     );
+
+    this.socketEventService.broadcastRoom(
+      retroId,
+      ClientSocketMessageEvent.BOARD_ACTION_ITEM,
+      buildSocketEvent(SocketEventOperation.CREATE, actionItem),
+    );
+
+    return actionItem;
   }
 
   @Delete('/:actionItemId')
-  public async deleteActionItem(@Param() { actionItemId }: any) {
-    return this.actionItemService.deleteActionItem(actionItemId);
+  public async deleteActionItem(
+    @Param() { actionItemId }: DeleteActionItemRequestParams,
+  ) {
+    const actionItem = await this.actionItemService.getActionItemById(
+      actionItemId,
+    );
+
+    await this.actionItemService.deleteActionItem(actionItemId);
+
+    this.socketEventService.broadcastRoom(
+      actionItem.boardId,
+      ClientSocketMessageEvent.BOARD_ACTION_ITEM,
+      buildSocketEvent(SocketEventOperation.DELETE, actionItem),
+    );
   }
 
   @Patch('update-note')
   public async updateActionItemNote(
     @Body() { actionItemId, note }: UpdateActionItemNoteRequest,
   ) {
-    return this.actionItemService.updateActionItemNote(actionItemId, note);
+    const actionItem = await this.actionItemService.updateActionItemNote(
+      actionItemId,
+      note,
+    );
+
+    this.socketEventService.broadcastRoom(
+      actionItem.boardId,
+      ClientSocketMessageEvent.BOARD_ACTION_ITEM,
+      buildSocketEvent(SocketEventOperation.UPDATE, actionItem),
+    );
+
+    return actionItem;
   }
 
   @Patch('update-status')
   public async updateActionStatus(
     @Body() { actionItemId, status }: UpdateActionStatusRequest,
   ) {
-    return this.actionItemService.updateActionItemStatus(actionItemId, status);
+    const actionItem = await this.actionItemService.updateActionItemStatus(
+      actionItemId,
+      status,
+    );
+
+    this.socketEventService.broadcastRoom(
+      actionItem.boardId,
+      ClientSocketMessageEvent.BOARD_ACTION_ITEM,
+      buildSocketEvent(SocketEventOperation.UPDATE, actionItem),
+    );
+
+    return actionItem;
   }
 }

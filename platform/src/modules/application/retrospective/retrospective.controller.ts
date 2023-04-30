@@ -26,13 +26,22 @@ import {
   UpdateSectionDescriptionRequest,
   UpdateSectionNameRequest,
 } from './dto/request';
+import { SocketEventService } from '../../gateway/socket/socket-event.service';
+import { ClientSocketMessageEvent } from '../../gateway/socket/socket.gateway';
+import {
+  buildSocketEvent,
+  SocketEventOperation,
+} from '../../../utils/builders/buildSocketEvent';
 
 @Controller({
   path: ['api/retrospective'],
 })
 @UseAuthGuard()
 export class RetrospectiveController {
-  constructor(private readonly retrospectiveService: RetrospectiveService) {}
+  constructor(
+    private readonly retrospectiveService: RetrospectiveService,
+    private readonly socketEventService: SocketEventService,
+  ) {}
 
   @Get('template/list')
   public async getRetrospectiveTemplates(@RequestUser() user: RequestUserType) {
@@ -53,6 +62,7 @@ export class RetrospectiveController {
     @Body() { teamId, name, templateId }: CreateRetroRequestRequest,
     @RequestUser() user: RequestUserType,
   ) {
+    // NOTE: do not need to send the socket event
     return this.retrospectiveService.createRetrospective(
       name,
       templateId,
@@ -67,13 +77,21 @@ export class RetrospectiveController {
     @Body() { boardId, boardSectionId, teamId }: AddNoteRequest,
     @RequestUser() user: RequestUserType,
   ) {
-    return this.retrospectiveService.addNote(
+    const note = await this.retrospectiveService.addNote(
       boardSectionId,
       boardId,
       user.organisationId,
       teamId,
       user.id,
     );
+
+    this.socketEventService.broadcastRoom(
+      note.boardId,
+      ClientSocketMessageEvent.BOARD_NOTE,
+      buildSocketEvent(SocketEventOperation.CREATE, note),
+    );
+
+    return note;
   }
 
   @Post('add-section')
@@ -81,42 +99,78 @@ export class RetrospectiveController {
     @Body() { boardId, teamId, order }: AddSectionRequest,
     @RequestUser() user: RequestUserType,
   ) {
-    return this.retrospectiveService.addSection(
+    const section = await this.retrospectiveService.addSection(
       boardId,
       user.organisationId,
       teamId,
       order,
       user.id,
     );
+
+    this.socketEventService.broadcastRoom(
+      section.boardId,
+      ClientSocketMessageEvent.BOARD_SECTION,
+      buildSocketEvent(SocketEventOperation.CREATE, section),
+    );
+
+    return section;
   }
 
   @Patch('update-name')
   public async updateRetroName(
     @Body() { id, teamId, name }: UpdateRetroNameRequest,
   ) {
-    return this.retrospectiveService.updateRetroName(id, teamId, name);
+    const retro = await this.retrospectiveService.updateRetroName(
+      id,
+      teamId,
+      name,
+    );
+
+    this.socketEventService.broadcastRoom(
+      retro.id,
+      ClientSocketMessageEvent.BOARD,
+      buildSocketEvent(SocketEventOperation.CREATE, retro),
+    );
+
+    return retro;
   }
 
   @Patch('update-note')
   public async updateNote(
     @Body() { boardNoteId, boardSectionId, note }: UpdateNoteRequest,
   ) {
-    return this.retrospectiveService.updateNote(
+    const boardNote = await this.retrospectiveService.updateNote(
       boardNoteId,
       boardSectionId,
       note,
     );
+
+    this.socketEventService.broadcastRoom(
+      boardNote.boardId,
+      ClientSocketMessageEvent.BOARD_NOTE,
+      buildSocketEvent(SocketEventOperation.UPDATE, boardNote),
+    );
+
+    return boardNote;
   }
 
   @Patch('update-section-name')
   public async updateSectionName(
     @Body() { boardSectionId, boardId, name }: UpdateSectionNameRequest,
   ) {
-    return this.retrospectiveService.updateSectionName(
+    const boardSection = await this.retrospectiveService.updateSectionName(
       boardSectionId,
       boardId,
       name,
     );
+
+    this.socketEventService.broadcastRoom(
+      boardSection.boardId,
+      ClientSocketMessageEvent.BOARD_SECTION,
+      buildSocketEvent(SocketEventOperation.UPDATE, boardSection),
+    );
+
+    return boardSection;
   }
 
   @Patch('update-section-description')
@@ -124,31 +178,72 @@ export class RetrospectiveController {
     @Body()
     { boardSectionId, boardId, description }: UpdateSectionDescriptionRequest,
   ) {
-    return this.retrospectiveService.updateSectionDescription(
-      boardSectionId,
-      boardId,
-      description,
+    const boardSection =
+      await this.retrospectiveService.updateSectionDescription(
+        boardSectionId,
+        boardId,
+        description,
+      );
+
+    this.socketEventService.broadcastRoom(
+      boardSection.boardId,
+      ClientSocketMessageEvent.BOARD_SECTION,
+      buildSocketEvent(SocketEventOperation.UPDATE, boardSection),
     );
+
+    return boardSection;
   }
 
   @Delete(':id/team/:teamId')
   public async deleteRetrospective(
     @Param() { id, teamId }: DeleteRetrospectiveRequestParams,
   ) {
-    return this.retrospectiveService.deleteRetrospective(id, teamId);
+    const retro = await this.retrospectiveService.getRetrospective(id, teamId);
+
+    await this.retrospectiveService.deleteRetrospective(id, teamId);
+
+    this.socketEventService.broadcastRoom(
+      retro.id,
+      ClientSocketMessageEvent.BOARD,
+      buildSocketEvent(SocketEventOperation.DELETE, retro),
+    );
+
+    return retro;
   }
 
   @Delete('delete-note/:boardNoteId/board-section/:boardSectionId')
   public async deleteNote(
     @Param() { boardNoteId, boardSectionId }: DeleteNoteRequestParams,
   ) {
-    return this.retrospectiveService.deleteNote(boardNoteId, boardSectionId);
+    const note = await this.retrospectiveService.getNote(
+      boardNoteId,
+      boardSectionId,
+    );
+
+    await this.retrospectiveService.deleteNote(boardNoteId, boardSectionId);
+
+    this.socketEventService.broadcastRoom(
+      note.boardId,
+      ClientSocketMessageEvent.BOARD_NOTE,
+      buildSocketEvent(SocketEventOperation.DELETE, note),
+    );
   }
 
   @Delete('delete-section/:boardSectionId/board/:boardId')
   public async deleteSection(
     @Param() { boardSectionId, boardId }: DeleteSectionParams,
   ) {
-    return this.retrospectiveService.deleteSection(boardSectionId, boardId);
+    const section = await this.retrospectiveService.getSection(
+      boardSectionId,
+      boardId,
+    );
+
+    await this.retrospectiveService.deleteSection(boardSectionId, boardId);
+
+    this.socketEventService.broadcastRoom(
+      section.boardId,
+      ClientSocketMessageEvent.BOARD_SECTION,
+      buildSocketEvent(SocketEventOperation.DELETE, section),
+    );
   }
 }

@@ -45,10 +45,7 @@ export class SocketGateway
   }
 
   public async handleConnection(client: Socket) {
-    const token =
-      client?.handshake?.headers?.authorization ??
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODI4MzA0MzguOTg4LCJkYXRhIjoie1widXNlcklkXCI6XCJiNWE1ZWY3Ni1iMWU0LTQxZDAtYmU0MC04YzFkOGMzMDUxMjJcIixcIm9yZ2FuaXNhdGlvbklkXCI6XCI1M2VlYzMwYy1kYjc5LTQ3NGEtODNjZC01YzBhZTQyY2NhMmJcIn0iLCJpYXQiOjE2ODI4MjMyMzh9.k_GrM1StchheG0ue_XAiBdicao2sAQt7c6omCBggZyA';
-
+    const token = client?.handshake?.headers?.authorization ?? '';
     try {
       const requestUser = await this.socketService.verifySocketAuthentication(
         token,

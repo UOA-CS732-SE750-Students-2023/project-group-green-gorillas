@@ -1,55 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { ActionItemService as ActionItemDomainService } from '../../domain/action-item/action-item.service';
 import { UUID } from '../../../types/uuid.type';
-import {
-  ActionItem,
-  ActionItemStatus,
-} from '../../domain/action-item/action-item';
+import { ActionItemStatus } from '../../domain/action-item/action-item';
 import { BoardService } from '../../domain/board/board.service';
-import * as Bluebird from 'bluebird';
-import { ActionItemAssigneeService } from '../../domain/action-item-assignee/action-item-assignee.service';
-import { UserService } from '../../domain/user/user.service';
 import { TeamDashboardService } from '../../domain/team-dashboard/team-dashboard.service';
 import { TeamDashboardCountKey } from '../../domain/team-dashboard/team-dashboard';
+import { UtilsService } from '../utils/utils.service';
 
 @Injectable()
 export class ActionItemService {
   constructor(
     private readonly actionItemDomainService: ActionItemDomainService,
     private readonly boardService: BoardService,
-    private readonly actionItemAssigneeService: ActionItemAssigneeService,
-    private readonly userService: UserService,
     private readonly teamDashboardService: TeamDashboardService,
+    private readonly utilsService: UtilsService,
   ) {}
-
-  private async aggregateActionItem(actionItem: ActionItem) {
-    const [board, actionItemAssignees] = await Promise.all([
-      this.boardService.getById(actionItem.boardId, actionItem.teamId),
-      this.actionItemAssigneeService.listByActionItemId(actionItem.id),
-    ]);
-
-    const assignees = await Bluebird.map(
-      actionItemAssignees,
-      async (actionItemAssignee) => {
-        return this.userService.getById(
-          actionItemAssignee.userId,
-          actionItem.organisationId,
-        );
-      },
-    );
-
-    return {
-      ...actionItem,
-      retro: board ?? null,
-      assignees: assignees.filter((assignee) => !!assignee && assignee.active),
-    };
-  }
-
-  private aggregateActionItems(actionItems: ActionItem[]) {
-    return Bluebird.map(actionItems, async (actionItem) => {
-      return this.aggregateActionItem(actionItem);
-    });
-  }
 
   public async createActionItem(
     teamId: UUID,
@@ -71,7 +36,7 @@ export class ActionItemService {
       TeamDashboardCountKey.CompletedActionItemCount,
     );
 
-    return this.aggregateActionItem(actionItem);
+    return this.utilsService.aggregateActionItem(actionItem);
   }
 
   public async deleteActionItem(actionItemId: UUID): Promise<void> {
@@ -96,7 +61,7 @@ export class ActionItemService {
       teamId,
     );
 
-    return this.aggregateActionItems(actionItems);
+    return this.utilsService.aggregateActionItems(actionItems);
   }
 
   public async listOutstandingActionItems(teamId: UUID) {
@@ -105,7 +70,7 @@ export class ActionItemService {
       ActionItemStatus.IN_PROGRESS,
     );
 
-    return this.aggregateActionItems(actionItems);
+    return this.utilsService.aggregateActionItems(actionItems);
   }
 
   public async updateActionItemNote(actionItemId: UUID, note: string) {
@@ -114,7 +79,7 @@ export class ActionItemService {
       note,
     );
 
-    return this.aggregateActionItem(actionItem);
+    return this.utilsService.aggregateActionItem(actionItem);
   }
 
   public async updateActionItemStatus(
@@ -126,7 +91,7 @@ export class ActionItemService {
     );
 
     if (actionItem.status === status) {
-      return this.aggregateActionItem(actionItem);
+      return this.utilsService.aggregateActionItem(actionItem);
     }
 
     const updatedActionItem = await this.actionItemDomainService.updateStatus(
@@ -151,7 +116,7 @@ export class ActionItemService {
       ),
     ]);
 
-    return this.aggregateActionItem(updatedActionItem);
+    return this.utilsService.aggregateActionItem(updatedActionItem);
   }
 
   public async getActionItemById(actionId: UUID) {
@@ -159,6 +124,6 @@ export class ActionItemService {
       actionId,
     );
 
-    return this.aggregateActionItem(actionItem);
+    return this.utilsService.aggregateActionItem(actionItem);
   }
 }

@@ -10,6 +10,8 @@ import { BoardSectionService } from '../../domain/board-section/board-section.se
 import { BoardNoteService } from '../../domain/board-note/board-note.service';
 import { groupBy } from 'lodash';
 import { InternalException } from '../../../exceptions/internal-exception';
+import { ActionItemService } from '../../domain/action-item/action-item.service';
+import { UtilsService } from '../utils/utils.service';
 
 @Injectable()
 export class RetrospectiveService {
@@ -19,6 +21,8 @@ export class RetrospectiveService {
     private readonly teamDashboardService: TeamDashboardService,
     private readonly boardSectionService: BoardSectionService,
     private readonly boardNoteService: BoardNoteService,
+    private readonly actionItemService: ActionItemService,
+    private readonly utilsService: UtilsService,
   ) {}
 
   public async getRetrospectiveTemplates(
@@ -83,10 +87,11 @@ export class RetrospectiveService {
   }
 
   public async getRetrospective(boardId: UUID, teamId: UUID) {
-    const [board, boardSections, boardNotes] = await Promise.all([
+    const [board, boardSections, boardNotes, actionItems] = await Promise.all([
       this.boardService.getByIdOrThrow(boardId, teamId),
       this.boardSectionService.listByBoardId(boardId),
       this.boardNoteService.listByBoardId(boardId),
+      this.actionItemService.listByBoardId(boardId, teamId),
     ]);
 
     const boardNoteGroup = groupBy(boardNotes, 'boardSectionId');
@@ -96,9 +101,14 @@ export class RetrospectiveService {
       boardNotes: boardNoteGroup[boardSection.id] ?? [],
     }));
 
+    const mappedActionItems = await this.utilsService.aggregateActionItems(
+      actionItems,
+    );
+
     return {
       ...board,
       boardSections: mappedBoardSections,
+      actionItems: mappedActionItems,
     };
   }
 

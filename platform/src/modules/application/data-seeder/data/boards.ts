@@ -16,7 +16,7 @@ export const boards = [
   {
     id: '1d8dc2b7-5976-4a9c-a5b6-0591ca5b2ef2',
     organisationId: '53eec30c-db79-474a-83cd-5c0ae42cca2b',
-    teamId: '53eec30c-db79-474a-83cd-5c0ae42cca2b',
+    teamId: '86144d5b-81fa-4556-b0d6-01b0f4836512',
     name: 'Sprint 101',
     stage: BoardStage.FINALIZE,
     active: true,

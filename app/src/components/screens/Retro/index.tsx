@@ -14,6 +14,7 @@ import { Avatar } from "../../common/Avatar";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
 import retroStyles from "./styles/retro.module.css";
 import Stage from "./Stage";
+import { useRetro } from "../../../hooks/useRetro";
 
 type Props = {
   retro: any;
@@ -22,10 +23,17 @@ type Props = {
 };
 
 export const RetroScreen = ({ retro, actionItems, setActionItems }: Props) => {
-  const { teamId } = useParams<{ teamId: string }>();
+  const { teamId, retroId } = useParams<{ teamId: string; retroId: string }>();
+
+  const { isLoading } = useRetro(retroId, teamId);
 
   const { team, loading } = useTeam(teamId);
   const [retroStage, setRetroStage] = useState(0);
+
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
+
   if (loading) {
     return <LoadingIndicator />;
   }

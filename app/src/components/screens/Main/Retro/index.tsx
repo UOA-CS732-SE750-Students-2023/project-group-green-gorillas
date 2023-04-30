@@ -9,21 +9,19 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useTeam } from "../../../hooks/useTeam";
-import { Avatar } from "../../common/Avatar";
-import { LoadingIndicator } from "../../common/LoadingIndicator";
+import { useTeam } from "../../../../hooks/useTeam";
+import { Avatar } from "../../../common/Avatar";
+import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import retroStyles from "./styles/retro.module.css";
 import Stage from "./Stage";
-import { useRetro } from "../../../hooks/useRetro";
+import { useRetro } from "../../../../hooks/useRetro";
+import { retros } from "./defaultData";
 
-type Props = {
-  retro: any;
-  actionItems: any;
-  setActionItems: any;
-};
-
-export const RetroScreen = ({ retro, actionItems, setActionItems }: Props) => {
+export const RetroScreen = () => {
+  const [selectedRetro, setSelectedRetro] = useState(0);
+  const [actionItems, setActionItems] = useState([]);
   const { teamId, retroId } = useParams<{ teamId: string; retroId: string }>();
+  const retro = retros[selectedRetro];
 
   const { isLoading } = useRetro(retroId, teamId);
 

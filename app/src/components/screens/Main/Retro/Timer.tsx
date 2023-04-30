@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import stageStyles from "../Retro/styles/stage.module.css";
+import stageStyles from "./styles/stage.module.css";
 
 export const Timer = ({ startTime }: any) => {
   const [time, setTime] = useState(startTime);

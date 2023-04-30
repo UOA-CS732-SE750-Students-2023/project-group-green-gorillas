@@ -67,8 +67,8 @@ const MainSubScreens = () => {
       <Redirect from={ScreenPath.Main} to={MainScreenPath.HOME} />
       <Redirect from={MainScreenPath.ANY} to={MainScreenPath.HOME} />
     </Switch>
-  );
-};
+  )
+}
 
 const Main = () => {
   return (

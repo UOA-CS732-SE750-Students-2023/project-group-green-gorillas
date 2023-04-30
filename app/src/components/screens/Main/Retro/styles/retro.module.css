@@ -18,20 +18,14 @@
 }
 
 .participant {
-  margin-left: -16px;
   height: 36px;
   width: 36px;
-  border: 2px solid #f2f2f2;
+  margin-left:5px;
   box-sizing: border-box;
   border-radius: 50%;
   background-size: cover;
   background-position: center center;
   cursor: pointer;
-  transition: 0.2s ease all;
-}
-
-.participants__list:hover .participant {
-  margin-left: 0px;
 }
 
 .participant:first-child {

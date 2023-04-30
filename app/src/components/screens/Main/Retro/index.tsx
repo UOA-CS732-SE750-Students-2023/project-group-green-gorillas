@@ -5,11 +5,11 @@ import {
   List,
   ListItem,
   ListItemAvatar,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useTeam } from "../../../../hooks/useTeam";
 import { Avatar } from "../../../common/Avatar";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import retroStyles from "./styles/retro.module.css";
@@ -20,19 +20,13 @@ import { retros } from "./defaultData";
 export const RetroScreen = () => {
   const [selectedRetro, setSelectedRetro] = useState(0);
   const [actionItems, setActionItems] = useState([]);
-  const { teamId, retroId } = useParams<{ teamId: string; retroId: string }>();
-  const retro = retros[selectedRetro];
-
-  const { isLoading } = useRetro(retroId, teamId);
-
-  const { team, loading } = useTeam(teamId);
+  const dummyRetro = retros[selectedRetro];
   const [retroStage, setRetroStage] = useState(0);
 
-  if (isLoading) {
-    return <LoadingIndicator />;
-  }
+  const { teamId, retroId } = useParams<{ teamId: string; retroId: string }>();
+  const { isLoading, retroUsers } = useRetro(retroId, teamId);
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingIndicator />;
   }
 
@@ -40,6 +34,7 @@ export const RetroScreen = () => {
     <React.Fragment>
       <CssBaseline />
       <Container
+        // @ts-ignore
         maxWidth="false"
         disableGutters
         className={retroStyles.retro__header}
@@ -49,18 +44,22 @@ export const RetroScreen = () => {
             Participants
           </Typography>
           <List className={retroStyles.participants__list}>
-            {team?.teamMembers?.map((member) => (
-              <ListItem className={retroStyles.participant} key={member.id}>
-                <ListItemAvatar>
-                  <Avatar text={`${member.firstName} ${member.lastName}`} />
-                </ListItemAvatar>
+            {retroUsers?.map((user) => (
+              <ListItem className={retroStyles.participant} key={user.id}>
+                <Tooltip
+                  title={`${user.displayName} (${user.firstName} ${user.lastName}) (${user.email})`}
+                >
+                  <ListItemAvatar>
+                    <Avatar text={`${user.firstName} ${user.lastName}`} />
+                  </ListItemAvatar>
+                </Tooltip>
               </ListItem>
             ))}
           </List>
         </Box>
       </Container>
       <Stage
-        retro={retro}
+        retro={dummyRetro}
         stage={retroStage}
         setStage={setRetroStage}
         actionItems={actionItems}

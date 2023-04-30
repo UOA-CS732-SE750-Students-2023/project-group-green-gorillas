@@ -33,6 +33,7 @@ export const useRetro = (boardId: string, teamId: string) => {
   const [hasSocketConnected, setHasSocketConnected] = useState<boolean>(false);
   const [hasJoinedRoom, setHasJoinedRoom] = useState<boolean>(false);
   const [retro, setRetro] = useState<any>(null);
+  const [retroUsers, setRetroUsers] = useState<any[]>([]);
 
   const errorRedirect = () => {
     window.location.href = `${MainScreenPath.TEAM}/${teamId}`;
@@ -62,8 +63,7 @@ export const useRetro = (boardId: string, teamId: string) => {
 
     socket.on(ClientSocketMessageEvent.RETRO_ROOM_USERS, (payload: string) => {
       const data = JSON.parse(payload);
-
-      // TODO: philip to do
+      setRetroUsers(data.users);
     });
 
     socket.on(ClientSocketMessageEvent.BOARD, (payload: string) => {
@@ -138,5 +138,6 @@ export const useRetro = (boardId: string, teamId: string) => {
 
   return {
     isLoading,
+    retroUsers,
   };
 };

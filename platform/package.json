@@ -37,6 +37,10 @@
     "luxon": "^2.2.0",
     "nestjs-i18n": "^8.1.1",
     "reflect-metadata": "^0.1.13",
+    "@socket.io/redis-adapter": "^8.0.0",
+    "@nestjs/platform-socket.io": "^9.2.1",
+    "@nestjs/websockets": "^9.2.1",
+    "redis": "^4.5.1",
     "rxjs": "^7.2.0",
     "uuid": "^9.0.0",
     "winston": "^3.8.2"

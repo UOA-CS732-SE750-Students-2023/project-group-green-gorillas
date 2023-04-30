@@ -8,6 +8,8 @@ import { ActionItemModule as ActionItemDomainModule } from '../../domain/action-
 import { BoardModule } from '../../domain/board/board.module';
 import { ActionItemAssigneeModule } from '../../domain/action-item-assignee/action-item-assignee.module';
 import { TeamDashboardModule } from '../../domain/team-dashboard/team-dashboard.module';
+import { SocketModule } from '../../gateway/socket/socket.module';
+import { UtilsModule } from '../utils/utils.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { TeamDashboardModule } from '../../domain/team-dashboard/team-dashboard.
     BoardModule,
     ActionItemAssigneeModule,
     TeamDashboardModule,
+    SocketModule,
+    UtilsModule,
   ],
   controllers: [ActionItemController],
   providers: [ActionItemService],

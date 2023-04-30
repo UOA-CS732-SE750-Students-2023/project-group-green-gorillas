@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AvatarGroup,
   Badge,
@@ -37,6 +37,9 @@ import HistoryIcon from "@mui/icons-material/History";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AddIcon from "@mui/icons-material/Add";
 import { actionItems } from "../../../../../../platform/src/modules/application/data-seeder/data/action-items";
+import { ActionItem, Status } from "../../../../types/actionItems";
+import axios from "axios";
+import { request } from "../../../../api/request";
 
 // {****styleBadge*****}
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -75,11 +78,17 @@ export const TeamScreen = () => {
   const { team, loading } = useTeam(teamId);
   // console.log(team);
 
-  const { actionItems, isLoading } = useActionItems(teamId);
-  // console.log(actionItems);
+  const { getActionItems, updateActionItems, actionItems, isLoading } =
+    useActionItems(teamId);
+
+  console.log(actionItems);
+
+  // Handle Upadate Action Items Status
+
+  // const [updateActionItems, setUpdateActionItems] = useState<ActionItem[]>();
 
   const { insight, insightLoading } = useInsight(teamId);
-  console.log(insight);
+  // console.log(insight);
 
   if (loading) {
     return <LoadingIndicator />;
@@ -245,7 +254,13 @@ export const TeamScreen = () => {
                       >
                         Delete
                       </Button>
-                      <Button variant="contained" size="small">
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => {
+                          updateActionItems(actionItem);
+                        }}
+                      >
                         Complete
                       </Button>
                     </CardActions>

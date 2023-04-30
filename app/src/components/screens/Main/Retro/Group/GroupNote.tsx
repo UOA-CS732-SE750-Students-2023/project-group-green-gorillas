@@ -3,7 +3,7 @@ import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import stageStyles from "../styles/stage.module.css";
 
-import dragIcon from "../../../../assets/drag.svg";
+import dragIcon from "../../../../../assets/drag.svg";
 
 function GroupNote({ id, index, note }: any) {
   return (

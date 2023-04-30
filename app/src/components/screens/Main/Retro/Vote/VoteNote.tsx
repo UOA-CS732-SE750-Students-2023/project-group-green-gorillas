@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import React from "react";
 
-import voteUp from "../../../../assets/upvote.svg";
-import voteDown from "../../../../assets/votedown.svg";
+import voteUp from "../../../../../assets/upvote.svg";
+import voteDown from "../../../../../assets/votedown.svg";
 import stageStyles from "../styles/stage.module.css";
 
 function VoteNote({ note, setVotes }: any) {

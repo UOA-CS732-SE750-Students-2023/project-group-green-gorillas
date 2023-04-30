@@ -2,7 +2,7 @@ import { Box, Container } from "@mui/material";
 import React, { useState } from "react";
 import stageStyles from "../styles/stage.module.css";
 import styles from "../styles/styles.module.css";
-import addIcon from "../../../../assets/add.svg";
+import addIcon from "../../../../../assets/add.svg";
 import { ThinkNote } from "./ThinkNote";
 
 const ThinkColumn = ({ title, desc, retroData, setRetroData }: any) => {

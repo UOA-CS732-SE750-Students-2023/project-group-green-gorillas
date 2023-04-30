@@ -27,7 +27,7 @@ import { Avatar } from "../../../../components/common/Avatar/index";
 import { useTeam } from "../../../../hooks/useTeam";
 import { useActionItems } from "../../../../hooks/useActionItems";
 import { useInsight } from "../../../../hooks/useInsight";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 
 // Icon
@@ -40,6 +40,8 @@ import { actionItems } from "../../../../../../platform/src/modules/application/
 import { ActionItem, Status } from "../../../../types/actionItems";
 import axios from "axios";
 import { request } from "../../../../api/request";
+import { TeamDrawer } from "../../../common/TeamDrawer";
+import { MainScreenPath } from "../index";
 
 // {****styleBadge*****}
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -75,6 +77,8 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 export const TeamScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
 
+  const history = useHistory();
+
   const { team, loading } = useTeam(teamId);
   // console.log(team);
 
@@ -90,287 +94,251 @@ export const TeamScreen = () => {
   const { insight, insightLoading } = useInsight(teamId);
   // console.log(insight);
 
-  if (loading) {
-    return <LoadingIndicator />;
-  }
-
   return (
     <Container maxWidth="xl" sx={{ marginTop: 2, display: "flex" }}>
-      {/* Drawer Menu List start */}
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: 240,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
-            width: 240,
-            boxSizing: "border-box",
-          },
-        }}
-      >
-        <Toolbar />
-        <Box sx={{ overflow: "auto" }}>
-          <List>
-            <ListItemButton>
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText primary="Dashboard" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <LayersIcon />
-              </ListItemIcon>
-              <ListItemText primary="Template" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <HistoryIcon />
-              </ListItemIcon>
-              <ListItemText primary="Retro History" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <SettingsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Team Settings" />
-            </ListItemButton>
-          </List>
-        </Box>
+      <TeamDrawer teamId={teamId} />
 
-        <Divider />
-      </Drawer>
-      {/* Drawer Menu List end */}
-
-      <Box component="main" sx={{ flexGrow: 1, marginLeft: 0 }}>
-        {" "}
-        <Toolbar />
-        {/* Team Member list & New Retro Button */}
-        <Grid
-          container
-          direction="row"
-          display="flex"
-          justifyContent="flex-start"
-          alignItems="center"
-          sx={{
-            height: 108,
-          }}
-        >
-          <Grid item xs={4} alignItems="flex-start">
-            <Typography
-              variant="h4"
-              noWrap
-              component="div"
-              sx={{ marginBottom: 2 }}
-            >
-              {team?.name}
-            </Typography>
-            <AvatarGroup sx={{ width: 200 }}>
-              {team?.teamMembers?.map((member) => (
-                <Avatar
-                  key={member.id}
-                  text={`${member.firstName} ${member.lastName}`}
-                />
-              ))}
-            </AvatarGroup>
-          </Grid>
-          <Grid item xs={8}>
-            <Button
-              variant="outlined"
-              startIcon={<SettingsIcon />}
-              sx={{
-                width: 8,
-                marginRight: 2,
-              }}
-            ></Button>
-            <Button variant="contained" startIcon={<AddIcon />}>
-              New Retro
-            </Button>
-          </Grid>
-        </Grid>
-        <Divider sx={{ marginTop: 2, marginBottom: 5 }} />
-        <Grid
-          container
-          sx={{
-            height: 500,
-            // marginTop: 5,
-            direction: "row",
-            alignItems: "flex-start",
-          }}
-        >
-          {/* Action Items */}
-          <Grid item xs={4}>
-            <Box
-              component="div"
-              sx={{
-                bgcolor: "#F5F7F9",
-                // width: 500,
-                padding: 3,
-                borderRadius: 2,
-                justifyItems: "center",
-              }}
-            >
+      {loading ? (
+        <LoadingIndicator />
+      ) : (
+        <Box component="main" sx={{ flexGrow: 1, marginLeft: 0 }}>
+          {" "}
+          <Toolbar />
+          {/* Team Member list & New Retro Button */}
+          <Grid
+            container
+            direction="row"
+            display="flex"
+            justifyContent="flex-start"
+            alignItems="center"
+            sx={{
+              height: 108,
+            }}
+          >
+            <Grid item xs={4} alignItems="flex-start">
               <Typography
-                variant="h5"
+                variant="h4"
                 noWrap
                 component="div"
                 sx={{ marginBottom: 2 }}
               >
-                Outstanding Action Items
+                {team?.name}
               </Typography>
-              <Stack spacing={2}>
-                {actionItems?.map((actionItem) => (
-                  <Card key={actionItem.id} sx={{ maxWidth: 450 }}>
-                    <CardContent>
-                      <Typography variant="h6" component="div">
-                        {actionItem.note}
-                      </Typography>
-                      <Typography sx={{ color: "green" }}>
-                        {actionItem.status}
-                      </Typography>
-                      <Typography
-                        sx={{ mb: 1.5 }}
-                        color="text.secondary"
-                        component="div"
-                      >
-                        {actionItem.createdAt.slice(0, 10)}
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <AvatarGroup max={4} sx={{ width: 50 }}>
-                        {actionItem.assignees?.map((assignee) => (
-                          <Avatar
-                            key={assignee.id}
-                            text={`${assignee.firstName} ${assignee.lastName}`}
-                          />
-                        ))}
-                      </AvatarGroup>
-
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        size="small"
-                        disabled={true}
-                      >
-                        Delete
-                      </Button>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => {
-                          updateActionItems(actionItem);
-                        }}
-                      >
-                        Complete
-                      </Button>
-                    </CardActions>
-                  </Card>
+              <AvatarGroup sx={{ width: 200 }}>
+                {team?.teamMembers?.map((member) => (
+                  <Avatar
+                    key={member.id}
+                    text={`${member.firstName} ${member.lastName}`}
+                  />
                 ))}
-              </Stack>
-            </Box>
+              </AvatarGroup>
+            </Grid>
+            <Grid item xs={8}>
+              <Button
+                variant="outlined"
+                startIcon={<SettingsIcon />}
+                sx={{
+                  width: 8,
+                  marginRight: 2,
+                }}
+              ></Button>
+              <Button
+                onClick={() =>
+                  history.push(`${MainScreenPath.Template}/${teamId}`)
+                }
+                variant="contained"
+                startIcon={<AddIcon />}
+              >
+                New Retro
+              </Button>
+            </Grid>
           </Grid>
-          {/* Charts */}
-          <Grid item xs={8}>
-            <Grid
-              container
-              component="div"
-              sx={{
-                bgcolor: "#F5F7F9",
-                // width: 1000,
-                padding: 3,
-                borderRadius: 2,
-                marginLeft: 5,
-                // justifyItems: "center",
-              }}
-              spacing={2}
-            >
-              <Grid item xs={4}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 120,
-                  }}
+          <Divider sx={{ marginTop: 2, marginBottom: 5 }} />
+          <Grid
+            container
+            sx={{
+              height: 500,
+              // marginTop: 5,
+              direction: "row",
+              alignItems: "flex-start",
+            }}
+          >
+            {/* Action Items */}
+            <Grid item xs={4}>
+              <Box
+                component="div"
+                sx={{
+                  bgcolor: "#F5F7F9",
+                  // width: 500,
+                  padding: 3,
+                  borderRadius: 2,
+                  justifyItems: "center",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  noWrap
+                  component="div"
+                  sx={{ marginBottom: 2 }}
                 >
-                  {" "}
-                  Total Outstanding Action Items
-                  <Typography>{insight?.outstandingActionItemCount}</Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={4}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 120,
-                  }}
-                >
-                  {" "}
-                  Completed Action Items
-                  <Typography>{insight?.completedActionItemCount}</Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={4}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 120,
-                  }}
-                >
-                  {" "}
-                  Left Action Items
-                  <Typography>
-                    {insight?.outstandingActionItemCount &&
-                      insight?.outstandingActionItemCount -
-                        insight?.completedActionItemCount}
-                  </Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={8}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  {" "}
-                  Action Items Line Bar
-                </Paper>
-              </Grid>
-              <Grid item xs={4}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  Team Member Contribution (pie)
-                </Paper>
-              </Grid>
-              <Grid item xs={12}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 80,
-                  }}
-                >
-                  Progeress
-                </Paper>
+                  Outstanding Action Items
+                </Typography>
+                <Stack spacing={2}>
+                  {actionItems?.map((actionItem) => (
+                    <Card key={actionItem.id} sx={{ maxWidth: 450 }}>
+                      <CardContent>
+                        <Typography variant="h6" component="div">
+                          {actionItem.note}
+                        </Typography>
+                        <Typography sx={{ color: "green" }}>
+                          {actionItem.status}
+                        </Typography>
+                        <Typography
+                          sx={{ mb: 1.5 }}
+                          color="text.secondary"
+                          component="div"
+                        >
+                          {actionItem.createdAt.slice(0, 10)}
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        <AvatarGroup max={4} sx={{ width: 50 }}>
+                          {actionItem.assignees?.map((assignee) => (
+                            <Avatar
+                              key={assignee.id}
+                              text={`${assignee.firstName} ${assignee.lastName}`}
+                            />
+                          ))}
+                        </AvatarGroup>
+
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          size="small"
+                          disabled={true}
+                        >
+                          Delete
+                        </Button>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={() => {
+                            updateActionItems(actionItem);
+                          }}
+                        >
+                          Complete
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  ))}
+                </Stack>
+              </Box>
+            </Grid>
+            {/* Charts */}
+            <Grid item xs={8}>
+              <Grid
+                container
+                component="div"
+                sx={{
+                  bgcolor: "#F5F7F9",
+                  // width: 1000,
+                  padding: 3,
+                  borderRadius: 2,
+                  marginLeft: 5,
+                  // justifyItems: "center",
+                }}
+                spacing={2}
+              >
+                <Grid item xs={4}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 120,
+                    }}
+                  >
+                    {" "}
+                    Total Outstanding Action Items
+                    <Typography>
+                      {insight?.outstandingActionItemCount}
+                    </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item xs={4}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 120,
+                    }}
+                  >
+                    {" "}
+                    Completed Action Items
+                    <Typography>{insight?.completedActionItemCount}</Typography>
+                  </Paper>
+                </Grid>
+                <Grid item xs={4}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 120,
+                    }}
+                  >
+                    {" "}
+                    Left Action Items
+                    <Typography>
+                      {insight?.outstandingActionItemCount &&
+                        insight?.outstandingActionItemCount -
+                          insight?.completedActionItemCount}
+                    </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item xs={8}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 240,
+                    }}
+                  >
+                    {" "}
+                    Action Items Line Bar
+                  </Paper>
+                </Grid>
+                <Grid item xs={4}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 240,
+                    }}
+                  >
+                    Team Member Contribution (pie)
+                  </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 80,
+                    }}
+                  >
+                    Progeress
+                  </Paper>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      )}
     </Container>
   );
 };

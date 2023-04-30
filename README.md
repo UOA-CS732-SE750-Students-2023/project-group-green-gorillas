@@ -46,4 +46,3 @@ cd platform
 yarn start:dynamo-admin
 ```
 Navigate to the http://0.0.0.0:8001/
-

@@ -45,7 +45,7 @@ export class SocketGateway
   }
 
   public async handleConnection(client: Socket) {
-    const token = client?.handshake?.headers?.authorization ?? '';
+    const token = client?.handshake?.auth?.token ?? '';
     try {
       const requestUser = await this.socketService.verifySocketAuthentication(
         token,

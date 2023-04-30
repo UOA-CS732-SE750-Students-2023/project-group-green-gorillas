@@ -11,58 +11,53 @@ import { OrgManagementScreen } from "../OrgManagement";
 import { TeamManagementScreen } from "../TeamManagement";
 import { TemplateScreen } from "../Template";
 import {ProfileScreen, ProfilePath} from "../Profile";
+import { RetroHistoryScreen } from "./RetroHistory";
+import { UserManagementScreen } from "./Admin/UserManagement";
+import { OrgManagementScreen } from "./Admin/OrgManagement";
+import { TeamManagementScreen } from "./Admin/TeamManagement";
+import { TemplateScreen } from "./Template";
+import { ProfileScreen } from "./Profile";
 import { ScreenPath } from "..";
 import {UpdateAvatar} from "../Profile/updateAvatar";
 import { RetroScreen } from "../Retro";
 import { retros } from "./defaultData";
+import { RetroScreen } from "./Retro";
+import { AdminScreen } from "./Admin";
+import { useCurrentUser } from "../../../hooks/useCurrentUser";
 
 export enum MainScreenPath {
   HOME = "/main/home",
   TEAM = "/main/team",
   ANY = "/main/*",
   RetroHistory = "/main/retro-history",
-  UserManagement = "/main/user-management",
-  TeamManagement = "/main/team-management",
-  OrgManagement = "/main/org-management",
   Profile = "/main/profile",
   Template = "/main/template",
   Retro = "/main/retro",
+  ADMIN = "/main/admin",
 }
 
 const MainSubScreens = () => {
-  const [selectedRetro, setSelectedRetro] = React.useState(0);
-  const [actionItems, setActionItems] = React.useState([]);
+  const { isAdmin } = useCurrentUser();
+
   return (
     <Switch>
       <Route path={MainScreenPath.HOME} component={HomeScreen} />
+      <Route
+        path={`${MainScreenPath.Template}/:teamId`}
+        component={TemplateScreen}
+      />
       <Route path={`${MainScreenPath.TEAM}/:teamId`} component={TeamScreen} />
       <Route
         path={MainScreenPath.RetroHistory}
         component={RetroHistoryScreen}
       />
-      <Route
-        path={MainScreenPath.UserManagement}
-        component={UserManagementScreen}
-      />
-      <Route
-        path={MainScreenPath.TeamManagement}
-        component={TeamManagementScreen}
-      />
-      <Route
-        path={MainScreenPath.OrgManagement}
-        component={OrgManagementScreen}
-      />
-      <Route path={MainScreenPath.Template} component={TemplateScreen} />
       <Route path={MainScreenPath.Profile} component={ProfileScreen} />
-      <Route path={ProfilePath.UpdateAvatar} component={UpdateAvatar} />
-      <Route path={MainScreenPath.Retro}>
-      <Route path={`${MainScreenPath.Retro}/:retroId/team/:teamId/`}>
-        <RetroScreen
-          retro={retros[selectedRetro]}
-          actionItems={actionItems}
-          setActionItems={setActionItems}
-        />
-      </Route>
+      <Route
+        path={`${MainScreenPath.Retro}/:retroId/team/:teamId/`}
+        component={RetroScreen}
+      />
+      {isAdmin && <Route path={MainScreenPath.ADMIN} component={AdminScreen} />}
+
 
       <Redirect from={ScreenPath.Main} to={MainScreenPath.HOME} />
       <Redirect from={MainScreenPath.ANY} to={MainScreenPath.HOME} />

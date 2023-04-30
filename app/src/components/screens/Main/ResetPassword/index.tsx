@@ -1,4 +1,4 @@
-import { AuthenticationRedirect } from "../utils/AuthenticationRedirect";
+import { AuthenticationRedirect } from "../../utils/AuthenticationRedirect";
 import {
   Alert,
   Avatar,
@@ -12,12 +12,12 @@ import {
   Typography,
 } from "@mui/material";
 import { LockOutlined, Cancel, Check } from "@mui/icons-material";
-import { ScreenPath } from "../index";
-import { CopyRight } from "../../common/CopyRight";
+import { ScreenPath } from "../../index";
+import { CopyRight } from "../../../common/CopyRight";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useResetPassword } from "../../../hooks/useResetPassword";
+import { useResetPassword } from "../../../../hooks/useResetPassword";
 import { useHistory } from "react-router-dom";
-import { parseQueryString } from "../../../utils/parseQueryString";
+import { parseQueryString } from "../../../../utils/parseQueryString";
 
 export const ResetPasswordScreen = () => {
   return (

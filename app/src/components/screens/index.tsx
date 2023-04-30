@@ -3,11 +3,10 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import { LoginScreen } from "./Login";
 import { ForgotPasswordScreen } from "./ForgotPassword";
 import { MainScreen } from "./Main";
-import { ResetPasswordScreen } from "./ResetPassword";
-import { UserManagementScreen } from "./UserManagement";
-import { OrgManagementScreen } from "./OrgManagement";
-import { TeamManagementScreen } from "./TeamManagement";
-
+import { ResetPasswordScreen } from "./Main/ResetPassword";
+import { UserManagementScreen } from "./Main/Admin/UserManagement";
+import { OrgManagementScreen } from "./Main/Admin/OrgManagement";
+import { TeamManagementScreen } from "./Main/Admin/TeamManagement";
 
 export enum ScreenPath {
   Login = "/login",
@@ -18,7 +17,7 @@ export enum ScreenPath {
   ResetPassword = "/reset-password",
   UserManagement = "/user-management",
   TeamManagement = "/team-management",
-  OrgManagement = "/org-management"
+  OrgManagement = "/org-management",
 }
 
 export const Screens = () => {
@@ -48,7 +47,6 @@ export const Screens = () => {
           path={ScreenPath.OrgManagement}
           component={OrgManagementScreen}
         />
-
 
         <Route path={ScreenPath.Main} component={MainScreen} />
         <Redirect from={ScreenPath.ANY} to={ScreenPath.Login} />

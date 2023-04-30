@@ -3,11 +3,11 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import stageStyles from "./styles/stage.module.css";
 import styles from "./styles/styles.module.css";
-import settingsIcon from "../../../assets/settings.svg";
-import bellIcon from "../../../assets/bell.svg";
-import timerIcon from "../../../assets/timer.svg";
-import infoIcon from "../../../assets/info.svg";
-import nextIcon from "../../../assets/carot.svg";
+import settingsIcon from "../../../../assets/settings.svg";
+import bellIcon from "../../../../assets/bell.svg";
+import timerIcon from "../../../../assets/timer.svg";
+import infoIcon from "../../../../assets/info.svg";
+import nextIcon from "../../../../assets/carot.svg";
 import { Box } from "@mui/material";
 
 function Toolbar({ stage, setStage }: any) {

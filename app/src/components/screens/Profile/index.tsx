@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Avatar,
     Box,
@@ -10,19 +10,64 @@ import {
     Paper,
     Divider,
     CssBaseline,
+    FormControl, InputLabel, MenuItem, Select
 } from "@mui/material";
+import axios from 'axios';
+import { SelectChangeEvent } from "@mui/material/Select";
+
 
 import {useHistory} from 'react-router-dom';
+import {useCurrentUser} from "../../../hooks/useCurrentUser";
 
 
 export enum ProfilePath {
     UpdateAvatar = "/main/profile_avatar"
 }
 
+interface userData {
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    address: string;
+    gender: boolean
+}
+
 
 
 export const ProfileScreen = () => {
 
+    const {user} = useCurrentUser();
+
+    const [userData, setUserData] = useState<userData | null>({
+        displayName: user!.displayName,
+        firstName: user!.firstName,
+        lastName: 'Wang',
+        phone:'123',
+        address:'sss',
+        gender: true
+    });
+
+
+    useEffect(() => {
+        // setUserData(user)
+    })
+
+    // // Get user initial info
+    const fetchData = () => {
+
+        axios.put('https://jsonplaceholder.typicode.com/posts')
+            .then(response => {
+
+                }
+            )
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
+
+    // Avatar animation
     const [isHovering, setIsHovering] = useState(false);
 
     const handleMouseOver = () => {
@@ -33,7 +78,89 @@ export const ProfileScreen = () => {
         setIsHovering(false);
     };
 
-  const history = useHistory();
+    // Update UserInfo
+    const[currentUserData, setCurrentUserData] = useState<Object | null>(null);
+
+
+   const history = useHistory();
+
+  // cancelUpdate
+  const cancelUpdate = () => {
+      history.go(0);
+  }
+
+
+    const[currentDisplayName, setCurrentDisplayName] = useState<string>(userData!.displayName);
+    const handleDisplayNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrentDisplayName(event.target.value);
+    }
+
+    const[currentFirstName, setCurrentFirstName] = useState<string>(userData!.firstName);
+    const handleFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrentFirstName(event.target.value);
+    }
+
+    const[currentLastName, setCurrentLastName] = useState<string>(userData!.lastName);
+    const handleLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrentLastName(event.target.value);
+    }
+
+    const[currentGender, setCurrentGender] = useState<boolean>(userData!.gender);
+    const handleGenderChange = (event: SelectChangeEvent<boolean>) => {
+        if (event.target.value == "male"){
+            setCurrentGender(true)
+        }{
+            setCurrentGender(false)
+        }
+    }
+
+
+    const[currentAddress, setCurrentAddress] = useState<string>(userData!.address);
+    const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrentAddress(event.target.value);
+    }
+
+
+
+  const[currentPhone, setCurrentPhone] = useState<string>(userData!.phone);
+    const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrentPhone(event.target.value);
+    }
+
+
+
+
+
+    const updateInfo = () => {
+
+        userData!.displayName = currentDisplayName;
+        userData!.firstName = currentFirstName;
+        userData!.lastName = currentLastName;
+        userData!.phone = currentPhone;
+        userData!.address = currentAddress;
+        userData!.gender = currentGender;
+
+        setUserData(userData);
+
+
+        console.log(userData);
+
+
+        // axios.put('https://localhost:8080/api/user/current', userData)
+        //     .then(response => {
+        //
+        //         }
+        //     )
+        //     .catch(error => {
+        //         console.log(error);
+        //     })
+
+        history.go(0);
+    }
+
+
+
+
 
   // TODO route
   const resetPassword = () => {
@@ -48,59 +175,66 @@ export const ProfileScreen = () => {
       <React.Fragment>
           <CssBaseline />
           <Container sx={{
-              marginTop: '100px',
-              maxWidth:"100%"
+              marginTop: '10px',
+              width:"1500"
+              // maxWidth:"100%"
           }}
               >
               <Box sx={{
+
                   display:"flex",
                   flexDirection:"column",
                   justifyContent:"center",
                   alignItems:"center",
               }}>
 
-                  <Avatar
-                      onMouseOver={handleMouseOver}
-                      onMouseOut={handleMouseOut}
-                      sx={{
-                          position: 'relative',
-                          width: 180, height: 180,
-                          zIndex: 1,
-                          backgroundColor: 'white',
-                          cursor: 'pointer'
-                        }}
-                      onClick={updateAvatar}
-                  >
-                      <img
-                          src="../../public/defaultAvatar.svg"
-                          alt="overlay"
-                          style={{
-                              position: 'relative',
-                              width: '100%', height: '100%',
-                              zIndex: 1
-                          }}
-                      />
+                  {/*/!*updateAvatar*!/*/}
+                  {/*<Avatar*/}
+                  {/*    onMouseOver={handleMouseOver}*/}
+                  {/*    onMouseOut={handleMouseOut}*/}
+                  {/*    sx={{*/}
+                  {/*        position: 'relative',*/}
+                  {/*        width: 180, height: 180,*/}
+                  {/*        zIndex: 1,*/}
+                  {/*        backgroundColor: 'white',*/}
+                  {/*        cursor: 'pointer'*/}
+                  {/*      }}*/}
+                  {/*    onClick={updateAvatar}*/}
+                  {/*>*/}
+                  {/*    <img*/}
+                  {/*        src="../../public/defaultAvatar.svg"*/}
+                  {/*        alt="overlay"*/}
+                  {/*        style={{*/}
+                  {/*            position: 'relative',*/}
+                  {/*            width: '100%', height: '100%',*/}
+                  {/*            zIndex: 1*/}
+                  {/*        }}*/}
+                  {/*    />*/}
 
-                      {isHovering && (
-                          <img
-                              src="../../public/updateAvatar.svg"
-                              style={{
-                                  position: 'absolute',
-                                  marginTop: '63%',
-                                  marginLeft: '2%',
-                                  width: '30%',
-                                  height: '30%',
-                                  zIndex: 3
-                              }}
-                          />
-                      )}
-                  </Avatar>
+                  {/*    {isHovering && (*/}
+                  {/*        <img*/}
+                  {/*            src="../../public/updateAvatar.svg"*/}
+                  {/*            style={{*/}
+                  {/*                position: 'absolute',*/}
+                  {/*                marginTop: '63%',*/}
+                  {/*                marginLeft: '2%',*/}
+                  {/*                width: '30%',*/}
+                  {/*                height: '30%',*/}
+                  {/*                zIndex: 3*/}
+                  {/*            }}*/}
+                  {/*        />*/}
+                  {/*    )}*/}
+                  {/*</Avatar>*/}
 
-                  <Typography marginTop={2} component="h1" variant="h3">
-                      Welcome, User
-                  </Typography>
+                  {/*/!*TODO User要改*!/*/}
+                  {/*<Typography marginTop={2} component="h1" variant="h3">*/}
+                  {/*    Welcome, {userData!.displayName}*/}
+                  {/*</Typography>*/}
 
-                  <Paper sx={{width:'100%', marginTop:'5%'}} elevation={5}>
+                  <Paper sx={{
+                      width:'100%'
+                      // marginTop:'2%'
+                  }} elevation={5}>
                           <Grid sx={{
                               marginLeft: '3%',
                               marginTop: '3%'
@@ -108,11 +242,11 @@ export const ProfileScreen = () => {
                               <Typography component="h1" variant="h5">Basic info</Typography>
                           </Grid>
 
-                          <Grid container spacing={-2}
+                          <Grid container spacing={10}
                                 alignItems="center"
                           >
                               <Grid
-                                  item xs={3}
+                                  item xs={2}
                                   sx={{
                                       align:"left",
                                       marginLeft: '3%'
@@ -122,9 +256,10 @@ export const ProfileScreen = () => {
                               </Grid>
 
                               <Grid
-                                  item xs={3}
+                                  item xs={2}
                                   sx={{
-                                  align:"center"
+                                  // align:"center"
+                                  //     marginLeft: '7%'
                               }}>
                                   <TextField
                                       variant="outlined"
@@ -132,33 +267,34 @@ export const ProfileScreen = () => {
                                       required
                                       fullWidth
                                       id="displayName"
-                                      name="displayName"
-                                      autoComplete="username"
-                                      autoFocus
+                                      defaultValue={userData!.displayName}
+                                      onChange={handleDisplayNameChange}
+                                      // autoFocus
                                   />
                               </Grid>
 
-                              <Button
-                                  sx={{
-                                  marginLeft: '5%'
-                              }} disableElevation
-                                      variant="contained"
-                                      aria-label="Disabled elevation buttons">Update</Button>
+                              {/*<Button*/}
+                              {/*    sx={{*/}
+                              {/*    marginLeft: '5%'*/}
+                              {/*}} disableElevation*/}
+                              {/*        variant="contained"*/}
+                              {/*        aria-label="Disabled elevation buttons">Update</Button>*/}
 
                           </Grid>
                           <Divider />
-                          <Grid container spacing={-2}
-                                alignItems="center">
+                          <Grid container spacing={10}
+                                alignItems="center"
+                          >
 
-                              <Grid  item xs={3}
+                              <Grid  item xs={2}
                                      sx={{
                                          align:"left",
                                          marginLeft: '3%'
                                      }} >
                                   {/*//TODO*/}
-                                  <Typography>Birthday </Typography>
+                                  <Typography>First Name </Typography>
                               </Grid>
-                              <Grid item xs={3}
+                              <Grid item xs={2}
                                     sx={{
                                         align:"center"
                                     }}>
@@ -167,22 +303,48 @@ export const ProfileScreen = () => {
                                       margin="normal"
                                       required
                                       fullWidth
-                                      id="birthday"
-                                      name="birthday"
-                                      autoComplete="birthday"
+                                      id="firstName"
+                                      defaultValue={userData!.firstName}
+                                      onChange={handleFirstNameChange}
                                   />
                               </Grid>
 
-                              <Button sx={{
-                                  marginLeft: '5%',
-                              }} disableElevation
-                                      variant="contained"
-                                      aria-label="Disabled elevation buttons">Update</Button>
+                              <Grid  item xs={2}
+                                     sx={{
+                                         // align:"left",
+                                         marginLeft: '5%'
+                                     }}
+                              >
+                                  {/*//TODO*/}
+                                  <Typography>Last Name </Typography>
+                              </Grid>
+
+                              <Grid item xs={2}
+                                    // sx={{
+                                        // align:"center"
+                              >
+                              <TextField
+                                  variant="outlined"
+                                  margin="normal"
+                                  required
+                                  // fullWidth
+                                  id="lastName"
+                                  defaultValue={userData!.lastName}
+                                  onChange={handleLastNameChange}
+                              />
+
+                          </Grid>
+
+                              {/*<Button sx={{*/}
+                              {/*    marginLeft: '5%',*/}
+                              {/*}} disableElevation*/}
+                              {/*        variant="contained"*/}
+                              {/*        aria-label="Disabled elevation buttons">Update</Button>*/}
 
                           </Grid>
                           <Divider />
-                          <Grid container spacing={-2} alignItems="center">
-                              <Grid item xs={3}
+                          <Grid container spacing={10} alignItems="center">
+                              <Grid item xs={2}
                                     sx={{
                                         align:"left",
                                         marginLeft: '3%'
@@ -190,40 +352,54 @@ export const ProfileScreen = () => {
                                   {/*//TODO*/}
                                   <Typography>Gender </Typography>
                               </Grid>
-                              <Grid  item xs={3}
+                              <Grid  item xs={2}
                                      sx={{
-                                         align:"center"
+                                         align:"center",
+                                         marginBottom:'0.8%',
+                                         marginTop: '1.5%'
                                      }}>
-                                  <TextField
-                                      variant="outlined"
-                                      margin="normal"
-                                      required
-                                      fullWidth
-                                      id="gender"
-                                      name="gender"
-                                      autoComplete="gender"
-                                  />
+                                  {/*<TextField*/}
+                                  {/*    variant="outlined"*/}
+                                  {/*    margin="normal"*/}
+                                  {/*    required*/}
+                                  {/*    fullWidth*/}
+                                  {/*    id="gender"*/}
+                                  {/*    name="gender"*/}
+                                  {/*    autoComplete="gender"*/}
+                                  {/*/>*/}
+
+                                  <FormControl
+                                        sx={{
+                                            width:'100%'
+                                        }}
+                                  >
+                                      <Select value={userData!.gender} onChange={handleGenderChange}>
+                                          <MenuItem value={true}>Male</MenuItem>
+                                          <MenuItem value={false}>Female</MenuItem>
+                                      </Select>
+
+                                  </FormControl>
                               </Grid>
 
-                              <Button sx={{
-                                  marginLeft: '5%',
-                              }} disableElevation
-                                      variant="contained"
-                                      aria-label="Disabled elevation buttons">Update</Button>
+                              {/*<Button sx={{*/}
+                              {/*    marginLeft: '5%',*/}
+                              {/*}} disableElevation*/}
+                              {/*        variant="contained"*/}
+                              {/*        aria-label="Disabled elevation buttons">Update</Button>*/}
 
                           </Grid>
-                      </Paper>
+                      {/*</Paper>*/}
 
 
-                  <Paper sx={{width:'100%', marginTop:'5%'}} elevation={5}>
+                  {/*<Paper sx={{width:'100%', marginTop:'5%'}} elevation={5}>*/}
                       <Grid sx={{
                           marginLeft: '3%',
-                          marginTop: '3%'
+                          // marginTop: '3%'
                       }}>
                           <Typography component="h1" variant="h5">Contact info</Typography>
                       </Grid>
 
-                      <Grid container spacing={-2}
+                      <Grid container spacing={-20}
                             alignItems="center"
                       >
                           <Grid
@@ -233,7 +409,7 @@ export const ProfileScreen = () => {
                                   marginLeft: '3%'
                               }} >
                               {/*//TODO*/}
-                              <Typography>Email </Typography>
+                              <Typography>Address </Typography>
                           </Grid>
 
                           <Grid
@@ -246,22 +422,22 @@ export const ProfileScreen = () => {
                                   margin="normal"
                                   required
                                   fullWidth
-                                  id="email"
-                                  name="email"
-                                  autoComplete="email"
+                                  id="address"
+                                  defaultValue={userData!.address}
+                                  onChange={handleAddressChange}
                               />
                           </Grid>
 
-                          <Button
-                              sx={{
-                                  marginLeft: '5%'
-                              }} disableElevation
-                              variant="contained"
-                              aria-label="Disabled elevation buttons">Update</Button>
+                          {/*<Button*/}
+                          {/*    sx={{*/}
+                          {/*        marginLeft: '5%'*/}
+                          {/*    }} disableElevation*/}
+                          {/*    variant="contained"*/}
+                          {/*    aria-label="Disabled elevation buttons">Update</Button>*/}
 
                       </Grid>
                       <Divider />
-                      <Grid container spacing={-2}
+                      <Grid container spacing={-20}
                             alignItems="center">
 
                           <Grid  item xs={3}
@@ -282,21 +458,42 @@ export const ProfileScreen = () => {
                                   required
                                   fullWidth
                                   id="phone"
-                                  name="phone"
-                                  autoComplete="phone"
+                                  defaultValue={userData!.phone}
+                                  onChange={handlePhoneChange}
                               />
                           </Grid>
+
+
+
+                      </Grid>
+
+                      <Grid container spacing={-20}
+                            alignItems="center"
+                            marginBottom='1%'
+                            justifyContent="flex-end"
+                      >
+                          <Button sx={{
+                              marginLeft: '5%',
+                          }} disableElevation
+                                  variant="contained"
+                                  aria-label="Disabled elevation buttons"
+                             onClick={updateInfo}
+
+                          >Update</Button>
+
 
                           <Button sx={{
                               marginLeft: '5%',
                           }} disableElevation
                                   variant="contained"
-                                  aria-label="Disabled elevation buttons">Update</Button>
+                                  aria-label="Disabled elevation buttons"
+                            onClick={cancelUpdate}
+                          >Cancel</Button>
 
                       </Grid>
                   </Paper>
 
-                  <Paper sx={{width:'100%', marginTop:'5%'}} elevation={5}>
+                  <Paper sx={{width:'100%', marginTop:'3%'}} elevation={5}>
                       <Grid sx={{
                           marginLeft: '3%',
                           marginTop: '3%'

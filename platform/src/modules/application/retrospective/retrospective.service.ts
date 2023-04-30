@@ -184,4 +184,12 @@ export class RetrospectiveService {
       description,
     );
   }
+
+  public getNote(boardNoteId: UUID, boardSectionId: UUID) {
+    return this.boardNoteService.getByIdOrThrow(boardNoteId, boardSectionId);
+  }
+
+  public getSection(boardSectionId: UUID, boardId: UUID) {
+    return this.boardSectionService.getByIdOrThrow(boardSectionId, boardId);
+  }
 }

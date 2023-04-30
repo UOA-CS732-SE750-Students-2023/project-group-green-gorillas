@@ -9,6 +9,7 @@ import { BoardModule } from '../../domain/board/board.module';
 import { TeamDashboardModule } from '../../domain/team-dashboard/team-dashboard.module';
 import { BoardSectionModule } from '../../domain/board-section/board-section.module';
 import { BoardNoteModule } from '../../domain/board-note/board-note.module';
+import { SocketModule } from '../../gateway/socket/socket.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { BoardNoteModule } from '../../domain/board-note/board-note.module';
     TeamDashboardModule,
     BoardSectionModule,
     BoardNoteModule,
+    SocketModule,
   ],
   controllers: [RetrospectiveController],
   providers: [RetrospectiveService],

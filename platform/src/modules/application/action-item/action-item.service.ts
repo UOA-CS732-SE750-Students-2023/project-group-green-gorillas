@@ -153,4 +153,12 @@ export class ActionItemService {
 
     return this.aggregateActionItem(updatedActionItem);
   }
+
+  public async getActionItemById(actionId: UUID) {
+    const actionItem = await this.actionItemDomainService.getByIdOrThrow(
+      actionId,
+    );
+
+    return this.aggregateActionItem(actionItem);
+  }
 }

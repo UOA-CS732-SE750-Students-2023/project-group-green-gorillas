@@ -10,6 +10,12 @@ export enum BoardNoteType {
   GROUP = 'GROUP',
 }
 
+export enum BoardNoteColor {
+  PINK = 'pink',
+  blue = 'blue',
+  yellow = 'yellow',
+}
+
 export class BoardNote {
   public readonly id: UUID;
 
@@ -20,6 +26,8 @@ export class BoardNote {
   public readonly organisationId: UUID;
 
   public readonly teamId: UUID;
+
+  public readonly color: BoardNoteColor;
 
   public type: BoardNoteType;
 
@@ -47,6 +55,7 @@ export class BoardNote {
     createdBy: UUID,
     type,
     parentId: UUID | null,
+    color: BoardNoteColor,
   ) {
     this.id = uuid();
     this.boardSectionId = boardSectionId;
@@ -57,6 +66,7 @@ export class BoardNote {
     this.createdBy = createdBy;
     this.parentId = parentId;
     this.type = type;
+    this.color = color;
     this.updatedAt = DateTime.now();
     this.createdAt = DateTime.now();
   }

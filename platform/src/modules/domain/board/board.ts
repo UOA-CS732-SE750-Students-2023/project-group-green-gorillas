@@ -10,7 +10,7 @@ export enum BoardStage {
   VOTE = 'Vote',
   DISCUSS = 'Discuss',
   REVIEW = 'Review',
-  FINALIZE = 'FINALIZE',
+  FINALIZE = 'Finalized',
 }
 
 export class Board {

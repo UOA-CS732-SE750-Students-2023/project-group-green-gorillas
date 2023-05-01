@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { BoardNoteRepository } from './board-note.repository';
-import { BoardNote, BoardNoteType } from './board-note';
+import { BoardNote, BoardNoteColor, BoardNoteType } from './board-note';
 import { UUID } from '../../../types/uuid.type';
 import { BoardNoteFactory } from './board-note.factory';
 import { InternalException } from '../../../exceptions/internal-exception';
@@ -22,6 +22,7 @@ export class BoardNoteService {
     createdBy: UUID,
     type: BoardNoteType,
     parentId: UUID | null,
+    color: BoardNoteColor,
   ): Promise<BoardNote> {
     return this.boardNoteRepository.save(
       BoardNoteFactory.create(
@@ -33,6 +34,7 @@ export class BoardNoteService {
         createdBy,
         type,
         parentId,
+        color,
       ),
     );
   }

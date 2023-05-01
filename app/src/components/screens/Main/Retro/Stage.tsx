@@ -17,7 +17,7 @@ enum RetroStage {
   VOTE = "Vote",
   DISCUSS = "Discuss",
   REVIEW = "Review",
-  FINALIZE = "FINALIZE",
+  FINALIZE = "Finalized",
 }
 
 type Props = {
@@ -27,7 +27,7 @@ type Props = {
 function Stage({ retro }: Props) {
   const stageDisplay: any = {
     [RetroStage.THINK]: <Think retro={retro} />,
-    // [RetroStage.GROUP]: <Group retro={retro} retroData={retroData} setGroups={setGroups} />
+    [RetroStage.GROUP]: <Group retro={retro} />,
     // [RetroStage.VOTE]: <Vote retro={retro} groups={groups} setDiscItems={setDiscItems} />
     // [RetroStage.DISCUSS]: (
     //   <Discuss

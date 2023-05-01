@@ -89,11 +89,52 @@ export const useRetro = (boardId: string, teamId: string) => {
     });
   };
 
+  const findBoardSectionByBoardNoteId = (retro: any, boardNoteId: string) => {
+    let result = null;
+    retro.boardSections.forEach((boardSection: any) => {
+      boardSection.boardNotes.forEach((boardNote: any) => {
+        if (boardNote.id === boardNoteId) {
+          result = boardNote.boardSectionId;
+        }
+      });
+    });
+
+    return result;
+  };
+
   const handleNoteUpdate = (data: any) => {
     setRetro((retro: any) => {
       if (!retro) return retro;
 
       const cloneRetro = _.cloneDeep(retro);
+
+      const existingBoardNoteBoardSectionId = findBoardSectionByBoardNoteId(
+        retro,
+        data.id
+      );
+
+      if (
+        existingBoardNoteBoardSectionId &&
+        data.boardSectionId !== existingBoardNoteBoardSectionId
+      ) {
+        const foundSection = cloneRetro.boardSections.find(
+          (section: any) => section.id === existingBoardNoteBoardSectionId
+        );
+
+        foundSection.boardNotes = foundSection.boardNotes.filter(
+          (s: any) => s.id !== data.id
+        );
+
+        const boardSection = cloneRetro.boardSections.find(
+          (section: any) => section.id === data.boardSectionId
+        );
+
+        if (!boardSection) return cloneRetro;
+
+        boardSection.boardNotes.push(data);
+
+        return cloneRetro;
+      }
 
       const boardSection = cloneRetro.boardSections.find(
         (section: any) => section.id === data.boardSectionId

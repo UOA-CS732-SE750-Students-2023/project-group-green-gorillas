@@ -1,19 +1,47 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import GroupNote from "./GroupNote";
 import stageStyles from "../styles/stage.module.css";
 
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { Box } from "@mui/material";
+import { request } from "../../../../../api/request";
+import { UPDATE_RETRO_NOTE } from "../../../../../api/api";
+import { debounce } from "../../../../../utils/debounce";
 
-function Group({ colId, id, items, index, setGroupName, name }: any) {
+function Group({ colId, id, items, index, name }: any) {
+  const noteUpdateRequestDebounce = useMemo(() => {
+    return debounce(1000);
+  }, []);
+
+  const [noteName, setNoteName] = useState("");
+
+  useEffect(() => {
+    setNoteName(name);
+  }, [name]);
+
+  const updateNote = async (noteValue: string) => {
+    await request.patch(UPDATE_RETRO_NOTE, {
+      boardNoteId: id,
+      note: noteValue,
+    });
+  };
+
+  const onChangeGroupNameChange = async (e: any) => {
+    const newName = e.target.value;
+
+    setNoteName(newName);
+
+    noteUpdateRequestDebounce(() => updateNote(newName));
+  };
+
   return (
     <Box className={stageStyles.notes__group}>
       <Box
         component="input"
         className={stageStyles.group__input}
-        value={name}
-        onChange={(e) => setGroupName(colId, id, e.target.value)}
+        value={noteName}
+        onChange={onChangeGroupNameChange}
       />
       <Droppable droppableId={id}>
         {(provided, snapshot) => {
@@ -34,43 +62,6 @@ function Group({ colId, id, items, index, setGroupName, name }: any) {
       </Droppable>
     </Box>
   );
-
-  /*
-  return (
-    <Draggable draggableId={id} index={index} key={id}>
-      {(provided, snapshot) => {
-        return (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            className="notes__group"
-            style={{
-              ...provided.dragHandleProps.style
-            }}
-          >
-            <h3 {...provided.dragHandleProps}>Group 1</h3>
-            <Droppable id={id}>
-              {(provided, snapshot) => {
-                return (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    style={{height: '200px', backgroundColor: snapshot.isDraggingOver ? 'blue' : '#f2f2f2'}}
-                  >
-                    {
-                      items.map((item, index) => (
-                        <GroupNote id={item.id} index={index} note={item} key={item.id} />
-                      ))
-                    }
-                  </div>
-                )
-              }}
-            </Droppable>
-          </div>
-        )
-      }}
-    </Draggable> 
-  );*/
 }
 
 export default Group;

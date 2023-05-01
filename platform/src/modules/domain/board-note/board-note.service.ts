@@ -39,22 +39,16 @@ export class BoardNoteService {
     );
   }
 
-  public delete(id: UUID, boardSectionId: UUID): Promise<void> {
-    return this.boardNoteRepository.delete(id, boardSectionId);
+  public delete(id: UUID): Promise<void> {
+    return this.boardNoteRepository.delete(id);
   }
 
-  public getById(
-    id: UUID,
-    boardSectionId: UUID,
-  ): Promise<BoardNote | undefined> {
-    return this.boardNoteRepository.getById(id, boardSectionId);
+  public getById(id: UUID): Promise<BoardNote | undefined> {
+    return this.boardNoteRepository.getById(id);
   }
 
-  public async getByIdOrThrow(
-    id: UUID,
-    boardSectionId: UUID,
-  ): Promise<BoardNote> {
-    const boardNote = await this.getById(id, boardSectionId);
+  public async getByIdOrThrow(id: UUID): Promise<BoardNote> {
+    const boardNote = await this.getById(id);
 
     if (!boardNote) {
       throw new InternalException(
@@ -67,26 +61,24 @@ export class BoardNoteService {
     return boardNote;
   }
 
-  public async updateNote(
-    id: UUID,
-    boardSectionId: UUID,
-    note: string,
-  ): Promise<BoardNote> {
-    const boardNote = await this.getByIdOrThrow(id, boardSectionId);
+  public async updateNote(id: UUID, note: string): Promise<BoardNote> {
+    const boardNote = await this.getByIdOrThrow(id);
 
     boardNote.updateNote(note);
 
     return this.boardNoteRepository.save(boardNote);
   }
 
-  public async updateParentId(
+  public async updateNoteGroup(
     id: UUID,
-    boardSectionId: UUID,
     parentId: UUID,
+    boardSectionId: UUID,
   ): Promise<BoardNote> {
-    const boardNote = await this.getByIdOrThrow(id, boardSectionId);
+    const boardNote = await this.getByIdOrThrow(id);
 
     boardNote.updateParentId(parentId);
+
+    boardNote.updateBoardSectionId(boardSectionId);
 
     return this.boardNoteRepository.save(boardNote);
   }

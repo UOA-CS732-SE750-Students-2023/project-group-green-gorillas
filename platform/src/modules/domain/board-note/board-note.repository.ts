@@ -22,12 +22,9 @@ export class BoardNoteRepository extends DatabaseRepository<BoardNote> {
     );
   }
 
-  public async getById(
-    id: UUID,
-    boardSectionId: UUID,
-  ): Promise<BoardNote | undefined> {
+  public async getById(id: UUID): Promise<BoardNote | undefined> {
     try {
-      return this.getItem({ id, boardSectionId }, BoardNote);
+      return this.getItem({ id }, BoardNote);
     } catch (error) {
       throw new InternalException('BOARD_NOTE.FAILED_TO_GET', error.message);
     }
@@ -41,9 +38,9 @@ export class BoardNoteRepository extends DatabaseRepository<BoardNote> {
     }
   }
 
-  public async delete(id: UUID, boardSectionId: UUID): Promise<void> {
+  public async delete(id: UUID): Promise<void> {
     try {
-      await this.deleteItem({ id, boardSectionId });
+      await this.deleteItem({ id });
     } catch (error) {
       throw new InternalException('BOARD_NOTE.FAILED_TO_DELETE', error.message);
     }
@@ -73,31 +70,6 @@ export class BoardNoteRepository extends DatabaseRepository<BoardNote> {
     }
   }
 
-  public async listByBoardSectionId(
-    boardSectionId: UUID,
-  ): Promise<BoardNote[]> {
-    const command = new QueryCommand({
-      TableName: this.tableName,
-      ExpressionAttributeValues: marshall({
-        ':boardSectionId': boardSectionId,
-      }),
-      KeyConditionExpression: 'boardSectionId = :boardSectionId',
-    });
-
-    try {
-      const { Items } = await this.client.send(command);
-
-      return (
-        Items?.map((item) => plainToClass(BoardNote, unmarshall(item))) ?? []
-      );
-    } catch (error) {
-      throw new InternalException(
-        'BOARD_NOTE.FAILED_TO_LIST_BOARD_SECTION_ID',
-        error.message,
-      );
-    }
-  }
-
   protected getTableDefinition(): CreateTableCommandInput {
     return {
       TableName: this.tableName,
@@ -107,22 +79,14 @@ export class BoardNoteRepository extends DatabaseRepository<BoardNote> {
           AttributeType: 'S',
         },
         {
-          AttributeName: 'boardSectionId',
-          AttributeType: 'S',
-        },
-        {
           AttributeName: 'boardId',
           AttributeType: 'S',
         },
       ],
       KeySchema: [
         {
-          AttributeName: 'boardSectionId',
-          KeyType: 'HASH',
-        },
-        {
           AttributeName: 'id',
-          KeyType: 'RANGE',
+          KeyType: 'HASH',
         },
       ],
       GlobalSecondaryIndexes: [

@@ -64,36 +64,34 @@ export class AddNoteRequest {
 
   @IsEnum(BoardNoteColor)
   boardNoteColor: BoardNoteColor;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
 }
 
 export class DeleteNoteRequestParams {
   @IsUUID()
   boardNoteId!: UUID;
-
-  @IsUUID()
-  boardSectionId!: UUID;
 }
 
 export class UpdateNoteRequest {
   @IsUUID()
   boardNoteId: UUID;
 
-  @IsUUID()
-  boardSectionId!: UUID;
-
   @IsString()
   note: string;
 }
 
-export class UpdateNoteParentIdRequest {
+export class UpdateNoteGroup {
   @IsUUID()
   boardNoteId: UUID;
 
   @IsUUID()
-  boardSectionId!: UUID;
+  parentNoteId!: UUID;
 
   @IsUUID()
-  parentNoteId!: UUID;
+  boardSectionId!: UUID;
 }
 
 export class AddSectionRequest {

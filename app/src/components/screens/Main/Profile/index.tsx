@@ -36,10 +36,8 @@ interface UserData {
     phone: string;
     address: string;
     gender: boolean;
-    password:string;
+    password: string;
 }
-
-
 
 export const ProfileScreen = () => {
 
@@ -49,14 +47,17 @@ export const ProfileScreen = () => {
         displayName: user!.displayName,
         firstName: user!.firstName,
         lastName: user!.lastName,
-        // phone: user!.phone,
-        phone: 'user!.phone',
-        // address: user!.address,
-        address: 'user!.address',
-        // gender: user!.gender,
-        gender: true,
-        // password: user!.password
-        password: 'user!.password'
+        phone: user!.phone,
+        address: user!.address,
+        gender: user!.gender,
+        password: user!.password,
+
+
+
+        // phone: 'user!.phone',
+        // address: 'user!.address',
+        // password: 'user!.password',
+        // gender: true
     });
 
 

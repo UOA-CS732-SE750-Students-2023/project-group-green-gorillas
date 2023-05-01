@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import {CssBaseline, Paper, Container, Box, Input, Button, CardMedia, Grid, Card} from "@mui/material";
-import {ProfilePath} from "../index";
 
 import {useHistory} from 'react-router-dom';
 import {MainScreenPath} from "../../Main";

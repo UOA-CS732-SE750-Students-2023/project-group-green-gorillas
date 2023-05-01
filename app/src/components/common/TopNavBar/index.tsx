@@ -18,9 +18,6 @@ import { useSignOut } from "../../../hooks/useSignOut";
 import {Link} from "react-router-dom";
 import {MainScreenPath} from "../../screens/Main";
 import { useHistory } from "react-router-dom";
-import { useHistory } from "react-router-dom";
-import { MainScreenPath } from "../../screens/Main";
-import { AdminScreenPath } from "../../screens/Main/Admin/AdminScreenPath";
 
 export const TopNavBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(

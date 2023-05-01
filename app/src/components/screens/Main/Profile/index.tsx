@@ -10,27 +10,33 @@ import {
     Paper,
     Divider,
     CssBaseline,
-    FormControl, InputLabel, MenuItem, Select
+    FormControl,
+    MenuItem, Select,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Fade
 } from "@mui/material";
-import axios from 'axios';
 import { SelectChangeEvent } from "@mui/material/Select";
 
-
 import {useHistory} from 'react-router-dom';
-import {useCurrentUser} from "../../../hooks/useCurrentUser";
+import { useCurrentUser } from "../../../../hooks/useCurrentUser";
+import { request } from "../../../../api/request";
 
 
 export enum ProfilePath {
     UpdateAvatar = "/main/profile_avatar"
 }
 
-interface userData {
+interface UserData {
     displayName: string;
     firstName: string;
     lastName: string;
     phone: string;
     address: string;
-    gender: boolean
+    gender: boolean;
+    password:string;
 }
 
 
@@ -39,32 +45,38 @@ export const ProfileScreen = () => {
 
     const {user} = useCurrentUser();
 
-    const [userData, setUserData] = useState<userData | null>({
+    const [userData, setUserData] = useState<UserData | null>({
         displayName: user!.displayName,
         firstName: user!.firstName,
-        lastName: 'Wang',
-        phone:'123',
-        address:'sss',
-        gender: true
+        lastName: user!.lastName,
+        // phone: user!.phone,
+        phone: 'user!.phone',
+        // address: user!.address,
+        address: 'user!.address',
+        // gender: user!.gender,
+        gender: true,
+        // password: user!.password
+        password: 'user!.password'
     });
 
 
     useEffect(() => {
         // setUserData(user)
+        console.log(user);
     })
 
     // // Get user initial info
-    const fetchData = () => {
-
-        axios.put('https://jsonplaceholder.typicode.com/posts')
-            .then(response => {
-
-                }
-            )
-            .catch(error => {
-                console.log(error);
-            })
-    }
+    // const fetchData = () => {
+    //
+    //     axios.put('https://jsonplaceholder.typicode.com/posts')
+    //         .then(response => {
+    //
+    //             }
+    //         )
+    //         .catch(error => {
+    //             console.log(error);
+    //         })
+    // }
 
 
     // Avatar animation
@@ -133,6 +145,7 @@ export const ProfileScreen = () => {
 
     const updateInfo = () => {
 
+
         userData!.displayName = currentDisplayName;
         userData!.firstName = currentFirstName;
         userData!.lastName = currentLastName;
@@ -140,22 +153,31 @@ export const ProfileScreen = () => {
         userData!.address = currentAddress;
         userData!.gender = currentGender;
 
-        setUserData(userData);
+        // setUserData(userData);
 
 
         console.log(userData);
 
+        try {
+            const data = request.put<UserData>('https://localhost:8080/api/user/current', userData);
+
+            console.log(data);
+        } catch (error){
+            console.log(error);
+        }
+
+
 
         // axios.put('https://localhost:8080/api/user/current', userData)
         //     .then(response => {
-        //
+        //             console.log(response);
         //         }
         //     )
         //     .catch(error => {
         //         console.log(error);
         //     })
 
-        history.go(0);
+        // history.go(0);
     }
 
 
@@ -163,15 +185,68 @@ export const ProfileScreen = () => {
 
 
   // TODO route
-  const resetPassword = () => {
-     history.push('')
+
+    const [open, setOpen] = useState(false);
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const handleOpen = () => {
+      setOpen(true);
   }
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleOldPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setOldPassword(event.target.value);
+    };
+
+    const handleNewPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setNewPassword(event.target.value);
+    };
+
+    const handleConfirmNewPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setConfirmNewPassword(event.target.value);
+    };
+
+    const handleSave = () => {
+        if (oldPassword !== 'old'){
+            alert('Current Password is not correct!')
+        }
+
+
+        if (newPassword !== confirmNewPassword) {
+            alert('New Passwords do not match!');
+            return;
+        }
+
+        try {
+            const data = request.put<UserData>('https://localhost:8080/api/auth/change-password', newPassword);
+
+            console.log(data);
+        } catch (error){
+            console.log(error);
+        }
+
+
+        handleClose();
+    };
+
+
+    const handleButtonClick = () => {
+        history.push('/');
+    };
+
+
+
 
   const updateAvatar = () => {
       history.push(ProfilePath.UpdateAvatar)
   }
 
-  return (
+  // @ts-ignore
+    return (
       <React.Fragment>
           <CssBaseline />
           <Container sx={{
@@ -524,16 +599,66 @@ export const ProfileScreen = () => {
                               }} disableElevation
                               variant="contained"
                               aria-label="Disabled elevation buttons"
-                              onClick={resetPassword}
+                              onClick={handleOpen}
                           >Reset
                           </Button>
 
+                          <Dialog open={open} onClose={handleClose}
+
+                                  TransitionComponent={Fade}
+                                  // disablePortal={true}
+                          >
+                              <DialogTitle>  Update Password</DialogTitle>
+                              <DialogContent>
+                                  <TextField
+                                      label="Current Password"
+                                      type="password"
+                                      value={oldPassword}
+                                      onChange={handleOldPasswordChange}
+                                      fullWidth
+                                      margin="normal"
+                                  />
+                                  <TextField
+                                      label="New Password"
+                                      type="password"
+                                      value={newPassword}
+                                      onChange={handleNewPasswordChange}
+                                      fullWidth
+                                      margin="normal"
+                                  />
+                                  <TextField
+                                      label="Confirm New Password"
+                                      type="password"
+                                      value={confirmNewPassword}
+                                      onChange={handleConfirmNewPasswordChange}
+                                      fullWidth
+                                      margin="normal"
+                                  />
+
+                              </DialogContent>
+                              <DialogActions>
+                                  <Button onClick={handleClose} color="primary">
+                                      Cancel
+                                  </Button>
+                                  <Button onClick={handleSave} color="primary">
+                                      Save
+                                  </Button>
+                              </DialogActions>
+                          </Dialog>
                       </Grid>
 
                   </Paper>
 
 
                   {/*<Link to="/">Back to Home</Link>*/}
+
+                  <Button variant="contained" color="primary"
+                          sx={{marginTop:'1%',
+                              marginRight: '-85%'
+                          }}
+                          onClick={handleButtonClick}>
+                      Back to home
+                  </Button>
 
               </Box>
 

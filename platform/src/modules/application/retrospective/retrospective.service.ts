@@ -145,13 +145,14 @@ export class RetrospectiveService {
     type: BoardNoteType,
     parentId: UUID | null,
     noteColor: BoardNoteColor,
+    note: string,
   ) {
     return this.boardNoteService.create(
       boardSectionId,
       boardId,
       organisationId,
       teamId,
-      '',
+      note,
       createdBy,
       type,
       parentId,
@@ -159,24 +160,20 @@ export class RetrospectiveService {
     );
   }
 
-  public updateNote(boardNoteId: UUID, boardSectionId: UUID, note: string) {
-    return this.boardNoteService.updateNote(boardNoteId, boardSectionId, note);
+  public updateNote(boardNoteId: UUID, note: string) {
+    return this.boardNoteService.updateNote(boardNoteId, note);
   }
 
-  public updateNoteParentId(
-    boardNoteId: UUID,
-    boardSectionId: UUID,
-    parentId: UUID,
-  ) {
-    return this.boardNoteService.updateParentId(
+  public updateNoteGroup(boardNoteId: UUID, parentId: UUID, boardSectionId) {
+    return this.boardNoteService.updateNoteGroup(
       boardNoteId,
-      boardSectionId,
       parentId,
+      boardSectionId,
     );
   }
 
-  public deleteNote(boardNoteId: UUID, boardSectionId: UUID) {
-    return this.boardNoteService.delete(boardNoteId, boardSectionId);
+  public deleteNote(boardNoteId: UUID) {
+    return this.boardNoteService.delete(boardNoteId);
   }
 
   public addSection(
@@ -217,8 +214,8 @@ export class RetrospectiveService {
     );
   }
 
-  public getNote(boardNoteId: UUID, boardSectionId: UUID) {
-    return this.boardNoteService.getByIdOrThrow(boardNoteId, boardSectionId);
+  public getNote(boardNoteId: UUID) {
+    return this.boardNoteService.getByIdOrThrow(boardNoteId);
   }
 
   public getSection(boardSectionId: UUID, boardId: UUID) {

@@ -21,7 +21,7 @@ import {
   DeleteRetrospectiveRequestParams,
   DeleteSectionParams,
   GetRetrospectiveRequestParam,
-  UpdateNoteParentIdRequest,
+  UpdateNoteGroup,
   UpdateNoteRequest,
   UpdateRetroNameRequest,
   UpdateSectionDescriptionRequest,
@@ -82,10 +82,11 @@ export class RetrospectiveController {
       teamId,
       boardNoteType,
       boardNoteColor,
+      note = '',
     }: AddNoteRequest,
     @RequestUser() user: RequestUserType,
   ) {
-    const note = await this.retrospectiveService.addNote(
+    const noteEntity = await this.retrospectiveService.addNote(
       boardSectionId,
       boardId,
       user.organisationId,
@@ -94,15 +95,16 @@ export class RetrospectiveController {
       boardNoteType,
       null,
       boardNoteColor,
+      note,
     );
 
     this.socketEventService.broadcastRoom(
-      note.boardId,
+      noteEntity.boardId,
       ClientSocketMessageEvent.BOARD_NOTE,
-      buildSocketEvent(SocketEventOperation.CREATE, note),
+      buildSocketEvent(SocketEventOperation.CREATE, noteEntity),
     );
 
-    return note;
+    return noteEntity;
   }
 
   @Post('add-section')
@@ -146,15 +148,15 @@ export class RetrospectiveController {
     return retro;
   }
 
-  @Patch('update-note-parent-id')
-  public async updateNoteParentId(
+  @Patch('update-note-group')
+  public async updateNoteGroup(
     @Body()
-    { boardNoteId, boardSectionId, parentNoteId }: UpdateNoteParentIdRequest,
+    { boardNoteId, parentNoteId, boardSectionId }: UpdateNoteGroup,
   ) {
-    const boardNote = await this.retrospectiveService.updateNoteParentId(
+    const boardNote = await this.retrospectiveService.updateNoteGroup(
       boardNoteId,
-      boardSectionId,
       parentNoteId,
+      boardSectionId,
     );
 
     this.socketEventService.broadcastRoom(
@@ -167,12 +169,9 @@ export class RetrospectiveController {
   }
 
   @Patch('update-note')
-  public async updateNote(
-    @Body() { boardNoteId, boardSectionId, note }: UpdateNoteRequest,
-  ) {
+  public async updateNote(@Body() { boardNoteId, note }: UpdateNoteRequest) {
     const boardNote = await this.retrospectiveService.updateNote(
       boardNoteId,
-      boardSectionId,
       note,
     );
 
@@ -242,16 +241,11 @@ export class RetrospectiveController {
     return retro;
   }
 
-  @Delete('delete-note/:boardNoteId/board-section/:boardSectionId')
-  public async deleteNote(
-    @Param() { boardNoteId, boardSectionId }: DeleteNoteRequestParams,
-  ) {
-    const note = await this.retrospectiveService.getNote(
-      boardNoteId,
-      boardSectionId,
-    );
+  @Delete('delete-note/:boardNoteId')
+  public async deleteNote(@Param() { boardNoteId }: DeleteNoteRequestParams) {
+    const note = await this.retrospectiveService.getNote(boardNoteId);
 
-    await this.retrospectiveService.deleteNote(boardNoteId, boardSectionId);
+    await this.retrospectiveService.deleteNote(boardNoteId);
 
     this.socketEventService.broadcastRoom(
       note.boardId,

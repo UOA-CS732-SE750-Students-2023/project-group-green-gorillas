@@ -9,13 +9,12 @@ import { debounce } from "../../../../../utils/debounce";
 
 export const ThinkNote = ({ note, setFocusedNoteRef, focusedNoteRef }: any) => {
   const deleteNote = async () => {
-    await request.delete(DELETE_RETRO_NOTE(note.id, note.boardSectionId));
+    await request.delete(DELETE_RETRO_NOTE(note.id));
   };
 
   const updateNote = async (noteValue: string) => {
     await request.patch(UPDATE_RETRO_NOTE, {
       boardNoteId: note.id,
-      boardSectionId: note.boardSectionId,
       note: noteValue,
     });
   };

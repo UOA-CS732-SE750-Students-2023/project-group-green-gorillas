@@ -19,7 +19,7 @@ export enum BoardNoteColor {
 export class BoardNote {
   public readonly id: UUID;
 
-  public readonly boardSectionId: UUID;
+  public boardSectionId: UUID;
 
   public readonly boardId: UUID;
 
@@ -78,5 +78,9 @@ export class BoardNote {
 
   public updateParentId(parentId: UUID): void {
     this.parentId = parentId;
+  }
+
+  public updateBoardSectionId(boardSectionId: UUID): void {
+    this.boardSectionId = boardSectionId;
   }
 }

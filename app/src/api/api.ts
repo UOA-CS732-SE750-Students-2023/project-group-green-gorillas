@@ -22,9 +22,7 @@ export const ACTIONITEMS_BY_ID = (teamId: string) =>
 export const UPDATE_ACTIONITEMS_BY_ID = `${apiBaseUrl}/action-item/update-status`;
 export const TEMPLATE = () => `${apiBaseUrl}/retrospective/template/list`;
 export const ADD_RETRO_NOTE = `${apiBaseUrl}/retrospective/add-note`;
-export const DELETE_RETRO_NOTE = (
-  boardNoteId: string,
-  boardSectionId: string
-) =>
-  `${apiBaseUrl}/retrospective/delete-note/${boardNoteId}/board-section/${boardSectionId}`;
+export const DELETE_RETRO_NOTE = (boardNoteId: string) =>
+  `${apiBaseUrl}/retrospective/delete-note/${boardNoteId}`;
 export const UPDATE_RETRO_NOTE = `${apiBaseUrl}/retrospective/update-note`;
+export const UPDATE_RETRO_NOTE_GROUP = `${apiBaseUrl}/retrospective/update-note-group`;

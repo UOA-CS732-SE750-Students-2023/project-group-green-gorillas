@@ -21,6 +21,7 @@ import {
   DeleteRetrospectiveRequestParams,
   DeleteSectionParams,
   GetRetrospectiveRequestParam,
+  UpdateNoteParentIdRequest,
   UpdateNoteRequest,
   UpdateRetroNameRequest,
   UpdateSectionDescriptionRequest,
@@ -74,7 +75,8 @@ export class RetrospectiveController {
 
   @Post('add-note')
   public async addNote(
-    @Body() { boardId, boardSectionId, teamId }: AddNoteRequest,
+    @Body()
+    { boardId, boardSectionId, teamId, boardNoteType }: AddNoteRequest,
     @RequestUser() user: RequestUserType,
   ) {
     const note = await this.retrospectiveService.addNote(
@@ -83,6 +85,8 @@ export class RetrospectiveController {
       user.organisationId,
       teamId,
       user.id,
+      boardNoteType,
+      null,
     );
 
     this.socketEventService.broadcastRoom(
@@ -133,6 +137,26 @@ export class RetrospectiveController {
     );
 
     return retro;
+  }
+
+  @Patch('update-note-parent-id')
+  public async updateNoteParentId(
+    @Body()
+    { boardNoteId, boardSectionId, parentNoteId }: UpdateNoteParentIdRequest,
+  ) {
+    const boardNote = await this.retrospectiveService.updateNoteParentId(
+      boardNoteId,
+      boardSectionId,
+      parentNoteId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      boardNote.boardId,
+      ClientSocketMessageEvent.BOARD_NOTE,
+      buildSocketEvent(SocketEventOperation.UPDATE, boardNote),
+    );
+
+    return boardNote;
   }
 
   @Patch('update-note')

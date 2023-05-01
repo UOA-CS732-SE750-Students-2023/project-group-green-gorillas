@@ -45,6 +45,8 @@ export class BoardNote {
     teamId: UUID,
     note: string,
     createdBy: UUID,
+    type,
+    parentId: UUID | null,
   ) {
     this.id = uuid();
     this.boardSectionId = boardSectionId;
@@ -53,8 +55,8 @@ export class BoardNote {
     this.teamId = teamId;
     this.note = note;
     this.createdBy = createdBy;
-    this.parentId = null;
-    this.type = BoardNoteType.NORMAL;
+    this.parentId = parentId;
+    this.type = type;
     this.updatedAt = DateTime.now();
     this.createdAt = DateTime.now();
   }
@@ -62,5 +64,9 @@ export class BoardNote {
   public updateNote(note: string): void {
     this.note = note;
     this.updatedAt = DateTime.now();
+  }
+
+  public updateParentId(parentId: UUID): void {
+    this.parentId = parentId;
   }
 }

@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { BoardNoteRepository } from './board-note.repository';
-import { BoardNote } from './board-note';
+import { BoardNote, BoardNoteType } from './board-note';
 import { UUID } from '../../../types/uuid.type';
 import { BoardNoteFactory } from './board-note.factory';
 import { InternalException } from '../../../exceptions/internal-exception';
@@ -20,6 +20,8 @@ export class BoardNoteService {
     teamId: UUID,
     note: string,
     createdBy: UUID,
+    type: BoardNoteType,
+    parentId: UUID | null,
   ): Promise<BoardNote> {
     return this.boardNoteRepository.save(
       BoardNoteFactory.create(
@@ -29,6 +31,8 @@ export class BoardNoteService {
         teamId,
         note,
         createdBy,
+        type,
+        parentId,
       ),
     );
   }
@@ -69,6 +73,18 @@ export class BoardNoteService {
     const boardNote = await this.getByIdOrThrow(id, boardSectionId);
 
     boardNote.updateNote(note);
+
+    return this.boardNoteRepository.save(boardNote);
+  }
+
+  public async updateParentId(
+    id: UUID,
+    boardSectionId: UUID,
+    parentId: UUID,
+  ): Promise<BoardNote> {
+    const boardNote = await this.getByIdOrThrow(id, boardSectionId);
+
+    boardNote.updateParentId(parentId);
 
     return this.boardNoteRepository.save(boardNote);
   }

@@ -6,7 +6,10 @@ import {
   IsUUID,
 } from 'class-validator';
 import { UUID } from '../../../../types/uuid.type';
-import { BoardNoteType } from '../../../domain/board-note/board-note';
+import {
+  BoardNoteColor,
+  BoardNoteType,
+} from '../../../domain/board-note/board-note';
 
 export class CreateRetroRequestRequest {
   @IsUUID()
@@ -58,6 +61,9 @@ export class AddNoteRequest {
 
   @IsEnum(BoardNoteType)
   boardNoteType: BoardNoteType;
+
+  @IsEnum(BoardNoteColor)
+  boardNoteColor: BoardNoteColor;
 }
 
 export class DeleteNoteRequestParams {

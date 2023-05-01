@@ -12,7 +12,10 @@ import { groupBy } from 'lodash';
 import { InternalException } from '../../../exceptions/internal-exception';
 import { ActionItemService } from '../../domain/action-item/action-item.service';
 import { UtilsService } from '../utils/utils.service';
-import { BoardNoteType } from '../../domain/board-note/board-note';
+import {
+  BoardNoteColor,
+  BoardNoteType,
+} from '../../domain/board-note/board-note';
 
 @Injectable()
 export class RetrospectiveService {
@@ -141,6 +144,7 @@ export class RetrospectiveService {
     createdBy: UUID,
     type: BoardNoteType,
     parentId: UUID | null,
+    noteColor: BoardNoteColor,
   ) {
     return this.boardNoteService.create(
       boardSectionId,
@@ -151,6 +155,7 @@ export class RetrospectiveService {
       createdBy,
       type,
       parentId,
+      noteColor,
     );
   }
 

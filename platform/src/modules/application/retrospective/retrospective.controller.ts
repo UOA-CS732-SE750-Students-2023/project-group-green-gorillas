@@ -76,7 +76,13 @@ export class RetrospectiveController {
   @Post('add-note')
   public async addNote(
     @Body()
-    { boardId, boardSectionId, teamId, boardNoteType }: AddNoteRequest,
+    {
+      boardId,
+      boardSectionId,
+      teamId,
+      boardNoteType,
+      boardNoteColor,
+    }: AddNoteRequest,
     @RequestUser() user: RequestUserType,
   ) {
     const note = await this.retrospectiveService.addNote(
@@ -87,6 +93,7 @@ export class RetrospectiveController {
       user.id,
       boardNoteType,
       null,
+      boardNoteColor,
     );
 
     this.socketEventService.broadcastRoom(

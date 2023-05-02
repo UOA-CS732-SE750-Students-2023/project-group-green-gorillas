@@ -30,3 +30,5 @@ export const DELETE_RETRO_NOTE = (boardNoteId: string) =>
 export const UPDATE_RETRO_NOTE = `${apiBaseUrl}/retrospective/update-note`;
 export const ASSIGN_NOTE_GROUP = `${apiBaseUrl}/retrospective/assign-note-group`;
 export const UNASSIGN_NOTE_GROUP = `${apiBaseUrl}/retrospective/un-assign-note-group`;
+export const VOTE_NOTE = `${apiBaseUrl}/retrospective/vote-note`;
+export const UNVOTE_NOTE = `${apiBaseUrl}/retrospective/un-vote-note`;

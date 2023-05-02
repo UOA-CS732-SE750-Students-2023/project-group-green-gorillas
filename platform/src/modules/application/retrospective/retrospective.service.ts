@@ -16,6 +16,7 @@ import {
   BoardNoteColor,
   BoardNoteType,
 } from '../../domain/board-note/board-note';
+import { BoardNoteVoteService } from '../../domain/board-note-vote/board-note-vote.service';
 
 @Injectable()
 export class RetrospectiveService {
@@ -27,12 +28,28 @@ export class RetrospectiveService {
     private readonly boardNoteService: BoardNoteService,
     private readonly actionItemService: ActionItemService,
     private readonly utilsService: UtilsService,
+    private readonly boardNoteVoteService: BoardNoteVoteService,
   ) {}
 
   public async getRetrospectiveTemplates(
     organisationId: UUID,
   ): Promise<BoardTemplate[]> {
     return this.boardTemplateService.listByOrganisationId(organisationId);
+  }
+
+  public voteNote(userId: UUID, boardNoteId: UUID, boardId: UUID) {
+    return this.boardNoteVoteService.create(userId, boardNoteId, boardId);
+  }
+
+  public async unVoteNote(userId: UUID, boardNoteId: UUID) {
+    const vote = await this.boardNoteVoteService.getByIdOrThrow(
+      boardNoteId,
+      userId,
+    );
+
+    await this.boardNoteVoteService.delete(boardNoteId, userId);
+
+    return vote;
   }
 
   public async createRetrospective(
@@ -91,14 +108,23 @@ export class RetrospectiveService {
   }
 
   public async getRetrospective(boardId: UUID, teamId: UUID) {
-    const [board, boardSections, boardNotes, actionItems] = await Promise.all([
-      this.boardService.getByIdOrThrow(boardId, teamId),
-      this.boardSectionService.listByBoardId(boardId),
-      this.boardNoteService.listByBoardId(boardId),
-      this.actionItemService.listByBoardId(boardId, teamId),
-    ]);
+    const [board, boardSections, boardNotes, actionItems, boardNoteVotes] =
+      await Promise.all([
+        this.boardService.getByIdOrThrow(boardId, teamId),
+        this.boardSectionService.listByBoardId(boardId),
+        this.boardNoteService.listByBoardId(boardId),
+        this.actionItemService.listByBoardId(boardId, teamId),
+        this.boardNoteVoteService.listByBoardId(boardId),
+      ]);
 
-    const boardNoteGroup = groupBy(boardNotes, 'boardSectionId');
+    const boardNoteVotesGroup = groupBy(boardNoteVotes, 'boardNoteId');
+
+    const boardNotesWithVotes = boardNotes.map((boardNote) => ({
+      ...boardNote,
+      boardNoteVotes: boardNoteVotesGroup[boardNote.id] ?? [],
+    }));
+
+    const boardNoteGroup = groupBy(boardNotesWithVotes, 'boardSectionId');
 
     const mappedBoardSections = boardSections.map((boardSection) => ({
       ...boardSection,
@@ -125,6 +151,7 @@ export class RetrospectiveService {
       retroId,
       teamId,
     );
+
     await this.boardService.delete(retroId, teamId);
 
     // TODO: delete all relevant data

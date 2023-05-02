@@ -37,6 +37,13 @@ import { UserRole } from '../../domain/user/user';
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 
+  @Get('has-in-progress-retro/:teamId')
+  public getHasInProgressRetro(
+    @Param() { teamId }: GetTeamInsightRequestParams,
+  ): Promise<boolean> {
+    return this.teamService.hasInProgressRetro(teamId);
+  }
+
   @Get('insight/:teamId')
   public getTeamInsight(
     @RequestUser() user: RequestUserType,

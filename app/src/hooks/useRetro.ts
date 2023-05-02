@@ -15,6 +15,7 @@ enum ClientSocketMessageEvent {
   BOARD_SECTION = "board-section",
   BOARD_NOTE = "board-note",
   BOARD_ACTION_ITEM = "board-action-item",
+  BOARD_VOTE_NOTE = "board-vote-note",
 }
 
 enum ServerSocketMessageEvent {
@@ -165,6 +166,60 @@ export const useRetro = (boardId: string, teamId: string) => {
         handleNoteUpdate(eventData.data);
     }
   };
+
+  const handleNoteVoteCreate = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      for (let boardSection of cloneRetro.boardSections) {
+        for (let boardNote of boardSection.boardNotes) {
+          if (
+            boardNote.id === data.boardNoteId &&
+            !boardNote.boardNoteVotes.find((vote: any) => vote.id === data.id)
+          ) {
+            boardNote.boardNoteVotes.push(data);
+            break;
+          }
+        }
+      }
+
+      return cloneRetro;
+    });
+  };
+
+  const handleNoteVoteDelete = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      for (let boardSection of cloneRetro.boardSections) {
+        for (let boardNote of boardSection.boardNotes) {
+          if (boardNote.id === data.boardNoteId) {
+            boardNote.boardNoteVotes = boardNote.boardNoteVotes.filter(
+              (vote: any) => vote.id !== data.id
+            );
+            break;
+          }
+        }
+      }
+
+      return cloneRetro;
+    });
+  };
+
+  const handleBoardNoteVote = (eventData: any) => {
+    switch (eventData.type) {
+      case "CREATE":
+        handleNoteVoteCreate(eventData.data);
+        return;
+      case "DELETE":
+        handleNoteVoteDelete(eventData.data);
+        return;
+    }
+  };
   //end ------------------------------------------
 
   useEffect(() => {
@@ -206,6 +261,12 @@ export const useRetro = (boardId: string, teamId: string) => {
       const data = JSON.parse(payload);
 
       handleNoteEvent(data);
+    });
+
+    socket.on(ClientSocketMessageEvent.BOARD_VOTE_NOTE, (payload: string) => {
+      const data = JSON.parse(payload);
+
+      handleBoardNoteVote(data);
     });
 
     socket.on(ClientSocketMessageEvent.BOARD_ACTION_ITEM, (payload: string) => {

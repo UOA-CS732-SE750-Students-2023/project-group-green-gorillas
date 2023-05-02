@@ -12,6 +12,7 @@ import {
   UNASSIGN_NOTE_GROUP,
 } from "../../../../../api/api";
 import * as _ from "lodash";
+import { useAggregateRetro } from "../utils/use-aggregate-retro";
 
 enum BoardNoteType {
   NORMAL = "NORMAL",
@@ -19,40 +20,7 @@ enum BoardNoteType {
 }
 
 function Group({ retro }: any) {
-  const retroWithGroupNotes = useMemo(() => {
-    const clonedRetro = _.cloneDeep(retro);
-
-    clonedRetro.boardSections.forEach((boardSection: any) => {
-      const normalNotes = boardSection.boardNotes.filter(
-        (boardNote: any) =>
-          boardNote.type === BoardNoteType.NORMAL && !boardNote.parentId
-      );
-
-      const groups = boardSection.boardNotes
-        .filter((boardNote: any) => boardNote.type === BoardNoteType.GROUP)
-        .reduce((acc: any, note: any) => {
-          acc[note.id] = {
-            ...note,
-            items: [],
-          };
-          return acc;
-        }, {});
-
-      boardSection.boardNotes
-        .filter(
-          (boardNote: any) =>
-            boardNote.type === BoardNoteType.NORMAL && !!boardNote.parentId
-        )
-        .forEach((note: any) => {
-          groups[note.parentId]?.items?.push(note);
-        });
-
-      boardSection.groups = Object.values(groups);
-      boardSection.boardNotes = normalNotes;
-    });
-
-    return clonedRetro;
-  }, [retro]);
+  const retroWithGroupNotes = useAggregateRetro(retro);
 
   const createNoteGroup = async (result: any) => {
     return request.post(ADD_RETRO_NOTE, {

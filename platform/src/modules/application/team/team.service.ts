@@ -10,6 +10,8 @@ import { Team } from '../../domain/team/team';
 import { UserTeam, UserTeamRole } from '../../domain/user-team/user-team';
 import { TeamDashboardService } from '../../domain/team-dashboard/team-dashboard.service';
 import { TeamDashboard } from '../../domain/team-dashboard/team-dashboard';
+import { BoardService } from '../../domain/board/board.service';
+import { BoardStage } from '../../domain/board/board';
 
 @Injectable()
 export class TeamService {
@@ -18,6 +20,7 @@ export class TeamService {
     private readonly userTeamService: UserTeamService,
     private readonly userService: UserService,
     private readonly teamDashboardService: TeamDashboardService,
+    private readonly boardService: BoardService,
   ) {}
 
   private async getTeamRemembers(
@@ -130,5 +133,11 @@ export class TeamService {
     organisationId: UUID,
   ): Promise<TeamDashboard> {
     return this.teamDashboardService.getByTeamId(teamId, organisationId);
+  }
+
+  public async hasInProgressRetro(teamId: UUID): Promise<boolean> {
+    const boards = await this.boardService.listByTeamId(teamId);
+
+    return !!boards.find((board) => board.stage !== BoardStage.FINALIZE);
   }
 }

@@ -3,8 +3,8 @@ import {Template, TemplatePreviewProps} from "./index";
 import { Card, CardContent, Typography, Button, Box, Divider, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@mui/material";
 import { v4 as uuidv4 } from 'uuid';
 import {request} from "../../../../api/request";
-import {CREATERETRO} from "../../../../api/api";
-
+import {CREATERETRO, ISRETROACTIVE} from "../../../../api/api";
+import {NavLink} from "react-router-dom";
 
 export const TemplatePreview: React.FC<TemplatePreviewProps> = ({ previewTemp, tID }) => {
 
@@ -32,6 +32,16 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({ previewTemp, t
         }
     }
 
+    const [isRetroActiveIdentifier, setIsRetroActiveIdentifier] = useState(false);
+
+    async function isRetroActive(){
+        const response = await request.get(ISRETROACTIVE(tID));
+        setIsRetroActiveIdentifier(response.data);
+        return response.data;
+    }
+
+    isRetroActive();
+
     const isBlankRetrospective = previewTemp.name === "Blank Retrospective";
 
     function startRetroHandler() {
@@ -57,8 +67,6 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({ previewTemp, t
         const result = await createRetrospective(tID, retroName, previewTemp.id);
         console.log(result);
     }
-
-
 
     return (
         <Card>
@@ -95,8 +103,8 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({ previewTemp, t
                 )}
 
                 <Button
-                    // component={NavLink}
-                    // to={"/main/retro"}
+                    component={NavLink}
+                    to={"/main/retro"}
                     variant="contained"
                     sx={{
                         bgcolor: "orange",
@@ -108,6 +116,7 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({ previewTemp, t
                     }}
 
                     onClick={() => {startRetroHandler()}}
+                    disabled={isRetroActiveIdentifier}
                 >
                     Start Retro
                 </Button>
@@ -124,19 +133,16 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({ previewTemp, t
                             onChange={handleNameChange}
                             autoFocus
                             style={{ marginTop: '5px' }}
-                            // ref={nameRef}
                         />
                     </DialogContent>
                     <DialogActions style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <Button onClick={handleClose} style={{ backgroundColor: 'grey', color: 'white', marginRight: '10px' }}>Cancel</Button>
                         <Button onClick={handleButtonClick} type="submit" color="primary" style={{ backgroundColor: 'purple', color: 'white' }}>Submit</Button>
                     </DialogActions>
+
                 </form>
             </Dialog>
         </Card>
-
-
-
     );
 };
 

@@ -36,4 +36,6 @@ export const ASSIGN_NOTE_GROUP = `${apiBaseUrl}/retrospective/assign-note-group`
 export const UNASSIGN_NOTE_GROUP = `${apiBaseUrl}/retrospective/un-assign-note-group`;
 export const VOTE_NOTE = `${apiBaseUrl}/retrospective/vote-note`;
 export const UNVOTE_NOTE = `${apiBaseUrl}/retrospective/un-vote-note`;
+export const ISRETROACTIVE = (teamId: string) => `${apiBaseUrl}/team/has-in-progress-retro/${teamId}`;
+
 

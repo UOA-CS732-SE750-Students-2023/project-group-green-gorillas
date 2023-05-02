@@ -3,7 +3,6 @@ import { Type } from 'class-transformer';
 import { DynamoTimestampTransformer } from '../../../utils/decorators/dynamo-date-transformer';
 import { DateTime } from 'luxon';
 import { uuid } from '../../../utils/uuid/uuid';
-import { DynamoNullableTransformer } from '../../../utils/decorators/dynamo-nullable-transformer';
 
 export enum UserRole {
   ADMIN = 'ADMIN',

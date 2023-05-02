@@ -15,16 +15,10 @@ import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import retroStyles from "./styles/retro.module.css";
 import Stage from "./Stage";
 import { useRetro } from "../../../../hooks/useRetro";
-import { retros } from "./defaultData";
 
 export const RetroScreen = () => {
-  const [selectedRetro, setSelectedRetro] = useState(0);
-  const [actionItems, setActionItems] = useState([]);
-  const dummyRetro = retros[selectedRetro];
-  const [retroStage, setRetroStage] = useState(0);
-
   const { teamId, retroId } = useParams<{ teamId: string; retroId: string }>();
-  const { isLoading, retroUsers } = useRetro(retroId, teamId);
+  const { isLoading, retroUsers, retro } = useRetro(retroId, teamId);
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -58,13 +52,7 @@ export const RetroScreen = () => {
           </List>
         </Box>
       </Container>
-      <Stage
-        retro={dummyRetro}
-        stage={retroStage}
-        setStage={setRetroStage}
-        actionItems={actionItems}
-        setActionItems={setActionItems}
-      />
+      <Stage retro={retro} />
     </React.Fragment>
   );
 };

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { authService } from "../services/authService";
 import { MainScreenPath } from "../components/screens/Main";
 import { request } from "../api/request";
+import * as _ from "lodash";
 
 enum ClientSocketMessageEvent {
   AUTHENTICATION = "authentication",
@@ -42,6 +43,129 @@ export const useRetro = (boardId: string, teamId: string) => {
   const isLoading = useMemo(() => {
     return !hasSocketConnected || !hasJoinedRoom || !retro;
   }, [hasSocketConnected, hasJoinedRoom, retro]);
+
+  // start event handlers --------------------------------------
+  const handleNoteCreate = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      const boardSection = cloneRetro.boardSections.find(
+        (section: any) => section.id === data.boardSectionId
+      );
+
+      if (!boardSection) return cloneRetro;
+
+      const boardSectionNote = boardSection.boardNotes.find(
+        (note: any) => note.id === data.id
+      );
+
+      if (!boardSectionNote) {
+        boardSection.boardNotes.push(data);
+      }
+
+      return cloneRetro;
+    });
+  };
+
+  const handleNoteDelete = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      const boardSection = cloneRetro.boardSections.find(
+        (section: any) => section.id === data.boardSectionId
+      );
+
+      if (!boardSection) return cloneRetro;
+
+      boardSection.boardNotes = boardSection.boardNotes.filter(
+        (note: any) => note.id !== data.id
+      );
+
+      return cloneRetro;
+    });
+  };
+
+  const findBoardSectionByBoardNoteId = (retro: any, boardNoteId: string) => {
+    let result = null;
+    retro.boardSections.forEach((boardSection: any) => {
+      boardSection.boardNotes.forEach((boardNote: any) => {
+        if (boardNote.id === boardNoteId) {
+          result = boardNote.boardSectionId;
+        }
+      });
+    });
+
+    return result;
+  };
+
+  const handleNoteUpdate = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      const existingBoardNoteBoardSectionId = findBoardSectionByBoardNoteId(
+        retro,
+        data.id
+      );
+
+      if (
+        existingBoardNoteBoardSectionId &&
+        data.boardSectionId !== existingBoardNoteBoardSectionId
+      ) {
+        const foundSection = cloneRetro.boardSections.find(
+          (section: any) => section.id === existingBoardNoteBoardSectionId
+        );
+
+        foundSection.boardNotes = foundSection.boardNotes.filter(
+          (s: any) => s.id !== data.id
+        );
+
+        const boardSection = cloneRetro.boardSections.find(
+          (section: any) => section.id === data.boardSectionId
+        );
+
+        if (!boardSection) return cloneRetro;
+
+        boardSection.boardNotes.push(data);
+
+        return cloneRetro;
+      }
+
+      const boardSection = cloneRetro.boardSections.find(
+        (section: any) => section.id === data.boardSectionId
+      );
+
+      if (!boardSection) return cloneRetro;
+
+      const boardSectionNoteIndex = boardSection.boardNotes.findIndex(
+        (note: any) => note.id === data.id
+      );
+
+      if (boardSectionNoteIndex !== -1) {
+        boardSection.boardNotes[boardSectionNoteIndex] = data;
+      }
+
+      return cloneRetro;
+    });
+  };
+
+  const handleNoteEvent = (eventData: any) => {
+    switch (eventData.type) {
+      case "CREATE":
+        handleNoteCreate(eventData.data);
+        return;
+      case "DELETE":
+        handleNoteDelete(eventData.data);
+      case "UPDATE":
+        handleNoteUpdate(eventData.data);
+    }
+  };
+  //end ------------------------------------------
 
   useEffect(() => {
     socket.on(ClientSocketMessageEvent.AUTHENTICATION, (payload: string) => {
@@ -81,7 +205,7 @@ export const useRetro = (boardId: string, teamId: string) => {
     socket.on(ClientSocketMessageEvent.BOARD_NOTE, (payload: string) => {
       const data = JSON.parse(payload);
 
-      // TODO: philip to do
+      handleNoteEvent(data);
     });
 
     socket.on(ClientSocketMessageEvent.BOARD_ACTION_ITEM, (payload: string) => {
@@ -93,6 +217,7 @@ export const useRetro = (boardId: string, teamId: string) => {
     socket.on("disconnect", () => {
       setHasSocketConnected(false);
       setHasJoinedRoom(false);
+      setRetro(null);
     });
   }, []);
 
@@ -139,5 +264,6 @@ export const useRetro = (boardId: string, teamId: string) => {
   return {
     isLoading,
     retroUsers,
+    retro,
   };
 };

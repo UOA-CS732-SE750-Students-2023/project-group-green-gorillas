@@ -1,5 +1,15 @@
-import { IsNumber, IsString, IsUUID } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { UUID } from '../../../../types/uuid.type';
+import {
+  BoardNoteColor,
+  BoardNoteType,
+} from '../../../domain/board-note/board-note';
 
 export class CreateRetroRequestRequest {
   @IsUUID()
@@ -48,25 +58,40 @@ export class AddNoteRequest {
 
   @IsUUID()
   teamId: UUID;
+
+  @IsEnum(BoardNoteType)
+  boardNoteType: BoardNoteType;
+
+  @IsEnum(BoardNoteColor)
+  boardNoteColor: BoardNoteColor;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
 }
 
 export class DeleteNoteRequestParams {
   @IsUUID()
   boardNoteId!: UUID;
-
-  @IsUUID()
-  boardSectionId!: UUID;
 }
 
 export class UpdateNoteRequest {
   @IsUUID()
   boardNoteId: UUID;
 
-  @IsUUID()
-  boardSectionId!: UUID;
-
   @IsString()
   note: string;
+}
+
+export class UpdateNoteGroup {
+  @IsUUID()
+  boardNoteId: UUID;
+
+  @IsUUID()
+  parentNoteId!: UUID;
+
+  @IsUUID()
+  boardSectionId!: UUID;
 }
 
 export class AddSectionRequest {

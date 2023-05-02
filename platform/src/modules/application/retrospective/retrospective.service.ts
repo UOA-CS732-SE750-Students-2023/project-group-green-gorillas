@@ -12,6 +12,10 @@ import { groupBy } from 'lodash';
 import { InternalException } from '../../../exceptions/internal-exception';
 import { ActionItemService } from '../../domain/action-item/action-item.service';
 import { UtilsService } from '../utils/utils.service';
+import {
+  BoardNoteColor,
+  BoardNoteType,
+} from '../../domain/board-note/board-note';
 
 @Injectable()
 export class RetrospectiveService {
@@ -138,23 +142,38 @@ export class RetrospectiveService {
     organisationId: UUID,
     teamId: UUID,
     createdBy: UUID,
+    type: BoardNoteType,
+    parentId: UUID | null,
+    noteColor: BoardNoteColor,
+    note: string,
   ) {
     return this.boardNoteService.create(
       boardSectionId,
       boardId,
       organisationId,
       teamId,
-      '',
+      note,
       createdBy,
+      type,
+      parentId,
+      noteColor,
     );
   }
 
-  public updateNote(boardNoteId: UUID, boardSectionId: UUID, note) {
-    return this.boardNoteService.updateNote(boardNoteId, boardSectionId, note);
+  public updateNote(boardNoteId: UUID, note: string) {
+    return this.boardNoteService.updateNote(boardNoteId, note);
   }
 
-  public deleteNote(boardNoteId: UUID, boardSectionId: UUID) {
-    return this.boardNoteService.delete(boardNoteId, boardSectionId);
+  public updateNoteGroup(boardNoteId: UUID, parentId: UUID, boardSectionId) {
+    return this.boardNoteService.updateNoteGroup(
+      boardNoteId,
+      parentId,
+      boardSectionId,
+    );
+  }
+
+  public deleteNote(boardNoteId: UUID) {
+    return this.boardNoteService.delete(boardNoteId);
   }
 
   public addSection(
@@ -195,8 +214,8 @@ export class RetrospectiveService {
     );
   }
 
-  public getNote(boardNoteId: UUID, boardSectionId: UUID) {
-    return this.boardNoteService.getByIdOrThrow(boardNoteId, boardSectionId);
+  public getNote(boardNoteId: UUID) {
+    return this.boardNoteService.getByIdOrThrow(boardNoteId);
   }
 
   public getSection(boardSectionId: UUID, boardId: UUID) {

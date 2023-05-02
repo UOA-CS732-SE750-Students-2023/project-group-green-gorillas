@@ -49,6 +49,8 @@ export const useActionItems = (id: string) => {
         }) ?? null);
         try{
             await request.patch(UPDATE_ACTIONITEMS_BY_ID, {actionItemId: updatedActionItem.id, status: updatedActionItem.status} );
+            const updatedActionItems = actionItems?.filter(a => a.id !== actionItem.id) ?? null;
+            setActionItems(updatedActionItems);
         }catch(err){
             console.log(err);
         }finally{

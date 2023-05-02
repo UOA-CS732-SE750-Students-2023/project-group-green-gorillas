@@ -20,8 +20,8 @@ export const GET_RETRO = (retroId: string, teamId: string) =>
 
 export const ACTIONITEMS_LIST_BY_ID = (teamId: string) => `${apiBaseUrl}/action-item/list-outstanding/${teamId}`;
 export const DELETE_ACTIONITEMS_BY_ID = (teamId: string) => `${apiBaseUrl}/action-item/${teamId}`;
-
 export const UPDATE_ACTIONITEMS_BY_ID = `${apiBaseUrl}/action-item/update-status`;
+export const TEAM_ROLE_BY_ID = (teamId: string) => `${apiBaseUrl}/team/team-role/${teamId}`;
 export const TEMPLATE = () => `${apiBaseUrl}/retrospective/template/list`;
 export const ADD_RETRO_NOTE = `${apiBaseUrl}/retrospective/add-note`;
 export const DELETE_RETRO_NOTE = (boardNoteId: string) =>

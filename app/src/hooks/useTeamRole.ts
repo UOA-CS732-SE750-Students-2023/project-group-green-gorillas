@@ -4,8 +4,6 @@ import { TEAM_ROLE_BY_ID } from "../api/api";
 import { TeamRole } from "../types/teamRole";
 
 
-
-
 export const useTeamRole = (id: string) => {
     const [loading, setLoading] = useState<Boolean>(false);
     const [teamRole, setTeamRole] = useState<TeamRole | null>(null);
@@ -13,6 +11,7 @@ export const useTeamRole = (id: string) => {
         setLoading(true);
         try{
             const {data} = await request.get<TeamRole | null>(TEAM_ROLE_BY_ID(id));
+
             setTeamRole(data);
         }catch(err) {
             console.log(err);

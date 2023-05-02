@@ -31,6 +31,10 @@ export const ADD_RETRO_NOTE = `${apiBaseUrl}/retrospective/add-note`;
 export const DELETE_RETRO_NOTE = (boardNoteId: string) =>
   `${apiBaseUrl}/retrospective/delete-note/${boardNoteId}`;
 export const UPDATE_RETRO_NOTE = `${apiBaseUrl}/retrospective/update-note`;
+
+export const UPDATE_RETRO_NOTE_GROUP = `${apiBaseUrl}/retrospective/update-note-group`;
+export const CREATERETRO = `${apiBaseUrl}/retrospective/create`;
+
 export const ASSIGN_NOTE_GROUP = `${apiBaseUrl}/retrospective/assign-note-group`;
 export const UNASSIGN_NOTE_GROUP = `${apiBaseUrl}/retrospective/un-assign-note-group`;
 export const VOTE_NOTE = `${apiBaseUrl}/retrospective/vote-note`;
@@ -40,3 +44,6 @@ export const DELETE_ACTION_ITEM = (id: string) =>
   `${apiBaseUrl}/action-item/${id}`;
 export const UPDATE_ACTION_ITEM_NOTE = `${apiBaseUrl}/action-item/update-note`;
 export const MOVE_RETRO_NEXT_STAGE = `${apiBaseUrl}/retrospective/move-next-stage`;
+export const ISRETROACTIVE = (teamId: string) => `${apiBaseUrl}/team/has-in-progress-retro/${teamId}`;
+
+

@@ -39,6 +39,7 @@ export type TemplateListProps = {
 
 export type TemplatePreviewProps = {
   previewTemp: Template;
+  tID: string;
 };
 
 export const TemplateScreen = () => {
@@ -118,7 +119,7 @@ export const TemplateScreen = () => {
           <Grid container justifyContent="flex-end">
             <Grid item xs={12} md={10} lg={10}>
               <Box sx={{ border: "none" }}>
-                <TemplatePreview previewTemp={previewTemp} />
+                <TemplatePreview previewTemp={previewTemp} tID={teamId} />
               </Box>
             </Grid>
           </Grid>

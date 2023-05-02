@@ -64,10 +64,14 @@ export class ActionItemService {
     return actionItem;
   }
 
-  public async updateNote(id: UUID, note: string): Promise<ActionItem> {
+  public async updateNote(
+    id: UUID,
+    note: string,
+    updatedBy: UUID,
+  ): Promise<ActionItem> {
     const actionItem = await this.getByIdOrThrow(id);
 
-    actionItem.updateNote(note);
+    actionItem.updateNote(note, updatedBy);
 
     return this.actionItemRepository.save(actionItem);
   }
@@ -75,10 +79,11 @@ export class ActionItemService {
   public async updateStatus(
     id: UUID,
     status: ActionItemStatus,
+    updatedBy: UUID,
   ): Promise<ActionItem> {
     const actionItem = await this.getByIdOrThrow(id);
 
-    actionItem.updateStatus(status);
+    actionItem.updateStatus(status, updatedBy);
 
     return this.actionItemRepository.save(actionItem);
   }

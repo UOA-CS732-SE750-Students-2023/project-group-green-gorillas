@@ -19,8 +19,6 @@ export class UtilsService {
       this.actionItemAssigneeService.listByActionItemId(actionItem.id),
     ]);
 
-    console.log(actionItem.boardId, actionItem.teamId);
-
     const assignees = await Bluebird.map(
       actionItemAssignees,
       async (actionItemAssignee) => {

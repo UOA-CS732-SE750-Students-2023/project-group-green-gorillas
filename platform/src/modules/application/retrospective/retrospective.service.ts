@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { BoardTemplateService } from '../../domain/board-template/board-template.service';
 import { BoardTemplate } from '../../domain/board-template/board-template';
 import { UUID } from '../../../types/uuid.type';
-import { Board } from '../../domain/board/board';
+import { Board, BoardStage } from '../../domain/board/board';
 import { BoardService } from '../../domain/board/board.service';
 import { TeamDashboardService } from '../../domain/team-dashboard/team-dashboard.service';
 import { TeamDashboardCountKey } from '../../domain/team-dashboard/team-dashboard';
@@ -144,6 +144,29 @@ export class RetrospectiveService {
 
   public updateRetroName(retroId: UUID, teamId: UUID, name: string) {
     return this.boardService.updateName(retroId, teamId, name);
+  }
+
+  public async moveNextStage(retroId: UUID, teamId: UUID) {
+    const board = await this.boardService.getByIdOrThrow(retroId, teamId);
+
+    let stage = board.stage;
+
+    switch (stage) {
+      case BoardStage.THINK:
+        stage = BoardStage.GROUP;
+        break;
+      case BoardStage.GROUP:
+        stage = BoardStage.VOTE;
+        break;
+      case BoardStage.VOTE:
+        stage = BoardStage.DISCUSS;
+        break;
+      case BoardStage.DISCUSS:
+        stage = BoardStage.FINALIZE;
+        break;
+    }
+
+    return this.boardService.updateStage(retroId, teamId, stage);
   }
 
   public async deleteRetrospective(retroId: UUID, teamId: UUID) {

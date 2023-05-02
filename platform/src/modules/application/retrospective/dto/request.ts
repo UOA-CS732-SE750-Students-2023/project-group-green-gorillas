@@ -155,3 +155,11 @@ export class UnVoteNoteRequestParams {
   @IsUUID()
   boardNoteId!: UUID;
 }
+
+export class MoveNextStageRequest {
+  @IsUUID()
+  retroId: UUID;
+
+  @IsUUID()
+  teamId: UUID;
+}

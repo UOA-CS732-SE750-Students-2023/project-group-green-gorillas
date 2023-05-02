@@ -21,6 +21,7 @@ function VoteGroup({ name, items, votes, retroId, vote, id, unvote }: any) {
           {items.map((item: any) => {
             return (
               <Box
+                key={item.id}
                 className={stageStyles.note__wrapper}
                 style={{ marginBottom: "8px" }}
               >

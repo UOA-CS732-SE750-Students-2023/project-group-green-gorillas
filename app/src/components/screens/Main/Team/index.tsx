@@ -11,15 +11,20 @@ import {
   Container,
   Divider,
   Drawer,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
   List,
   ListItem,
   ListItemAvatar,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  MenuItem,
   Paper,
+  Select,
+  SelectChangeEvent,
   Stack,
   Toolbar,
   Typography,
@@ -62,8 +67,23 @@ export const TeamScreen = () => {
   const history = useHistory();
   const { user, isAdmin } = useCurrentUser();
 
-  const { team, loading } = useTeam(teamId);
+  const defaultTeam = user?.teams[0];
+  // console.log("defaultTeam:", defaultTeam);
+
+  const [selectedTeam, setSelectedTeam] = useState<string | undefined>(
+    defaultTeam?.id
+  );
+  // console.log("selectedTeam:", selectedTeam);
+
+  const { team, loading } = useTeam(selectedTeam || "");
+  // console.log(team);
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setSelectedTeam(event.target.value);
+  };
   const { teamRole } = useTeamRole(teamId);
+  // console.log(teamRole);
+
 
   const {
     isLoading,
@@ -71,7 +91,7 @@ export const TeamScreen = () => {
     getActionItems,
     updateActionItems,
     deleteActionItems,
-  } = useActionItems(teamId);
+  } = useActionItems(selectedTeam || "");
 
   const [showAll, setShowAll] = useState<boolean>(true);
 
@@ -91,6 +111,7 @@ export const TeamScreen = () => {
         <Box sx={{ flexGrow: 1, marginTop: 5, width: "100%" }}>
           {" "}
           <Toolbar />
+          {/* Team selector */}
           {/* Team Member list & New Retro Button */}
           <Grid
             container
@@ -107,7 +128,22 @@ export const TeamScreen = () => {
               justifyContent="flex-start"
               alignItems="flex-start"
             >
-              <Typography
+              <div>
+                <FormControl sx={{ m: 1, minWidth: 80 }}>
+                  <Select
+                    value={selectedTeam}
+                    onChange={handleChange}
+                    autoWidth
+                  >
+                    {user?.teams.map((team) => (
+                      <MenuItem key={team.id} value={team.id}>
+                        {team.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+              {/* <Typography
                 variant="h4"
                 fontWeight="bold"
                 noWrap
@@ -115,7 +151,7 @@ export const TeamScreen = () => {
                 sx={{ marginBottom: 2 }}
               >
                 {team?.name}
-              </Typography>
+              </Typography> */}
               <AvatarGroup sx={{ width: 185 }}>
                 {team?.teamMembers?.map((member) => (
                   <Avatar

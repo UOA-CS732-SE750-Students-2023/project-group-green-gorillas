@@ -58,3 +58,8 @@ export class GetTeamInsightRequestParams {
   @IsUUID()
   teamId: UUID;
 }
+
+export class GetHasInProgressRetro {
+  @IsUUID()
+  teamId: UUID;
+}

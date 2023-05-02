@@ -8,9 +8,11 @@ import { Box } from "@mui/material";
 import { request } from "../../../../../api/request";
 import {
   ADD_RETRO_NOTE,
-  UPDATE_RETRO_NOTE_GROUP,
+  ASSIGN_NOTE_GROUP,
+  UNASSIGN_NOTE_GROUP,
 } from "../../../../../api/api";
 import * as _ from "lodash";
+import { useAggregateRetro } from "../utils/use-aggregate-retro";
 
 enum BoardNoteType {
   NORMAL = "NORMAL",
@@ -18,40 +20,7 @@ enum BoardNoteType {
 }
 
 function Group({ retro }: any) {
-  const retroWithGroupNotes = useMemo(() => {
-    const clonedRetro = _.cloneDeep(retro);
-
-    clonedRetro.boardSections.forEach((boardSection: any) => {
-      const normalNotes = boardSection.boardNotes.filter(
-        (boardNote: any) =>
-          boardNote.type === BoardNoteType.NORMAL && !boardNote.parentId
-      );
-
-      const groups = boardSection.boardNotes
-        .filter((boardNote: any) => boardNote.type === BoardNoteType.GROUP)
-        .reduce((acc: any, note: any) => {
-          acc[note.id] = {
-            ...note,
-            items: [],
-          };
-          return acc;
-        }, {});
-
-      boardSection.boardNotes
-        .filter(
-          (boardNote: any) =>
-            boardNote.type === BoardNoteType.NORMAL && !!boardNote.parentId
-        )
-        .forEach((note: any) => {
-          groups[note.parentId]?.items?.push(note);
-        });
-
-      boardSection.groups = Object.values(groups);
-      boardSection.boardNotes = normalNotes;
-    });
-
-    return clonedRetro;
-  }, [retro]);
+  const retroWithGroupNotes = useAggregateRetro(retro);
 
   const createNoteGroup = async (result: any) => {
     return request.post(ADD_RETRO_NOTE, {
@@ -66,12 +35,12 @@ function Group({ retro }: any) {
 
   const updateNoteParent = async (result: any, groupId: string) => {
     await Promise.all([
-      request.patch(UPDATE_RETRO_NOTE_GROUP, {
+      request.patch(ASSIGN_NOTE_GROUP, {
         boardNoteId: result.combine.draggableId,
         parentNoteId: groupId,
         boardSectionId: result.combine.droppableId,
       }),
-      request.patch(UPDATE_RETRO_NOTE_GROUP, {
+      request.patch(ASSIGN_NOTE_GROUP, {
         boardNoteId: result.draggableId,
         parentNoteId: groupId,
         boardSectionId: result.combine.droppableId,
@@ -96,6 +65,18 @@ function Group({ retro }: any) {
     return boardNoteGroup;
   };
 
+  const destinationBoardSection = (droppableId: string) => {
+    let boardSection: any = null;
+
+    retro.boardSections.forEach((boardSectionItem: any) => {
+      if (boardSectionItem.id === droppableId) {
+        boardSection = boardSectionItem;
+      }
+    });
+
+    return boardSection;
+  };
+
   const onDragEnd = async (result: any) => {
     if (result.combine) {
       const { data } = await createNoteGroup(result);
@@ -107,14 +88,23 @@ function Group({ retro }: any) {
         result.destination.droppableId
       );
       if (boardNoteGroup) {
-        return request.patch(UPDATE_RETRO_NOTE_GROUP, {
+        return request.patch(ASSIGN_NOTE_GROUP, {
           boardNoteId: result.draggableId,
           parentNoteId: boardNoteGroup.id,
           boardSectionId: boardNoteGroup.boardSectionId,
         });
       }
 
-      // TODO: re-order and move to different column
+      const boardSection = destinationBoardSection(
+        result.destination.droppableId
+      );
+
+      if (boardSection) {
+        return request.patch(UNASSIGN_NOTE_GROUP, {
+          boardNoteId: result.draggableId,
+          boardSectionId: boardSection.id,
+        });
+      }
     }
   };
 

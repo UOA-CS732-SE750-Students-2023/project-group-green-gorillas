@@ -28,7 +28,7 @@ function Stage({ retro }: Props) {
   const stageDisplay: any = {
     [RetroStage.THINK]: <Think retro={retro} />,
     [RetroStage.GROUP]: <Group retro={retro} />,
-    // [RetroStage.VOTE]: <Vote retro={retro} groups={groups} setDiscItems={setDiscItems} />
+    [RetroStage.VOTE]: <Vote retro={retro} />,
     // [RetroStage.DISCUSS]: (
     //   <Discuss
     //     retro={retro}

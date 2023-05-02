@@ -16,16 +16,19 @@ import {
 import {
   AddNoteRequest,
   AddSectionRequest,
+  AssignNoteGroup,
   CreateRetroRequestRequest,
   DeleteNoteRequestParams,
   DeleteRetrospectiveRequestParams,
   DeleteSectionParams,
   GetRetrospectiveRequestParam,
-  UpdateNoteGroup,
+  UnAssignNoteGroup,
+  UnVoteNoteRequestParams,
   UpdateNoteRequest,
   UpdateRetroNameRequest,
   UpdateSectionDescriptionRequest,
   UpdateSectionNameRequest,
+  VoteNoteRequest,
 } from './dto/request';
 import { SocketEventService } from '../../gateway/socket/socket-event.service';
 import { ClientSocketMessageEvent } from '../../gateway/socket/socket.gateway';
@@ -56,6 +59,45 @@ export class RetrospectiveController {
     @Param() { id, teamId }: GetRetrospectiveRequestParam,
   ) {
     return this.retrospectiveService.getRetrospective(id, teamId);
+  }
+
+  @Post('vote-note')
+  public async voteNote(
+    @RequestUser() user: RequestUserType,
+    @Body() { boardNoteId, boardId }: VoteNoteRequest,
+  ) {
+    const vote = await this.retrospectiveService.voteNote(
+      user.id,
+      boardNoteId,
+      boardId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      vote.boardId,
+      ClientSocketMessageEvent.BOARD_VOTE_NOTE,
+      buildSocketEvent(SocketEventOperation.CREATE, vote),
+    );
+
+    return vote;
+  }
+
+  @Delete('un-vote-note/:boardNoteId')
+  public async unVoteNote(
+    @RequestUser() user: RequestUserType,
+    @Param() { boardNoteId }: UnVoteNoteRequestParams,
+  ) {
+    const vote = await this.retrospectiveService.unVoteNote(
+      user.id,
+      boardNoteId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      vote.boardId,
+      ClientSocketMessageEvent.BOARD_VOTE_NOTE,
+      buildSocketEvent(SocketEventOperation.DELETE, vote),
+    );
+
+    return vote;
   }
 
   @Post('create')
@@ -148,12 +190,31 @@ export class RetrospectiveController {
     return retro;
   }
 
-  @Patch('update-note-group')
-  public async updateNoteGroup(
+  @Patch('un-assign-note-group')
+  public async unAssignNoteGroup(
     @Body()
-    { boardNoteId, parentNoteId, boardSectionId }: UpdateNoteGroup,
+    { boardNoteId, boardSectionId }: UnAssignNoteGroup,
   ) {
-    const boardNote = await this.retrospectiveService.updateNoteGroup(
+    const boardNote = await this.retrospectiveService.unAssignNoteGroup(
+      boardNoteId,
+      boardSectionId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      boardNote.boardId,
+      ClientSocketMessageEvent.BOARD_NOTE,
+      buildSocketEvent(SocketEventOperation.UPDATE, boardNote),
+    );
+
+    return boardNote;
+  }
+
+  @Patch('assign-note-group')
+  public async assignNoteGroup(
+    @Body()
+    { boardNoteId, parentNoteId, boardSectionId }: AssignNoteGroup,
+  ) {
+    const boardNote = await this.retrospectiveService.assignNoteGroup(
       boardNoteId,
       parentNoteId,
       boardSectionId,

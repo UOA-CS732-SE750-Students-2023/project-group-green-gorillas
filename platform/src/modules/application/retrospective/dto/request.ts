@@ -83,12 +83,20 @@ export class UpdateNoteRequest {
   note: string;
 }
 
-export class UpdateNoteGroup {
+export class AssignNoteGroup {
   @IsUUID()
   boardNoteId: UUID;
 
   @IsUUID()
   parentNoteId!: UUID;
+
+  @IsUUID()
+  boardSectionId!: UUID;
+}
+
+export class UnAssignNoteGroup {
+  @IsUUID()
+  boardNoteId: UUID;
 
   @IsUUID()
   boardSectionId!: UUID;
@@ -133,4 +141,17 @@ export class UpdateSectionDescriptionRequest {
 
   @IsString()
   description!: string;
+}
+
+export class VoteNoteRequest {
+  @IsUUID()
+  boardNoteId!: UUID;
+
+  @IsUUID()
+  boardId!: UUID;
+}
+
+export class UnVoteNoteRequestParams {
+  @IsUUID()
+  boardNoteId!: UUID;
 }

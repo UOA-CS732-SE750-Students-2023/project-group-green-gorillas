@@ -9,9 +9,17 @@ import timerIcon from "../../../../assets/timer.svg";
 import infoIcon from "../../../../assets/info.svg";
 import nextIcon from "../../../../assets/carot.svg";
 import { Box } from "@mui/material";
+import { RetroStage } from "./Stage";
+import { request } from "../../../../api/request";
+import { MOVE_RETRO_NEXT_STAGE } from "../../../../api/api";
 
-function Toolbar({ stage, setStage }: any) {
-  const history = useHistory();
+function Toolbar({ retro }: any) {
+  const nextStage = async () => {
+    await request.patch(MOVE_RETRO_NEXT_STAGE, {
+      retroId: retro.id,
+      teamId: retro.teamId,
+    });
+  };
 
   return (
     <Box className={stageStyles.toolbar} component="div">
@@ -53,11 +61,9 @@ function Toolbar({ stage, setStage }: any) {
         <Box
           className={stageStyles.next__button}
           component="div"
-          onClick={() =>
-            stage !== 3 ? setStage(stage + 1) : history.replace("/")
-          }
+          onClick={nextStage}
         >
-          {stage === 3 ? "End Retro" : "Next Stage"}
+          {retro.stage === RetroStage.DISCUSS ? "End Retro" : "Next Stage"}
           <Box
             component="img"
             src={nextIcon}

@@ -63,7 +63,6 @@ export const TemplateScreen = () => {
       try {
         const { data } = await request.get<Template[]>(TEMPLATE());
         setTemps(data);
-        console.log(data);
       } catch (error) {
         console.error(error);
       }

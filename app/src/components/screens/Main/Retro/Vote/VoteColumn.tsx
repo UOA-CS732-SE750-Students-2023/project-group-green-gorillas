@@ -43,7 +43,7 @@ function VoteColumn({ column }: any) {
         );
       })}
       {column.boardNotes.map((item: any) => (
-        <VoteNote vote={vote} unvote={unvote} note={item} />
+        <VoteNote key={item.id} vote={vote} unvote={unvote} note={item} />
       ))}
     </Box>
   );

@@ -12,6 +12,7 @@ import { TeamDashboardService } from '../../domain/team-dashboard/team-dashboard
 import { TeamDashboard } from '../../domain/team-dashboard/team-dashboard';
 import { BoardService } from '../../domain/board/board.service';
 import { BoardStage } from '../../domain/board/board';
+import * as _ from 'lodash';
 
 @Injectable()
 export class TeamService {
@@ -139,5 +140,21 @@ export class TeamService {
     const boards = await this.boardService.listByTeamId(teamId);
 
     return !!boards.find((board) => board.stage !== BoardStage.FINALIZE);
+  }
+
+  public async getInProgressRetro(teamId: UUID) {
+    const boards = await this.boardService.listByTeamId(teamId);
+
+    const inProgressRetros = boards.filter(
+      (board) => board.stage !== BoardStage.FINALIZE,
+    );
+
+    return _.first(inProgressRetros) ?? null;
+  }
+
+  public async getTeamRetroHistory(teamId: UUID) {
+    const boards = await this.boardService.listByTeamId(teamId);
+
+    return boards.filter((board) => board.stage === BoardStage.FINALIZE);
   }
 }

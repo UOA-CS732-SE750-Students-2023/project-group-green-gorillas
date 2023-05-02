@@ -14,8 +14,10 @@ import {
 } from '../../../utils/guards/auth-guard/auth.guard';
 import {
   AddOrUpdateTeamUserRequest,
+  GetHasInProgressRetro,
   GetTeamByIdRequestParams,
   GetTeamInsightRequestParams,
+  GetTeamRetroHistoryRequestParam,
   GetTeamRoleRequestParams,
   RemoveTeamUserRequest,
   UpdateTeamActiveRequest,
@@ -37,9 +39,25 @@ import { UserRole } from '../../domain/user/user';
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 
+  @Get('retro-history/:teamId')
+  public getTeamRetroHistory(
+    @Param() { teamId }: GetTeamRetroHistoryRequestParam,
+  ) {
+    return this.teamService.getTeamRetroHistory(teamId);
+  }
+
+  @Get('in-progress-retro/:teamId')
+  public async getInProgressRetro(@Param() { teamId }: GetHasInProgressRetro) {
+    const retro = await this.teamService.getInProgressRetro(teamId);
+
+    return {
+      retro: retro ?? null,
+    };
+  }
+
   @Get('has-in-progress-retro/:teamId')
   public getHasInProgressRetro(
-    @Param() { teamId }: GetTeamInsightRequestParams,
+    @Param() { teamId }: GetHasInProgressRetro,
   ): Promise<boolean> {
     return this.teamService.hasInProgressRetro(teamId);
   }

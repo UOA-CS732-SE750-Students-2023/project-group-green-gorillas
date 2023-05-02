@@ -33,7 +33,7 @@ export class ActionItemService {
     await this.teamDashboardService.increase(
       teamId,
       organisationId,
-      TeamDashboardCountKey.CompletedActionItemCount,
+      TeamDashboardCountKey.OutstandingActionItemCount,
     );
 
     return this.utilsService.aggregateActionItem(actionItem);
@@ -45,7 +45,7 @@ export class ActionItemService {
     );
 
     await this.actionItemDomainService.delete(actionItemId);
-
+    console.log(actionItem);
     await this.teamDashboardService.decrease(
       actionItem.teamId,
       actionItem.organisationId,
@@ -73,10 +73,15 @@ export class ActionItemService {
     return this.utilsService.aggregateActionItems(actionItems);
   }
 
-  public async updateActionItemNote(actionItemId: UUID, note: string) {
+  public async updateActionItemNote(
+    actionItemId: UUID,
+    note: string,
+    updatedBy: UUID,
+  ) {
     const actionItem = await this.actionItemDomainService.updateNote(
       actionItemId,
       note,
+      updatedBy,
     );
 
     return this.utilsService.aggregateActionItem(actionItem);
@@ -85,6 +90,7 @@ export class ActionItemService {
   public async updateActionItemStatus(
     actionItemId: UUID,
     status: ActionItemStatus,
+    updatedBy: UUID,
   ) {
     const actionItem = await this.actionItemDomainService.getByIdOrThrow(
       actionItemId,
@@ -97,6 +103,7 @@ export class ActionItemService {
     const updatedActionItem = await this.actionItemDomainService.updateStatus(
       actionItemId,
       status,
+      updatedBy,
     );
 
     await Promise.all([

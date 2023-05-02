@@ -61,11 +61,9 @@ export const TeamScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
   const history = useHistory();
   const { user, isAdmin } = useCurrentUser();
-  // console.log(user);
 
   const { team, loading } = useTeam(teamId);
   const { teamRole } = useTeamRole(teamId);
-  console.log(teamRole);
 
   const {
     isLoading,
@@ -75,7 +73,6 @@ export const TeamScreen = () => {
     deleteActionItems,
   } = useActionItems(teamId);
 
-  // console.log(actionItems);
   const [showAll, setShowAll] = useState<boolean>(true);
 
   const currentUserActionItems = actionItems?.filter((item) =>
@@ -83,7 +80,6 @@ export const TeamScreen = () => {
   );
 
   const { insight, insightLoading } = useInsight(teamId);
-  // console.log(insight);
 
   return (
     <Container maxWidth="xl" sx={{ marginTop: 2, display: "flex" }}>

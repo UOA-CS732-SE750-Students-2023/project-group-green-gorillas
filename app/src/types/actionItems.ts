@@ -1,14 +1,15 @@
 import {User} from './user';
 
-export enum Status {
-  IN_PROGRESS = "In-Progress",
-  COMPLETED = "Completed",
+
+export enum ActionItemStatus {
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
 }
 
 export type ActionItem = {
   id: string,
   note: string,
-  status: Status,
+  status: ActionItemStatus,
   createdAt: string,
   assignees: User[],
 };

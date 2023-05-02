@@ -36,10 +36,6 @@ import LayersIcon from "@mui/icons-material/Layers";
 import HistoryIcon from "@mui/icons-material/History";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AddIcon from "@mui/icons-material/Add";
-import { actionItems } from "../../../../../../platform/src/modules/application/data-seeder/data/action-items";
-import { ActionItem, Status } from "../../../../types/actionItems";
-import axios from "axios";
-import { request } from "../../../../api/request";
 import { TeamDrawer } from "../../../common/TeamDrawer";
 import { MainScreenPath } from "../index";
 
@@ -82,14 +78,15 @@ export const TeamScreen = () => {
   const { team, loading } = useTeam(teamId);
   // console.log(team);
 
-  const { getActionItems, updateActionItems, actionItems, isLoading } =
-    useActionItems(teamId);
+  const {
+    isLoading,
+    actionItems,
+    getActionItems,
+    updateActionItems,
+    deleteActionItems,
+  } = useActionItems(teamId);
 
-  console.log(actionItems);
-
-  // Handle Upadate Action Items Status
-
-  // const [updateActionItems, setUpdateActionItems] = useState<ActionItem[]>();
+  // console.log(actionItems);
 
   const { insight, insightLoading } = useInsight(teamId);
   // console.log(insight);
@@ -215,7 +212,10 @@ export const TeamScreen = () => {
                           variant="outlined"
                           color="error"
                           size="small"
-                          disabled={true}
+                          // disabled={true}
+                          onClick={() => {
+                            deleteActionItems(actionItem);
+                          }}
                         >
                           Delete
                         </Button>

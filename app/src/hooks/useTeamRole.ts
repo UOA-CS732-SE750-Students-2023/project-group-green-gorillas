@@ -5,7 +5,6 @@ import { TeamRole } from "../types/teamRole";
 
 
 
-
 export const useTeamRole = (id: string) => {
     const [loading, setLoading] = useState<Boolean>(false);
     const [teamRole, setTeamRole] = useState<TeamRole | null>(null);

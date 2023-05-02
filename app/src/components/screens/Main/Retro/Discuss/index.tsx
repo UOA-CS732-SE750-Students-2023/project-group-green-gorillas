@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useState } from "react";
 import DiscussGroup from "./DiscussGroup";
 import DiscussNote from "./DiscussNote";
@@ -9,43 +9,64 @@ import ActionItem from "./ActionItem";
 import stageStyles from "../styles/stage.module.css";
 import styles from "../styles/styles.module.css";
 import { Box } from "@mui/system";
+import { useAggregateRetro } from "../utils/use-aggregate-retro";
+import { request } from "../../../../../api/request";
+import { ADD_ACTION_ITEM } from "../../../../../api/api";
 
-function Discuss({ retro, items, actionItems, setActionItems }: any) {
-  const [index, setIndex] = useState(0);
-  const [newestItem, setNewestItem] = useState(0);
+function Discuss({ retro }: any) {
+  const aggregateRetro = useAggregateRetro(retro);
 
-  function addActionItem() {
-    const newActionItems = [...actionItems];
-    newActionItems.push({
-      value: "",
+  const notes = useMemo(() => {
+    const notes: any[] = [];
+
+    aggregateRetro.boardSections.forEach((boardSection: any) => {
+      boardSection.boardNotes.forEach((boardNote: any) => {
+        notes.push({
+          ...boardNote,
+          sectionName: boardSection.name,
+        });
+      });
+
+      boardSection.groups.forEach((group: any) => {
+        if (group.items) {
+          notes.push({
+            ...group,
+            sectionName: boardSection.name,
+          });
+        }
+      });
     });
-    setNewestItem(newActionItems.length - 1);
-    setActionItems(newActionItems);
-  }
 
-  function updateActionItem(i, e) {
-    let newActionItems = [...actionItems];
-    newActionItems[i].value = e.target.value;
-    setActionItems(newActionItems);
-  }
+    return notes.sort(
+      (a: any, b: any) => b.boardNoteVotes.length - a.boardNoteVotes.length
+    );
+  }, [aggregateRetro]);
+
+  const onAddActionItem = async () => {
+    await request.post(ADD_ACTION_ITEM, {
+      teamId: retro.teamId,
+      retroId: retro.id,
+    });
+  };
+
+  const [index, setIndex] = useState(0);
 
   return (
     <Box className={stageStyles.discuss__container}>
       <Box className={stageStyles.discuss__wrapper}>
         <Box className={stageStyles.discussion__item}>
-          <Box className={styles.heading}>
-            {retro.colShortDesc} {items[index].column}
-          </Box>
-          {items[index].id.includes("group") ? (
-            <DiscussGroup group={items[index]} />
+          <Box className={styles.heading}>{notes[index].sectionName}</Box>
+          {notes[index]?.items ? (
+            <DiscussGroup group={notes[index]} />
           ) : (
-            <DiscussNote note={items[index]} />
+            <DiscussNote note={notes[index]} />
           )}
+          (Vote: {notes[index].boardNoteVotes.length})
         </Box>
         <Box className={stageStyles.discussion__buttons}>
           <Box
             className={stageStyles.vote__button}
-            onClick={() => index !== items.length - 1 && setIndex(index + 1)}
+            onClick={() => index !== notes.length - 1 && setIndex(index + 1)}
           >
             <Box
               component="img"
@@ -53,6 +74,18 @@ function Discuss({ retro, items, actionItems, setActionItems }: any) {
               alt=""
               className={stageStyles.vote__button__img}
             />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: 0.5,
+            }}
+          >
+            <Box>
+              {index + 1} / {notes.length}
+            </Box>
           </Box>
           <Box
             className={stageStyles.vote__button}
@@ -73,18 +106,15 @@ function Discuss({ retro, items, actionItems, setActionItems }: any) {
           <Button
             text="New action item"
             color="outline"
-            clickFn={addActionItem}
+            clickFn={onAddActionItem}
           />
         </Box>
         <Box className={stageStyles.action__items}>
-          {actionItems.map((item, i) => (
-            <ActionItem
-              action={item}
-              i={i}
-              updateItem={updateActionItem}
-              newestItem={newestItem}
-            />
-          ))}
+          {retro.actionItems
+            .sort((a: any, b: any) => (a.createdAt < b.createdAt ? 1 : -1))
+            .map((item: any) => (
+              <ActionItem key={item.id} action={item} />
+            ))}
         </Box>
       </Box>
     </Box>

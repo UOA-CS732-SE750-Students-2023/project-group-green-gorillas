@@ -67,6 +67,9 @@ export class EnvironmentVariables {
   @IsString()
   DATABASE_TEAM_DASHBOARD_TABLE_NAME!: string;
 
+  @IsString()
+  DATABASE_BOARD_NOTE_VOTE_TABLE_NAME!: string;
+
   // TOKEN
   @IsString()
   TOKEN_SECRET!: string;

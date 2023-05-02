@@ -142,3 +142,24 @@ export class UpdateSectionDescriptionRequest {
   @IsString()
   description!: string;
 }
+
+export class VoteNoteRequest {
+  @IsUUID()
+  boardNoteId!: UUID;
+
+  @IsUUID()
+  boardId!: UUID;
+}
+
+export class UnVoteNoteRequestParams {
+  @IsUUID()
+  boardNoteId!: UUID;
+}
+
+export class MoveNextStageRequest {
+  @IsUUID()
+  retroId: UUID;
+
+  @IsUUID()
+  teamId: UUID;
+}

@@ -92,11 +92,13 @@ export class ActionItemController {
 
   @Patch('update-note')
   public async updateActionItemNote(
+    @RequestUser() user: RequestUserType,
     @Body() { actionItemId, note }: UpdateActionItemNoteRequest,
   ) {
     const actionItem = await this.actionItemService.updateActionItemNote(
       actionItemId,
       note,
+      user.id,
     );
 
     this.socketEventService.broadcastRoom(
@@ -110,11 +112,13 @@ export class ActionItemController {
 
   @Patch('update-status')
   public async updateActionStatus(
+    @RequestUser() user: RequestUserType,
     @Body() { actionItemId, status }: UpdateActionStatusRequest,
   ) {
     const actionItem = await this.actionItemService.updateActionItemStatus(
       actionItemId,
       status,
+      user.id,
     );
 
     this.socketEventService.broadcastRoom(

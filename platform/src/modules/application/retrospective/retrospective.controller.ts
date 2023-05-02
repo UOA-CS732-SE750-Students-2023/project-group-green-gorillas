@@ -22,11 +22,14 @@ import {
   DeleteRetrospectiveRequestParams,
   DeleteSectionParams,
   GetRetrospectiveRequestParam,
+  MoveNextStageRequest,
   UnAssignNoteGroup,
+  UnVoteNoteRequestParams,
   UpdateNoteRequest,
   UpdateRetroNameRequest,
   UpdateSectionDescriptionRequest,
   UpdateSectionNameRequest,
+  VoteNoteRequest,
 } from './dto/request';
 import { SocketEventService } from '../../gateway/socket/socket-event.service';
 import { ClientSocketMessageEvent } from '../../gateway/socket/socket.gateway';
@@ -57,6 +60,45 @@ export class RetrospectiveController {
     @Param() { id, teamId }: GetRetrospectiveRequestParam,
   ) {
     return this.retrospectiveService.getRetrospective(id, teamId);
+  }
+
+  @Post('vote-note')
+  public async voteNote(
+    @RequestUser() user: RequestUserType,
+    @Body() { boardNoteId, boardId }: VoteNoteRequest,
+  ) {
+    const vote = await this.retrospectiveService.voteNote(
+      user.id,
+      boardNoteId,
+      boardId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      vote.boardId,
+      ClientSocketMessageEvent.BOARD_VOTE_NOTE,
+      buildSocketEvent(SocketEventOperation.CREATE, vote),
+    );
+
+    return vote;
+  }
+
+  @Delete('un-vote-note/:boardNoteId')
+  public async unVoteNote(
+    @RequestUser() user: RequestUserType,
+    @Param() { boardNoteId }: UnVoteNoteRequestParams,
+  ) {
+    const vote = await this.retrospectiveService.unVoteNote(
+      user.id,
+      boardNoteId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      vote.boardId,
+      ClientSocketMessageEvent.BOARD_VOTE_NOTE,
+      buildSocketEvent(SocketEventOperation.DELETE, vote),
+    );
+
+    return vote;
   }
 
   @Post('create')
@@ -130,6 +172,24 @@ export class RetrospectiveController {
     return section;
   }
 
+  @Patch('move-next-stage')
+  public async moveNextStage(
+    @Body() { retroId, teamId }: MoveNextStageRequest,
+  ) {
+    const retro = await this.retrospectiveService.moveNextStage(
+      retroId,
+      teamId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      retro.id,
+      ClientSocketMessageEvent.BOARD,
+      buildSocketEvent(SocketEventOperation.UPDATE, retro),
+    );
+
+    return retro;
+  }
+
   @Patch('update-name')
   public async updateRetroName(
     @Body() { id, teamId, name }: UpdateRetroNameRequest,
@@ -143,7 +203,7 @@ export class RetrospectiveController {
     this.socketEventService.broadcastRoom(
       retro.id,
       ClientSocketMessageEvent.BOARD,
-      buildSocketEvent(SocketEventOperation.CREATE, retro),
+      buildSocketEvent(SocketEventOperation.UPDATE, retro),
     );
 
     return retro;

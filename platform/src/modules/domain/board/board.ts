@@ -9,7 +9,6 @@ export enum BoardStage {
   GROUP = 'Group',
   VOTE = 'Vote',
   DISCUSS = 'Discuss',
-  REVIEW = 'Review',
   FINALIZE = 'Finalized',
 }
 
@@ -52,5 +51,9 @@ export class Board {
 
   public updateName(name: string): void {
     this.name = name;
+  }
+
+  public updateStage(stage: BoardStage): void {
+    this.stage = stage;
   }
 }

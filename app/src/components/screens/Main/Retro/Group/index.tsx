@@ -111,11 +111,13 @@ function Group({ retro }: any) {
   return (
     <Box className={stageStyles.columns__wrapper} component="div">
       <DragDropContext onDragEnd={onDragEnd}>
-        {retroWithGroupNotes.boardSections.map((section: any) => {
-          return (
-            <GroupColumn id={section.id} column={section} key={section.id} />
-          );
-        })}
+        {retroWithGroupNotes.boardSections
+          .sort((a: any, b: any) => a.order - b.order)
+          .map((section: any) => {
+            return (
+              <GroupColumn id={section.id} column={section} key={section.id} />
+            );
+          })}
       </DragDropContext>
     </Box>
   );

@@ -61,6 +61,8 @@ export const TeamScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
   const history = useHistory();
   const { user, isAdmin } = useCurrentUser();
+  // console.log(user);
+
   const { team, loading } = useTeam(teamId);
   const { teamRole } = useTeamRole(teamId);
   console.log(teamRole);
@@ -128,15 +130,17 @@ export const TeamScreen = () => {
               </AvatarGroup>
             </Grid>
             <Grid item xs={8} alignItems="flex-start">
-              <Button
-                onClick={() =>
-                  history.push(`${MainScreenPath.Template}/${teamId}`)
-                }
-                variant="contained"
-                startIcon={<AddIcon />}
-              >
-                New Retro
-              </Button>
+              {teamRole?.role !== "MEMBER" ? (
+                <Button
+                  onClick={() =>
+                    history.push(`${MainScreenPath.Template}/${teamId}`)
+                  }
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                >
+                  New Retro
+                </Button>
+              ) : null}
             </Grid>
           </Grid>
           <Divider sx={{ marginTop: 2, marginBottom: 5 }} />
@@ -214,18 +218,21 @@ export const TeamScreen = () => {
                           </AvatarGroup>
                         </CardContent>
                         <CardActions>
-                          <Button
-                            variant="outlined"
-                            color="error"
-                            size="small"
-                            sx={{ marginLeft: "auto" }}
-                            // disabled={true}
-                            onClick={() => {
-                              deleteActionItems(actionItem);
-                            }}
-                          >
-                            DELETE
-                          </Button>
+                          {teamRole?.role !== "MEMBER" ? (
+                            <Button
+                              variant="outlined"
+                              color="error"
+                              size="small"
+                              sx={{ marginLeft: "auto" }}
+                              // disabled={true}
+                              onClick={() => {
+                                deleteActionItems(actionItem);
+                              }}
+                            >
+                              DELETE
+                            </Button>
+                          ) : null}
+
                           <Button
                             variant="contained"
                             size="small"
@@ -267,18 +274,20 @@ export const TeamScreen = () => {
                           </AvatarGroup>
                         </CardContent>
                         <CardActions>
-                          <Button
-                            variant="outlined"
-                            color="error"
-                            size="small"
-                            sx={{ marginLeft: "auto" }}
-                            // disabled={true}
-                            onClick={() => {
-                              deleteActionItems(actionItem);
-                            }}
-                          >
-                            DELETE
-                          </Button>
+                          {teamRole?.role !== "MEMBER" ? (
+                            <Button
+                              variant="outlined"
+                              color="error"
+                              size="small"
+                              sx={{ marginLeft: "auto" }}
+                              // disabled={true}
+                              onClick={() => {
+                                deleteActionItems(actionItem);
+                              }}
+                            >
+                              DELETE
+                            </Button>
+                          ) : null}
                           <Button
                             variant="contained"
                             size="small"

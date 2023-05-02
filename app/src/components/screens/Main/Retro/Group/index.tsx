@@ -8,7 +8,8 @@ import { Box } from "@mui/material";
 import { request } from "../../../../../api/request";
 import {
   ADD_RETRO_NOTE,
-  UPDATE_RETRO_NOTE_GROUP,
+  ASSIGN_NOTE_GROUP,
+  UNASSIGN_NOTE_GROUP,
 } from "../../../../../api/api";
 import * as _ from "lodash";
 
@@ -66,12 +67,12 @@ function Group({ retro }: any) {
 
   const updateNoteParent = async (result: any, groupId: string) => {
     await Promise.all([
-      request.patch(UPDATE_RETRO_NOTE_GROUP, {
+      request.patch(ASSIGN_NOTE_GROUP, {
         boardNoteId: result.combine.draggableId,
         parentNoteId: groupId,
         boardSectionId: result.combine.droppableId,
       }),
-      request.patch(UPDATE_RETRO_NOTE_GROUP, {
+      request.patch(ASSIGN_NOTE_GROUP, {
         boardNoteId: result.draggableId,
         parentNoteId: groupId,
         boardSectionId: result.combine.droppableId,
@@ -96,6 +97,18 @@ function Group({ retro }: any) {
     return boardNoteGroup;
   };
 
+  const destinationBoardSection = (droppableId: string) => {
+    let boardSection: any = null;
+
+    retro.boardSections.forEach((boardSectionItem: any) => {
+      if (boardSectionItem.id === droppableId) {
+        boardSection = boardSectionItem;
+      }
+    });
+
+    return boardSection;
+  };
+
   const onDragEnd = async (result: any) => {
     if (result.combine) {
       const { data } = await createNoteGroup(result);
@@ -107,14 +120,23 @@ function Group({ retro }: any) {
         result.destination.droppableId
       );
       if (boardNoteGroup) {
-        return request.patch(UPDATE_RETRO_NOTE_GROUP, {
+        return request.patch(ASSIGN_NOTE_GROUP, {
           boardNoteId: result.draggableId,
           parentNoteId: boardNoteGroup.id,
           boardSectionId: boardNoteGroup.boardSectionId,
         });
       }
 
-      // TODO: re-order and move to different column
+      const boardSection = destinationBoardSection(
+        result.destination.droppableId
+      );
+
+      if (boardSection) {
+        return request.patch(UNASSIGN_NOTE_GROUP, {
+          boardNoteId: result.draggableId,
+          boardSectionId: boardSection.id,
+        });
+      }
     }
   };
 

@@ -69,7 +69,7 @@ export class BoardNoteService {
     return this.boardNoteRepository.save(boardNote);
   }
 
-  public async updateNoteGroup(
+  public async assignNoteGroup(
     id: UUID,
     parentId: UUID,
     boardSectionId: UUID,
@@ -77,6 +77,19 @@ export class BoardNoteService {
     const boardNote = await this.getByIdOrThrow(id);
 
     boardNote.updateParentId(parentId);
+
+    boardNote.updateBoardSectionId(boardSectionId);
+
+    return this.boardNoteRepository.save(boardNote);
+  }
+
+  public async unAssignNoteGroup(
+    id: UUID,
+    boardSectionId: UUID,
+  ): Promise<BoardNote> {
+    const boardNote = await this.getByIdOrThrow(id);
+
+    boardNote.updateParentId(null);
 
     boardNote.updateBoardSectionId(boardSectionId);
 

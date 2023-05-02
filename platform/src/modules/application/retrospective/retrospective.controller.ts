@@ -16,12 +16,13 @@ import {
 import {
   AddNoteRequest,
   AddSectionRequest,
+  AssignNoteGroup,
   CreateRetroRequestRequest,
   DeleteNoteRequestParams,
   DeleteRetrospectiveRequestParams,
   DeleteSectionParams,
   GetRetrospectiveRequestParam,
-  UpdateNoteGroup,
+  UnAssignNoteGroup,
   UpdateNoteRequest,
   UpdateRetroNameRequest,
   UpdateSectionDescriptionRequest,
@@ -148,12 +149,31 @@ export class RetrospectiveController {
     return retro;
   }
 
-  @Patch('update-note-group')
-  public async updateNoteGroup(
+  @Patch('un-assign-note-group')
+  public async unAssignNoteGroup(
     @Body()
-    { boardNoteId, parentNoteId, boardSectionId }: UpdateNoteGroup,
+    { boardNoteId, boardSectionId }: UnAssignNoteGroup,
   ) {
-    const boardNote = await this.retrospectiveService.updateNoteGroup(
+    const boardNote = await this.retrospectiveService.unAssignNoteGroup(
+      boardNoteId,
+      boardSectionId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      boardNote.boardId,
+      ClientSocketMessageEvent.BOARD_NOTE,
+      buildSocketEvent(SocketEventOperation.UPDATE, boardNote),
+    );
+
+    return boardNote;
+  }
+
+  @Patch('assign-note-group')
+  public async assignNoteGroup(
+    @Body()
+    { boardNoteId, parentNoteId, boardSectionId }: AssignNoteGroup,
+  ) {
+    const boardNote = await this.retrospectiveService.assignNoteGroup(
       boardNoteId,
       parentNoteId,
       boardSectionId,

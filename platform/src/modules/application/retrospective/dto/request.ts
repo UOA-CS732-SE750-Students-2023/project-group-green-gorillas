@@ -83,12 +83,20 @@ export class UpdateNoteRequest {
   note: string;
 }
 
-export class UpdateNoteGroup {
+export class AssignNoteGroup {
   @IsUUID()
   boardNoteId: UUID;
 
   @IsUUID()
   parentNoteId!: UUID;
+
+  @IsUUID()
+  boardSectionId!: UUID;
+}
+
+export class UnAssignNoteGroup {
+  @IsUUID()
+  boardNoteId: UUID;
 
   @IsUUID()
   boardSectionId!: UUID;

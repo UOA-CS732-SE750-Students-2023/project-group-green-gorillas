@@ -164,12 +164,16 @@ export class RetrospectiveService {
     return this.boardNoteService.updateNote(boardNoteId, note);
   }
 
-  public updateNoteGroup(boardNoteId: UUID, parentId: UUID, boardSectionId) {
-    return this.boardNoteService.updateNoteGroup(
+  public assignNoteGroup(boardNoteId: UUID, parentId: UUID, boardSectionId) {
+    return this.boardNoteService.assignNoteGroup(
       boardNoteId,
       parentId,
       boardSectionId,
     );
+  }
+
+  public unAssignNoteGroup(boardNoteId: UUID, boardSectionId: UUID) {
+    return this.boardNoteService.unAssignNoteGroup(boardNoteId, boardSectionId);
   }
 
   public deleteNote(boardNoteId: UUID) {

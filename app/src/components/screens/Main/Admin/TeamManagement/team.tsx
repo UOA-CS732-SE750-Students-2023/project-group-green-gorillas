@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import {
   DataGrid,
   GridRowModel,
@@ -14,21 +15,22 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import Alert, { AlertProps } from '@mui/material/Alert';
+import { request } from '../../../../../api/request';
+import { TEAM_LIST } from '../../../../../api/api';
 
-
-
-interface User {
+interface Team {
+  id: number;
   name: string;
-  age: number;
-  id: GridRowId;
-  dateCreated: Date;
-  lastLogin: Date;
+  organisationId: string;
+  active: boolean;
+  updatedAt: string;
+  createdAt: string;
 }
 
 const useFakeMutation = () => {
   return React.useCallback(
-    (user: Partial<User>) =>
-      new Promise<Partial<User>>((resolve, reject) => {
+    (user: Partial<Team>) =>
+      new Promise<Partial<Team>>((resolve, reject) => {
         setTimeout(() => {
           if (user.name?.trim() === '') {
             reject();
@@ -55,6 +57,35 @@ export default function AskConfirmationBeforeSave() {
   const mutateRow = useFakeMutation();
   const noButtonRef = React.useRef<HTMLButtonElement>(null);
   const [promiseArguments, setPromiseArguments] = React.useState<any>(null);
+  const columns: GridColDef[] = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'name', headerName: 'Name', width: 130, editable: true },
+    { field: 'organisationId', headerName: 'OrgID', width: 70 },
+    { field: 'active', headerName: 'Active', width: 130 },
+    { field: 'createdAt', headerName: 'CreatedAt', width: 180 },
+    { field: 'updatedAt', headerName: 'UpdatedAt', width: 180 },
+  ];
+
+  const [team, setTeam] = useState<Team[]>([]);
+
+  useEffect(() => {
+    async function fetchTeam() {
+      try {
+
+        const { data } = await request.get<Team[]>(TEAM_LIST());
+        console.log(data);
+
+
+        //const response = await fetch('http://localhost:8080/api/team/list');
+
+        //const data = await response.json();
+        //setTeam(data);
+      } catch (error) {
+        console.error('Failed to fetch team', error);
+      }
+    }
+    fetchTeam();
+  }, []);
 
   const [snackbar, setSnackbar] = React.useState<Pick<
     AlertProps,
@@ -137,7 +168,7 @@ export default function AskConfirmationBeforeSave() {
   return (
     <div style={{ height: 400, width: '100%' }}>
       {renderConfirmDialog()}
-      <DataGrid rows={rows} columns={columns} processRowUpdate={processRowUpdate} />
+      <DataGrid rows={team} columns={columns} processRowUpdate={processRowUpdate} />
       {!!snackbar && (
         <Snackbar open onClose={handleCloseSnackbar} autoHideDuration={6000}>
           <Alert {...snackbar} onClose={handleCloseSnackbar} />
@@ -156,17 +187,17 @@ export default function AskConfirmationBeforeSave() {
   createdAt: string;
 */
 
-const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Name', width: 130, editable: true },
-    { field: 'organisationId', headerName: 'OrgID', width: 70 },
-    { field: 'active', headerName: 'Active', width: 130 },
-    { field: 'createdAt', headerName: 'CreatedAt', width: 180 },
-    { field: 'updatedAt', headerName: 'UpdatedAt', width: 180 },
-  ];
-  
-  const rows = [
-    { id: 1, name: 'Kiwi Fruit', organisationId: 1, active: 'Y', createdAt: '05/01/2023', updatedAt: '06/01/2023'},
-    { id: 2, name: 'Apple Tree', organisationId: 1, active: 'Y', createdAt: '05/01/2023', updatedAt: '06/01/2023'},
-  ];
-  
+
+
+/*
+const rows = [
+  { id: 1, name: 'Kiwi Fruit', organisationId: 1, active: 'Y', createdAt: '05/01/2023', updatedAt: '06/01/2023'},
+  { id: 2, name: 'Apple Tree', organisationId: 1, active: 'Y', createdAt: '05/01/2023', updatedAt: '06/01/2023'},
+];
+*/
+
+
+
+
+
+

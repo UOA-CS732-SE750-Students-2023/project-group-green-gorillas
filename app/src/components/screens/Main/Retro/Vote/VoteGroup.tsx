@@ -12,7 +12,6 @@ function VoteGroup({ name, items, votes, setVotes, id }: any) {
         <Box className={stageStyles.group__heading}>{name}</Box>
         <div>
           {items.map((item, index) => {
-            console.log(item);
             return (
               <Box
                 className={stageStyles.note__wrapper}
@@ -26,7 +25,7 @@ function VoteGroup({ name, items, votes, setVotes, id }: any) {
                     ] as any
                   }
                 >
-                  {item.value}
+                  {item.note}
                 </Box>
               </Box>
             );

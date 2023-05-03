@@ -28,6 +28,7 @@ export const UPDATE_ACTIONITEMS_BY_ID = `${apiBaseUrl}/action-item/update-status
 export const TEAM_ROLE_BY_ID = (teamId: string) =>
   `${apiBaseUrl}/team/team-role/${teamId}`;
 export const TEMPLATE = () => `${apiBaseUrl}/retrospective/template/list`;
+export const UPDATE_SECTION_NAME = `${apiBaseUrl}/retrospective/update-section-name`;
 export const ADD_RETRO_NOTE = `${apiBaseUrl}/retrospective/add-note`;
 export const DELETE_RETRO_NOTE = (boardNoteId: string) =>
   `${apiBaseUrl}/retrospective/delete-note/${boardNoteId}`;

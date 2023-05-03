@@ -1,11 +1,12 @@
-import { Box, Container } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Container, Input } from "@mui/material";
+import React, { useMemo, useState } from "react";
 import stageStyles from "../styles/stage.module.css";
 import styles from "../styles/styles.module.css";
 import addIcon from "../../../../../assets/add.svg";
 import { ThinkNote } from "./ThinkNote";
 import { request } from "../../../../../api/request";
-import { ADD_RETRO_NOTE } from "../../../../../api/api";
+import { ADD_RETRO_NOTE, UPDATE_SECTION_NAME } from "../../../../../api/api";
+import { debounce } from "../../../../../utils/debounce";
 
 enum BoardNoteType {
   NORMAL = "NORMAL",
@@ -20,6 +21,11 @@ const ThinkColumn = ({
   setFocusedNoteRef,
   focusedNoteRef,
 }: any) => {
+  const [sectionName, setSectionName] = useState(boardSection.name);
+
+  const boardSectionNameRequestDebounce = useMemo(() => {
+    return debounce(1000);
+  }, []);
   const createNote = async () => {
     await request.post(ADD_RETRO_NOTE, {
       boardId: boardSection.boardId,
@@ -28,6 +34,24 @@ const ThinkColumn = ({
       boardNoteType: BoardNoteType.NORMAL,
       boardNoteColor: colors[Math.floor(colors.length * Math.random())],
     });
+  };
+
+  const updateBoardSectionName = async (sectionName: string) => {
+    await request.patch(UPDATE_SECTION_NAME, {
+      boardSectionId: boardSection.id,
+      boardId: boardSection.boardId,
+      name: sectionName,
+    });
+  };
+
+  const onChangeBoardSecionName = async (e: any) => {
+    const newSectionName = e.target.value;
+
+    setSectionName(newSectionName);
+
+    boardSectionNameRequestDebounce(() =>
+      updateBoardSectionName(newSectionName)
+    );
   };
 
   return (
@@ -42,7 +66,18 @@ const ThinkColumn = ({
           <Box className={styles.select__heading}>
             {boardSection.description}
           </Box>
-          <Box className={styles.heading}>{boardSection.name}</Box>
+          <Input
+            className={styles.heading}
+            sx={{
+              "& .MuiInput-underline": {
+                "&::before": {
+                  borderBottom: "none",
+                },
+              },
+            }}
+            value={sectionName}
+            onChange={onChangeBoardSecionName}
+          />
         </Box>
         <Box
           className={stageStyles.add__note__button}

@@ -34,22 +34,29 @@ export const RetroScreen = () => {
         className={retroStyles.retro__header}
       >
         <Box className={retroStyles.header__section}>
-          <Typography className={retroStyles.header__title}>
-            Participants
-          </Typography>
-          <List className={retroStyles.participants__list}>
-            {retroUsers?.map((user) => (
-              <ListItem className={retroStyles.participant} key={user.id}>
-                <Tooltip
-                  title={`${user.displayName} (${user.firstName} ${user.lastName}) (${user.email})`}
-                >
-                  <ListItemAvatar>
-                    <Avatar text={`${user.firstName} ${user.lastName}`} />
-                  </ListItemAvatar>
-                </Tooltip>
-              </ListItem>
-            ))}
-          </List>
+          <Box style={{ display: "flex", alignItems: "center" }}>
+            <Typography className={retroStyles.retro__name}>
+              {retro.name}
+            </Typography>
+          </Box>
+          <Box style={{ display: "flex", flexDirection: "column" }}>
+            <Typography className={retroStyles.header__title}>
+              Participants
+            </Typography>
+            <List className={retroStyles.participants__list}>
+              {retroUsers?.map((user) => (
+                <ListItem className={retroStyles.participant} key={user.id}>
+                  <Tooltip
+                    title={`${user.displayName} (${user.firstName} ${user.lastName}) (${user.email})`}
+                  >
+                    <ListItemAvatar>
+                      <Avatar text={`${user.firstName} ${user.lastName}`} />
+                    </ListItemAvatar>
+                  </Tooltip>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
         </Box>
       </Container>
       <Stage retro={retro} />

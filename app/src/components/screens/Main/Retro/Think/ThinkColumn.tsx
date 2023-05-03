@@ -1,4 +1,4 @@
-import { Box, Container } from "@mui/material";
+import { Box, Container, Input } from "@mui/material";
 import React, { useState } from "react";
 import stageStyles from "../styles/stage.module.css";
 import styles from "../styles/styles.module.css";
@@ -20,6 +20,7 @@ const ThinkColumn = ({
   setFocusedNoteRef,
   focusedNoteRef,
 }: any) => {
+  console.log("🚀 ~ file: ThinkColumn.tsx:23 ~ boardSection:", boardSection);
   const createNote = async () => {
     await request.post(ADD_RETRO_NOTE, {
       boardId: boardSection.boardId,
@@ -42,7 +43,18 @@ const ThinkColumn = ({
           <Box className={styles.select__heading}>
             {boardSection.description}
           </Box>
-          <Box className={styles.heading}>{boardSection.name}</Box>
+          <Input
+            className={styles.heading}
+            defaultValue={boardSection.name}
+            sx={{
+              "& .MuiInput-underline": {
+                "&::before": {
+                  borderBottom: "none",
+                },
+              },
+            }}
+            value={boardSection.name}
+          />
         </Box>
         <Box
           className={stageStyles.add__note__button}

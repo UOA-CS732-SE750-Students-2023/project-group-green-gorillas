@@ -1,11 +1,4 @@
-import {
-  AvatarGroup,
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useRetroHistory } from "../../../../../hooks/useRetroHistory";
 import { Avatar } from "../../../../common/Avatar";
 
@@ -14,14 +7,14 @@ type RetroHistoryListProps = {
 };
 
 export const RetroHistoryList = ({ selectedTeam }: RetroHistoryListProps) => {
-  const { retroList, getRetroList } = useRetroHistory(selectedTeam || "");
+  const { retroList } = useRetroHistory(selectedTeam || "");
 
   return (
     <Box>
       {retroList?.map((retro) => (
-        <Card key={retro.id}>
+        <Card key={retro.id} sx={{ maxWidth: 250 }}>
           <CardContent>
-            <Typography variant="h6" component="div">
+            <Typography variant="h5" noWrap sx={{ marginBottom: 2 }}>
               {retro.name}
             </Typography>
             <Typography color="text.secondary" component="div">

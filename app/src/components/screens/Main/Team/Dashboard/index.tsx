@@ -36,6 +36,8 @@ import { MainScreenPath } from "../../index";
 import { useCurrentUser } from "../../../../../hooks/useCurrentUser";
 import { useTeamRole } from "../../../../../hooks/useTeamRole";
 import { request } from "../../../../../api/request";
+import { InProgressRetro } from "./InProgressRetro";
+import { useInProgressRetro } from "../../../../../hooks/useInProgressRetro";
 
 export const TeamDashboardScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -80,6 +82,9 @@ export const TeamDashboardScreen = () => {
 
   const { insight, insightLoading } = useInsight(teamId);
 
+  // In progress Retro
+  const { inProgressRetro } = useInProgressRetro(teamId);
+
   return (
     <>
       {loading ? (
@@ -90,7 +95,6 @@ export const TeamDashboardScreen = () => {
         <Box sx={{ flexGrow: 1, marginTop: 5, width: "100%" }}>
           {" "}
           <Toolbar />
-          {/* Team selector */}
           {/* Team Member list & New Retro Button */}
           <Grid
             container
@@ -107,7 +111,7 @@ export const TeamDashboardScreen = () => {
               justifyContent="flex-start"
               alignItems="flex-start"
             >
-              {/* <Typography
+              <Typography
                 variant="h4"
                 fontWeight="bold"
                 noWrap
@@ -115,7 +119,7 @@ export const TeamDashboardScreen = () => {
                 sx={{ marginBottom: 2 }}
               >
                 {team?.name}
-              </Typography> */}
+              </Typography>
               <AvatarGroup sx={{ width: 185 }}>
                 {team?.teamMembers?.map((member) => (
                   <Avatar
@@ -140,6 +144,8 @@ export const TeamDashboardScreen = () => {
             </Grid>
           </Grid>
           <Divider sx={{ marginTop: 2, marginBottom: 5 }} />
+          {/* {inProgressRetro ? <InProgressRetro /> : null} */}
+          <InProgressRetro />
           {/* Sort to my action items */}
           <Grid
             container

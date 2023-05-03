@@ -12,6 +12,7 @@ import {
   DialogContent,
   TextField,
   DialogActions,
+  Tooltip,
 } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import { request } from "../../../../api/request";
@@ -150,23 +151,30 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
           </>
         )}
 
-        <Button
-          variant="contained"
-          sx={{
-            bgcolor: "orange",
-            color: "white",
-            borderRadius: "8px",
-            "&:hover": { bgcolor: "darkorange" },
-            width: "100%",
-            mt: isBlankRetrospective ? 2 : 4, // add some margin if it's the only button
-          }}
-          onClick={() => {
-            startRetroHandler();
-          }}
-          disabled={isRetroActiveIdentifier}
+        <Tooltip
+          title={isRetroActiveIdentifier ? "There is in progress retro" : ""}
+          placement={"left"}
         >
-          Start Retro
-        </Button>
+          <Box>
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: "orange",
+                color: "white",
+                borderRadius: "8px",
+                "&:hover": { bgcolor: "darkorange" },
+                width: "100%",
+                mt: isBlankRetrospective ? 2 : 4, // add some margin if it's the only button
+              }}
+              onClick={() => {
+                startRetroHandler();
+              }}
+              disabled={isRetroActiveIdentifier}
+            >
+              Start Retro
+            </Button>
+          </Box>
+        </Tooltip>
       </CardContent>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>

@@ -35,6 +35,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { MainScreenPath } from "../../index";
 import { useCurrentUser } from "../../../../../hooks/useCurrentUser";
 import { useTeamRole } from "../../../../../hooks/useTeamRole";
+import { request } from "../../../../../api/request";
 
 export const TeamDashboardScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -51,6 +52,17 @@ export const TeamDashboardScreen = () => {
     history.replace(`${MainScreenPath.TEAM}/${event.target.value}`);
   };
   const { teamRole } = useTeamRole(teamId);
+
+  useEffect(() => {
+    request.put("http://localhost:8080/api/user/current", {
+      displayName: "Shunyuan",
+      firstName: "AAA",
+      lastName: "VBBB",
+      phone: "123123",
+      address: "6 coventry way",
+      gender: true,
+    });
+  }, []);
 
   const {
     isLoading,

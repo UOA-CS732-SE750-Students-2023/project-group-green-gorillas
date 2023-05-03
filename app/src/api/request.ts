@@ -6,7 +6,7 @@ import { authService } from "../services/authService";
 const request = axios.create({
   timeout: 15000,
   headers: {
-    "Content-Type": "application/x-www-form-urlencoded",
+    "Content-Type": "application/json",
   },
 });
 

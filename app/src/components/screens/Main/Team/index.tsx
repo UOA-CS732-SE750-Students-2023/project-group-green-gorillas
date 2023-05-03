@@ -64,26 +64,26 @@ import { useTeamRole } from "../../../../hooks/useTeamRole";
 
 export const TeamScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
+
   const history = useHistory();
   const { user, isAdmin } = useCurrentUser();
 
-  const defaultTeam = user?.teams[0];
-  // console.log("defaultTeam:", defaultTeam);
-
-  const [selectedTeam, setSelectedTeam] = useState<string | undefined>(
-    defaultTeam?.id
-  );
   // console.log("selectedTeam:", selectedTeam);
 
-  const { team, loading } = useTeam(selectedTeam || "");
+  const { team, loading } = useTeam(teamId);
   // console.log(team);
 
   const handleChange = (event: SelectChangeEvent) => {
-    setSelectedTeam(event.target.value);
+    history.replace(`${MainScreenPath.TEAM}/${event.target.value}`);
   };
   const { teamRole } = useTeamRole(teamId);
   // console.log(teamRole);
 
+  useEffect(() => {
+    if (!user?.teams?.find((team) => teamId === team.id)) {
+      history.replace(`${MainScreenPath.HOME}`);
+    }
+  }, [user, history]);
 
   const {
     isLoading,
@@ -91,7 +91,7 @@ export const TeamScreen = () => {
     getActionItems,
     updateActionItems,
     deleteActionItems,
-  } = useActionItems(selectedTeam || "");
+  } = useActionItems(teamId || "");
 
   const [showAll, setShowAll] = useState<boolean>(true);
 
@@ -106,7 +106,9 @@ export const TeamScreen = () => {
       <TeamDrawer teamId={teamId} />
 
       {loading ? (
-        <LoadingIndicator />
+        <Box sx={{ flexGrow: 1, marginTop: 5, width: "100%" }}>
+          <LoadingIndicator />
+        </Box>
       ) : (
         <Box sx={{ flexGrow: 1, marginTop: 5, width: "100%" }}>
           {" "}
@@ -130,11 +132,7 @@ export const TeamScreen = () => {
             >
               <div>
                 <FormControl sx={{ m: 1, minWidth: 80 }}>
-                  <Select
-                    value={selectedTeam}
-                    onChange={handleChange}
-                    autoWidth
-                  >
+                  <Select value={teamId} onChange={handleChange} autoWidth>
                     {user?.teams.map((team) => (
                       <MenuItem key={team.id} value={team.id}>
                         {team.name}

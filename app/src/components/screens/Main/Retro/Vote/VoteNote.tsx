@@ -28,19 +28,23 @@ function VoteNote({ note, vote, unvote }: any) {
       <Box className={stageStyles.votes__wrapper} style={{ marginTop: "8px" }}>
         <Box className={stageStyles.vote__buttons}>
           {!hasVoted ? (
-            <div className={stageStyles.vote__button}>
+            <div
+              onClick={() => vote(note.id, note.boardId)}
+              className={stageStyles.vote__button}
+            >
               <Box
                 component="img"
                 src={voteUp}
-                onClick={() => vote(note.id, note.boardId)}
                 alt=""
                 className={stageStyles.vote__button__img}
               />
             </div>
           ) : (
-            <Box className={stageStyles.vote__button}>
+            <Box
+              onClick={() => unvote(note.id)}
+              className={stageStyles.vote__button}
+            >
               <Box
-                onClick={() => unvote(note.id)}
                 component="img"
                 src={voteDown}
                 alt=""

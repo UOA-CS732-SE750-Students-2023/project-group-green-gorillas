@@ -1,5 +1,5 @@
 import { Box, Container } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Discuss from "./Discuss";
 import Group from "./Group";
 import stageStyles from "./styles/stage.module.css";
@@ -9,6 +9,7 @@ import { Timer } from "./Timer";
 import Toolbar from "./Toolbar";
 import Vote from "./Vote";
 import { Finalized } from "./Finalized";
+import { DateTime } from "luxon";
 
 const stageDigits = ["One", "Two", "Three", "Four", "Five", "Six"];
 
@@ -33,6 +34,46 @@ function Stage({ retro }: Props) {
     [RetroStage.DISCUSS]: <Discuss retro={retro} />,
     [RetroStage.FINALIZE]: <Finalized retro={retro} />,
   };
+
+  const [timer, setTimer] = useState(0);
+
+  const intervalRef = useRef<any>(null);
+
+  useEffect(() => {
+    const timerExpiredTimeStamp = retro?.sessionPayload?.timerExpiredTimeStamp;
+
+    if (!timerExpiredTimeStamp) {
+      setTimer(0);
+      return;
+    }
+
+    const timeLeft = Math.floor(
+      DateTime.fromMillis(timerExpiredTimeStamp)
+        .minus({ second: DateTime.now().toSeconds() })
+        .toSeconds()
+    );
+
+    setTimer(timeLeft <= 0 ? 0 : timeLeft);
+
+    intervalRef.current = setInterval(() => {
+      setTimer((timer) => {
+        if (timer >= 1) {
+          return timer - 1;
+        } else {
+          if (intervalRef?.current) {
+            clearInterval(intervalRef.current);
+          }
+          return timer;
+        }
+      });
+    }, 1000);
+
+    return () => {
+      if (intervalRef?.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [retro?.sessionPayload?.timerExpiredTimeStamp]);
 
   return (
     <Container
@@ -71,10 +112,12 @@ function Stage({ retro }: Props) {
           }
           : {retro.stage}
         </Box>
-        <Timer startTime={180} />
+        <Timer time={timer} />
       </Box>
       {stageDisplay[retro.stage]}
-      {retro.stage !== RetroStage.FINALIZE && <Toolbar retro={retro} />}
+      {retro.stage !== RetroStage.FINALIZE && (
+        <Toolbar retro={retro} timer={timer} />
+      )}
     </Container>
   );
 }

@@ -25,7 +25,9 @@ function VoteColumn({ column }: any) {
           <Box className={stageStyles.select__heading}>
             {column.description}
           </Box>
-          <Box className={stageStyles.heading}>{column.name}</Box>
+          <Box sx={{ fontSize: 24 }} className={stageStyles.heading}>
+            {column.name}
+          </Box>
         </div>
       </Box>
       {column.groups.map((group: any) => {

@@ -79,4 +79,16 @@ export class BoardService {
 
     return this.boardRepository.save(board);
   }
+
+  public async setSessionPayload(
+    id: UUID,
+    teamId: UUID,
+    payload: { [key in string]: any },
+  ): Promise<Board> {
+    const board = await this.getByIdOrThrow(id, teamId);
+
+    board.setSessionPayload(payload);
+
+    return this.boardRepository.save(board);
+  }
 }

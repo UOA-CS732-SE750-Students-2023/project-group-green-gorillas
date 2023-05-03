@@ -146,6 +146,14 @@ export class RetrospectiveService {
     return this.boardService.updateName(retroId, teamId, name);
   }
 
+  public setRetroSessionPayload(
+    retroId: UUID,
+    teamId: UUID,
+    sessionPayload: { [key in string]: any },
+  ) {
+    return this.boardService.setSessionPayload(retroId, teamId, sessionPayload);
+  }
+
   public async moveNextStage(retroId: UUID, teamId: UUID) {
     const board = await this.boardService.getByIdOrThrow(retroId, teamId);
 

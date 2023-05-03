@@ -70,7 +70,6 @@ export class TokenService {
   public async verify(tokenValue: string, tokenType: TokenType): Promise<User> {
     try {
       const { data } = verify(tokenValue, this.tokenSecret) as JwtPayload;
-
       const { userId, organisationId } = JSON.parse(data);
 
       if (!userId || !organisationId) {

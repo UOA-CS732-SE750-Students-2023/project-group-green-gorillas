@@ -6,8 +6,8 @@ import {
   Chip,
   Typography,
 } from "@mui/material";
-import { useRetroHistory } from "../../../../hooks/useRetroHistory";
-import { Avatar } from "../../../common/Avatar";
+import { useRetroHistory } from "../../../../../hooks/useRetroHistory";
+import { Avatar } from "../../../../common/Avatar";
 
 type RetroHistoryListProps = {
   selectedTeam: string | undefined;
@@ -15,7 +15,6 @@ type RetroHistoryListProps = {
 
 export const RetroHistoryList = ({ selectedTeam }: RetroHistoryListProps) => {
   const { retroList, getRetroList } = useRetroHistory(selectedTeam || "");
-  console.log(retroList);
 
   return (
     <Box>

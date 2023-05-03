@@ -42,7 +42,7 @@ export const useRetro = (boardId: string, teamId: string) => {
   const { user } = useCurrentUser();
 
   const redirectToTeamDashboard = () => {
-    window.location.href = `${MainScreenPath.TEAM}/${teamId}`;
+    window.location.href = `${MainScreenPath.TEAM}/${teamId}/dashboard`;
   };
 
   const isLoading = useMemo(() => {

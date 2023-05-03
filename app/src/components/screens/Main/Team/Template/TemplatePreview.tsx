@@ -15,10 +15,10 @@ import {
   Tooltip,
 } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
-import { request } from "../../../../api/request";
-import { CREATERETRO, ISRETROACTIVE } from "../../../../api/api";
+import { request } from "../../../../../api/request";
+import { CREATERETRO, ISRETROACTIVE } from "../../../../../api/api";
 import { NavLink } from "react-router-dom";
-import { MainScreenPath } from "../index";
+import { MainScreenPath } from "../../index";
 import Swal from "sweetalert2";
 
 export const TemplatePreview: React.FC<TemplatePreviewProps> = ({

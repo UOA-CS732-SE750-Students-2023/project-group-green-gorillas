@@ -7,7 +7,7 @@ export const Finalized = ({ retro }: any) => {
   const history = useHistory();
 
   useEffect(() => {
-    history.replace(`${MainScreenPath.TEAM}/${retro.teamId}`); // TODO: navigate to summary page
+    history.replace(`${MainScreenPath.TEAM}/${retro.teamId}/dashboard`); // TODO: navigate to summary page
   }, []);
 
   return <LoadingIndicator />;

@@ -2,7 +2,7 @@
   height: 83vh;
   position: relative;
   box-sizing: border-box;
-  padding: 32px;
+  padding: 8px 32px;
 }
 
 .timer {
@@ -156,6 +156,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .add__note__button {
@@ -217,6 +219,10 @@
 .note__textarea::placeholder {
   color: #333333;
   font-family: inherit;
+}
+
+.note__container_blur {
+  filter: blur(5px);
 }
 
 .note__container {

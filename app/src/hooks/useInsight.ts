@@ -22,7 +22,7 @@ export const useInsight = (id: string) => {
         (async () => {
             await getInsight();
         })();
-    }, []);
+    }, [id]);
 
     return {
         getInsight,

@@ -45,10 +45,7 @@ export const TopNavBar = () => {
   const { location, push, replace } = useHistory();
 
   const shouldShowMenu = useMemo(() => {
-    return (
-      location.pathname.startsWith(MainScreenPath.TEAM) ||
-      location.pathname.startsWith(MainScreenPath.Template)
-    );
+    return location.pathname.startsWith(MainScreenPath.TEAM);
   }, [location]);
 
   return (

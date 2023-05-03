@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { useState } from "react";
 import DiscussGroup from "./DiscussGroup";
 import DiscussNote from "./DiscussNote";
@@ -9,44 +9,102 @@ import ActionItem from "./ActionItem";
 import stageStyles from "../styles/stage.module.css";
 import styles from "../styles/styles.module.css";
 import { Box } from "@mui/system";
+import { useAggregateRetro } from "../utils/use-aggregate-retro";
+import { request } from "../../../../../api/request";
+import {
+  ADD_ACTION_ITEM,
+  SET_RETRO_SESSION_PAYLOAD,
+} from "../../../../../api/api";
 
-function Discuss({ retro, items, actionItems, setActionItems }: any) {
-  const [index, setIndex] = useState(0);
-  const [newestItem, setNewestItem] = useState(0);
+function Discuss({ retro }: any) {
+  const aggregateRetro = useAggregateRetro(retro);
 
-  function addActionItem() {
-    const newActionItems = [...actionItems];
-    newActionItems.push({
-      value: "",
+  const notes = useMemo(() => {
+    const notes: any[] = [];
+
+    aggregateRetro.boardSections.forEach((boardSection: any) => {
+      boardSection.boardNotes.forEach((boardNote: any) => {
+        notes.push({
+          ...boardNote,
+          sectionName: boardSection.name,
+        });
+      });
+
+      boardSection.groups.forEach((group: any) => {
+        if (group.items) {
+          notes.push({
+            ...group,
+            sectionName: boardSection.name,
+          });
+        }
+      });
     });
-    setNewestItem(newActionItems.length - 1);
-    setActionItems(newActionItems);
-  }
 
-  function updateActionItem(i, e) {
-    let newActionItems = [...actionItems];
-    newActionItems[i].value = e.target.value;
-    setActionItems(newActionItems);
-  }
+    return notes.sort(
+      (a: any, b: any) => b.boardNoteVotes.length - a.boardNoteVotes.length
+    );
+  }, [aggregateRetro]);
+
+  const onAddActionItem = async () => {
+    await request.post(ADD_ACTION_ITEM, {
+      teamId: retro.teamId,
+      retroId: retro.id,
+    });
+  };
+
+  const selectedDiscussNoteId =
+    retro?.sessionPayload?.selectedDiscussNoteId ?? "";
+
+  const noteIndex = useMemo(() => {
+    const noteIndex = notes.findIndex(
+      (note: any) => note.id === selectedDiscussNoteId
+    );
+
+    if (noteIndex === -1) return 0;
+
+    return noteIndex;
+  }, [selectedDiscussNoteId]);
+
+  const onNext = async () => {
+    if (noteIndex === notes.length - 1) return;
+
+    await request.patch(SET_RETRO_SESSION_PAYLOAD, {
+      retroId: retro.id,
+      teamId: retro.teamId,
+      sessionPayload: JSON.stringify({
+        ...retro.sessionPayload,
+        selectedDiscussNoteId: notes[noteIndex + 1].id,
+      }),
+    });
+  };
+
+  const onPrev = async () => {
+    if (noteIndex === 0) return;
+
+    await request.patch(SET_RETRO_SESSION_PAYLOAD, {
+      retroId: retro.id,
+      teamId: retro.teamId,
+      sessionPayload: JSON.stringify({
+        ...retro.sessionPayload,
+        selectedDiscussNoteId: notes[noteIndex - 1].id,
+      }),
+    });
+  };
 
   return (
     <Box className={stageStyles.discuss__container}>
       <Box className={stageStyles.discuss__wrapper}>
         <Box className={stageStyles.discussion__item}>
-          <Box className={styles.heading}>
-            {retro.colShortDesc} {items[index].column}
-          </Box>
-          {items[index].id.includes("group") ? (
-            <DiscussGroup group={items[index]} />
+          <Box className={styles.heading}>{notes[noteIndex].sectionName}</Box>
+          {notes[noteIndex]?.items ? (
+            <DiscussGroup group={notes[noteIndex]} />
           ) : (
-            <DiscussNote note={items[index]} />
+            <DiscussNote note={notes[noteIndex]} />
           )}
+          (Vote: {notes[noteIndex].boardNoteVotes.length})
         </Box>
         <Box className={stageStyles.discussion__buttons}>
-          <Box
-            className={stageStyles.vote__button}
-            onClick={() => index !== items.length - 1 && setIndex(index + 1)}
-          >
+          <Box className={stageStyles.vote__button} onClick={onNext}>
             <Box
               component="img"
               src={nextItem}
@@ -55,9 +113,18 @@ function Discuss({ retro, items, actionItems, setActionItems }: any) {
             />
           </Box>
           <Box
-            className={stageStyles.vote__button}
-            onClick={() => index !== 0 && setIndex(index - 1)}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: 0.5,
+            }}
           >
+            <Box>
+              {noteIndex + 1} / {notes.length}
+            </Box>
+          </Box>
+          <Box className={stageStyles.vote__button} onClick={onPrev}>
             <Box
               component="img"
               src={lastItem}
@@ -73,18 +140,15 @@ function Discuss({ retro, items, actionItems, setActionItems }: any) {
           <Button
             text="New action item"
             color="outline"
-            clickFn={addActionItem}
+            clickFn={onAddActionItem}
           />
         </Box>
         <Box className={stageStyles.action__items}>
-          {actionItems.map((item, i) => (
-            <ActionItem
-              action={item}
-              i={i}
-              updateItem={updateActionItem}
-              newestItem={newestItem}
-            />
-          ))}
+          {retro.actionItems
+            .sort((a: any, b: any) => (a.createdAt < b.createdAt ? 1 : -1))
+            .map((item: any) => (
+              <ActionItem key={item.id} action={item} />
+            ))}
         </Box>
       </Box>
     </Box>

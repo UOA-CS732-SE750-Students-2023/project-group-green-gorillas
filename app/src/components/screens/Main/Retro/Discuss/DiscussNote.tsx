@@ -13,7 +13,7 @@ function DiscussNote({ note }: any) {
           ] as any
         }
       >
-        {note.value}
+        {note.note}
       </Box>
     </Box>
   );

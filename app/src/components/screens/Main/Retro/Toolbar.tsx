@@ -159,7 +159,7 @@ function Toolbar({ retro, timer }: any) {
     });
 
     if (result.isConfirmed) {
-      window.location.href = `${MainScreenPath.TEAM}/${retro.teamId}`;
+      window.location.href = `${MainScreenPath.TEAM}/${retro.teamId}/dashboard`;
     }
   };
 

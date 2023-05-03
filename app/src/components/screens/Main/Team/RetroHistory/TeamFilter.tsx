@@ -5,7 +5,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { Team } from "../../../../types/team";
+import { Team } from "../../../../../types/team";
 type User = {
   id: string;
   teams: Team[];

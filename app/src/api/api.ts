@@ -44,6 +44,7 @@ export const DELETE_ACTION_ITEM = (id: string) =>
   `${apiBaseUrl}/action-item/${id}`;
 export const UPDATE_ACTION_ITEM_NOTE = `${apiBaseUrl}/action-item/update-note`;
 export const MOVE_RETRO_NEXT_STAGE = `${apiBaseUrl}/retrospective/move-next-stage`;
-export const ISRETROACTIVE = (teamId: string) => `${apiBaseUrl}/team/has-in-progress-retro/${teamId}`;
-
-
+export const ISRETROACTIVE = (teamId: string) =>
+  `${apiBaseUrl}/team/has-in-progress-retro/${teamId}`;
+export const DELETE_RETRO = (retroId: string, teamId: string) =>
+  `${apiBaseUrl}/retrospective/${retroId}/team/${teamId}`;

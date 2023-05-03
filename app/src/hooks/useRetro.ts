@@ -2,7 +2,6 @@ import { io } from "socket.io-client";
 import { baseUrl, GET_RETRO } from "../api/api";
 import { tokenService, TokenType } from "../services/tokenService";
 import { useEffect, useMemo, useState } from "react";
-import { authService } from "../services/authService";
 import { MainScreenPath } from "../components/screens/Main";
 import { request } from "../api/request";
 import * as _ from "lodash";
@@ -40,7 +39,7 @@ export const useRetro = (boardId: string, teamId: string) => {
 
   const { user } = useCurrentUser();
 
-  const errorRedirect = () => {
+  const redirectToTeamDashboard = () => {
     window.location.href = `${MainScreenPath.TEAM}/${teamId}`;
   };
 
@@ -150,7 +149,12 @@ export const useRetro = (boardId: string, teamId: string) => {
         (note: any) => note.id === data.id
       );
 
-      if (boardSectionNoteIndex !== -1 && user?.id !== data.createdBy) {
+      if (
+        boardSectionNoteIndex !== -1 &&
+        (user?.id !== data.createdBy ||
+          boardSection.boardNotes[boardSectionNoteIndex].parentId !==
+            data.parentId)
+      ) {
         boardSection.boardNotes[boardSectionNoteIndex] = data;
       }
 
@@ -300,10 +304,18 @@ export const useRetro = (boardId: string, teamId: string) => {
     });
   };
 
+  const handleBoardDeleteEvent = (_: any) => {
+    redirectToTeamDashboard();
+  };
+
   const handleBoardEvent = (eventData: any) => {
     switch (eventData.type) {
       case "UPDATE":
         handleBoardCreateEvent(eventData.data);
+        return;
+      case "DELETE":
+        handleBoardDeleteEvent(eventData.data);
+        return;
     }
   };
 
@@ -324,7 +336,7 @@ export const useRetro = (boardId: string, teamId: string) => {
         return;
       }
 
-      errorRedirect();
+      redirectToTeamDashboard();
     });
 
     socket.on(ClientSocketMessageEvent.RETRO_ROOM_USERS, (payload: string) => {
@@ -389,7 +401,7 @@ export const useRetro = (boardId: string, teamId: string) => {
           setRetro(result.data);
         })
         .catch((_) => {
-          errorRedirect();
+          redirectToTeamDashboard();
         });
     }
   }, [hasJoinedRoom]);
@@ -401,7 +413,7 @@ export const useRetro = (boardId: string, teamId: string) => {
         setRetro(result.data);
       })
       .catch((_) => {
-        errorRedirect();
+        redirectToTeamDashboard();
       });
   }, [retro?.stage]);
 
@@ -415,7 +427,6 @@ export const useRetro = (boardId: string, teamId: string) => {
 
   useEffect(() => {
     (async () => {
-      await authService.refreshToken();
       socket.connect();
     })();
   }, []);

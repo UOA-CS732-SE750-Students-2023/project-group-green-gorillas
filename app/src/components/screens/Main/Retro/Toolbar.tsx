@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import stageStyles from "./styles/stage.module.css";
 import styles from "./styles/styles.module.css";
@@ -10,11 +10,16 @@ import nextIcon from "../../../../assets/carot.svg";
 import { Box } from "@mui/material";
 import { RetroStage } from "./Stage";
 import { request } from "../../../../api/request";
-import { DELETE_RETRO, MOVE_RETRO_NEXT_STAGE } from "../../../../api/api";
+import {
+  DELETE_RETRO,
+  MOVE_RETRO_NEXT_STAGE,
+  SET_RETRO_SESSION_PAYLOAD,
+} from "../../../../api/api";
 import Swal from "sweetalert2";
 import { MainScreenPath } from "../index";
+import { DateTime } from "luxon";
 
-function Toolbar({ retro }: any) {
+function Toolbar({ retro, timer }: any) {
   const isFinalStage = retro.stage === RetroStage.DISCUSS;
 
   const nextStage = async () => {
@@ -79,6 +84,69 @@ function Toolbar({ retro }: any) {
     });
   };
 
+  const onSetTimer = async () => {
+    if (timer) {
+      const result = await Swal.fire({
+        title: "Are you sure to reset timer?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+        allowOutsideClick: false,
+      });
+
+      if (!result.isConfirmed) return;
+
+      return request.patch(SET_RETRO_SESSION_PAYLOAD, {
+        retroId: retro.id,
+        teamId: retro.teamId,
+        sessionPayload: JSON.stringify({
+          ...retro.sessionPayload,
+          timerExpiredTimeStamp: null,
+        }),
+      });
+    }
+
+    await Swal.fire({
+      title: "Set Up Your Timer",
+      text: "Please enter the seconds to set up your retro timer. eg. 60, 120, 180, 240, 300 seconds",
+      input: "number",
+      inputValue: "300",
+      inputAttributes: {
+        autocapitalize: "off",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Confirm",
+      showLoaderOnConfirm: true,
+      inputValidator(inputValue: string) {
+        if (!inputValue) {
+          return "input cannot be empty.";
+        }
+
+        if (Number.parseInt(inputValue) <= 0) {
+          return "input need to be greater than 0";
+        }
+
+        return null;
+      },
+      async preConfirm(value: string) {
+        const seconds = Number.parseInt(value);
+        await request.patch(SET_RETRO_SESSION_PAYLOAD, {
+          retroId: retro.id,
+          teamId: retro.teamId,
+          sessionPayload: JSON.stringify({
+            ...retro.sessionPayload,
+            timerExpiredTimeStamp: DateTime.now()
+              .plus({ second: seconds })
+              .toMillis(),
+          }),
+        });
+      },
+      allowOutsideClick: false,
+    });
+  };
+
   const onQuit = async () => {
     const result = await Swal.fire({
       title: "Are you sure to exit?",
@@ -106,7 +174,11 @@ function Toolbar({ retro }: any) {
             className={stageStyles.toolbar__button__img}
           />
         </Box>
-        <Box className={stageStyles.toolbar__button} component="div">
+        <Box
+          onClick={onSetTimer}
+          className={stageStyles.toolbar__button}
+          component="div"
+        >
           <Box
             component="img"
             src={timerIcon}

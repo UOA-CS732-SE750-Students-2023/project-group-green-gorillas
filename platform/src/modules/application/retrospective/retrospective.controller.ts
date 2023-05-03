@@ -23,6 +23,7 @@ import {
   DeleteSectionParams,
   GetRetrospectiveRequestParam,
   MoveNextStageRequest,
+  SetRetroSessionPayload,
   UnAssignNoteGroup,
   UnVoteNoteRequestParams,
   UpdateNoteRequest,
@@ -179,6 +180,25 @@ export class RetrospectiveController {
     const retro = await this.retrospectiveService.moveNextStage(
       retroId,
       teamId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      retro.id,
+      ClientSocketMessageEvent.BOARD,
+      buildSocketEvent(SocketEventOperation.UPDATE, retro),
+    );
+
+    return retro;
+  }
+
+  @Patch('set-retro-session-payload')
+  public async setRetroSessionPayload(
+    @Body() { retroId, teamId, sessionPayload }: SetRetroSessionPayload,
+  ) {
+    const retro = await this.retrospectiveService.setRetroSessionPayload(
+      retroId,
+      teamId,
+      JSON.parse(sessionPayload),
     );
 
     this.socketEventService.broadcastRoom(

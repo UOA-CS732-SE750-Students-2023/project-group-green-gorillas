@@ -10,7 +10,7 @@ function VoteGroup({ name, items, votes, retroId, vote, id, unvote }: any) {
   const { user } = useCurrentUser();
 
   const hasVoted = useMemo(() => {
-    return !!votes.find((vote: any) => vote.userId === user?.id);
+    return !!votes?.find((vote: any) => vote.userId === user?.id);
   }, [votes, user]);
 
   return (
@@ -43,9 +43,11 @@ function VoteGroup({ name, items, votes, retroId, vote, id, unvote }: any) {
       <Box className={stageStyles.votes__wrapper}>
         <Box className={stageStyles.vote__buttons}>
           {!hasVoted ? (
-            <Box className={stageStyles.vote__button}>
+            <Box
+              onClick={() => vote(id, retroId)}
+              className={stageStyles.vote__button}
+            >
               <Box
-                onClick={() => vote(id, retroId)}
                 component="img"
                 src={voteUp}
                 alt=""
@@ -53,9 +55,11 @@ function VoteGroup({ name, items, votes, retroId, vote, id, unvote }: any) {
               />
             </Box>
           ) : (
-            <Box className={stageStyles.vote__button}>
+            <Box
+              onClick={() => unvote(id)}
+              className={stageStyles.vote__button}
+            >
               <Box
-                onClick={() => unvote(id)}
                 component="img"
                 src={voteDown}
                 alt=""
@@ -64,7 +68,7 @@ function VoteGroup({ name, items, votes, retroId, vote, id, unvote }: any) {
             </Box>
           )}
         </Box>
-        <Box className={stageStyles.votes}>{votes.length} votes</Box>
+        <Box className={stageStyles.votes}>{votes?.length ?? 0} votes</Box>
       </Box>
     </div>
   );

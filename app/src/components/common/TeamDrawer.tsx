@@ -54,7 +54,11 @@ export const TeamDrawer: React.FC<Props> = ({ teamId }) => {
             </ListItemIcon>
             <ListItemText primary="Template" />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton
+            onClick={() =>
+              history.push(`${MainScreenPath.RetroHistory}/${teamId}`)
+            }
+          >
             <ListItemIcon>
               <HistoryIcon />
             </ListItemIcon>

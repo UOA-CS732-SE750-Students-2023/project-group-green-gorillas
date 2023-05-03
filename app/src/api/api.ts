@@ -15,6 +15,7 @@ export const CURRENT_USER = `${apiBaseUrl}/user/current`;
 export const TEAM_BY_ID = (teamId: string) => `${apiBaseUrl}/team/${teamId}`;
 export const INSIGHT_BY_ID = (teamId: string) =>
   `${apiBaseUrl}/team/insight/${teamId}`;
+export const RETROLIST_BY_ID = (teamId: string) => `${apiBaseUrl}/team/retro-history/${teamId}`;
 export const GET_RETRO = (retroId: string, teamId: string) =>
   `${apiBaseUrl}/retrospective/${retroId}/team/${teamId}`;
 

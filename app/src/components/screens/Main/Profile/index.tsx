@@ -22,6 +22,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import {useHistory} from 'react-router-dom';
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { request } from "../../../../api/request";
+import {CURRENT_USER, CHANGE_PASSWORD} from "../../../../api/api";
 
 
 export enum ProfilePath {
@@ -130,7 +131,7 @@ export const ProfileScreen = () => {
         console.log(userData);
 
         try {
-            request.put<UserData>('https://localhost:8080/api/user/current', userData)
+            request.put<UserData>(CURRENT_USER, userData)
                 .then(r => {
                     history.go(0);
                     }
@@ -139,18 +140,17 @@ export const ProfileScreen = () => {
             console.log(error);
         }
 
+        const testData = {
+            displayName: "E",
+            firstName: "Et",
+            lastName: "W",
+            address: "ac",
+            phone: "1121",
+            gender: true
+        }
+        //
+        // console.log(testData)
 
-
-        // axios.put('https://localhost:8080/api/user/current', userData)
-        //     .then(response => {
-        //             console.log(response);
-        //         }
-        //     )
-        //     .catch(error => {
-        //         console.log(error);
-        //     })
-
-        // history.go(0);
     }
 
 
@@ -192,14 +192,22 @@ export const ProfileScreen = () => {
             return;
         }
 
+        if (newPassword.length < 8){
+            alert('NewPassword must be longer than or equal to 8')
+            return;
+        }
+
+
         try {
 
+            String(newPassword)
+            String(oldPassword)
             const req = {
                 "newPassword": {newPassword},
                 "oldPassword": {oldPassword}
             }
 
-            request.put<UserData>('https://localhost:8080/api/auth/change-password', req)
+            request.put<UserData>(CHANGE_PASSWORD, req)
                 .then(r => {
                         history.go(0);
                     }
@@ -442,7 +450,7 @@ export const ProfileScreen = () => {
                               {/*        variant="contained"*/}
                               {/*        aria-label="Disabled elevation buttons">Update</Button>*/}
 
-                          </Grid>
+       </Grid>
                       {/*</Paper>*/}
 
 

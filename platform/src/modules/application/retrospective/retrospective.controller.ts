@@ -22,6 +22,7 @@ import {
   DeleteRetrospectiveRequestParams,
   DeleteSectionParams,
   GetRetrospectiveRequestParam,
+  MoveNextStageRequest,
   UnAssignNoteGroup,
   UnVoteNoteRequestParams,
   UpdateNoteRequest,
@@ -171,6 +172,24 @@ export class RetrospectiveController {
     return section;
   }
 
+  @Patch('move-next-stage')
+  public async moveNextStage(
+    @Body() { retroId, teamId }: MoveNextStageRequest,
+  ) {
+    const retro = await this.retrospectiveService.moveNextStage(
+      retroId,
+      teamId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      retro.id,
+      ClientSocketMessageEvent.BOARD,
+      buildSocketEvent(SocketEventOperation.UPDATE, retro),
+    );
+
+    return retro;
+  }
+
   @Patch('update-name')
   public async updateRetroName(
     @Body() { id, teamId, name }: UpdateRetroNameRequest,
@@ -184,7 +203,7 @@ export class RetrospectiveController {
     this.socketEventService.broadcastRoom(
       retro.id,
       ClientSocketMessageEvent.BOARD,
-      buildSocketEvent(SocketEventOperation.CREATE, retro),
+      buildSocketEvent(SocketEventOperation.UPDATE, retro),
     );
 
     return retro;

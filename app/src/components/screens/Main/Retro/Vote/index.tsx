@@ -10,7 +10,7 @@ function Vote({ retro }: any) {
   return (
     <Box className={stageStyles.columns__wrapper}>
       {aggregateRetro.boardSections.map((column: any) => (
-        <VoteColumn column={column} />
+        <VoteColumn key={column.id} column={column} />
       ))}
     </Box>
   );

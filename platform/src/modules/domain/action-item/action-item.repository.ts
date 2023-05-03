@@ -95,7 +95,6 @@ export class ActionItemRepository extends DatabaseRepository<ActionItem> {
         Items?.map((item) => plainToClass(ActionItem, unmarshall(item))) ?? []
       );
     } catch (error) {
-      console.log(error);
       throw new InternalException(
         'ACTION_ITEM.FAILED_TO_LIST_BY_STATUS',
         error.message,

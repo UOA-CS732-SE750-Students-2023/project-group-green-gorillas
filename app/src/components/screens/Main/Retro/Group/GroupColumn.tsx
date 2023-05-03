@@ -3,8 +3,6 @@ import { Droppable } from "react-beautiful-dnd";
 import GroupNote from "./GroupNote";
 import stageStyles from "../styles/stage.module.css";
 import styles from "../styles/styles.module.css";
-
-import { useState } from "react";
 import Group from "./Group";
 import { Box } from "@mui/material";
 
@@ -39,7 +37,7 @@ function GroupColumn({ id, column }: any) {
               {...provided.droppableProps}
               style={{ height: "100%" }}
             >
-              {column.boardNotes.map((item, index) => (
+              {column.boardNotes.map((item: any, index: any) => (
                 <GroupNote
                   id={item.id}
                   index={index}

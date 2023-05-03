@@ -8,10 +8,11 @@ import Think from "./Think";
 import { Timer } from "./Timer";
 import Toolbar from "./Toolbar";
 import Vote from "./Vote";
+import { Finalized } from "./Finalized";
 
 const stageDigits = ["One", "Two", "Three", "Four", "Five", "Six"];
 
-enum RetroStage {
+export enum RetroStage {
   THINK = "Think",
   GROUP = "Group",
   VOTE = "Vote",
@@ -29,15 +30,8 @@ function Stage({ retro }: Props) {
     [RetroStage.THINK]: <Think retro={retro} />,
     [RetroStage.GROUP]: <Group retro={retro} />,
     [RetroStage.VOTE]: <Vote retro={retro} />,
-    // [RetroStage.DISCUSS]: (
-    //   <Discuss
-    //     retro={retro}
-    //     items={discItems}
-    //     actionItems={actionItems}
-    //     setActionItems={setActionItems}
-    //   />
-    // ),
-    [RetroStage.FINALIZE]: <div>TODO: Finalize redirect to history page</div>,
+    [RetroStage.DISCUSS]: <Discuss retro={retro} />,
+    [RetroStage.FINALIZE]: <Finalized retro={retro} />,
   };
 
   return (
@@ -58,8 +52,8 @@ function Stage({ retro }: Props) {
                   (stage) => stage === retro.stage
                 )
               )
-              .map((breadcrumb) => (
-                <Box className={stageStyles.stage__breadcrumb}>
+              .map((breadcrumb, i) => (
+                <Box key={i} className={stageStyles.stage__breadcrumb}>
                   {breadcrumb}
                   <Box className={stageStyles.breadcrumb__arrow} />
                 </Box>
@@ -80,7 +74,7 @@ function Stage({ retro }: Props) {
         <Timer startTime={180} />
       </Box>
       {stageDisplay[retro.stage]}
-      <Toolbar />
+      {retro.stage !== RetroStage.FINALIZE && <Toolbar retro={retro} />}
     </Container>
   );
 }

@@ -2,10 +2,10 @@ import { io } from "socket.io-client";
 import { baseUrl, GET_RETRO } from "../api/api";
 import { tokenService, TokenType } from "../services/tokenService";
 import { useEffect, useMemo, useState } from "react";
-import { authService } from "../services/authService";
 import { MainScreenPath } from "../components/screens/Main";
 import { request } from "../api/request";
 import * as _ from "lodash";
+import { useCurrentUser } from "./useCurrentUser";
 
 enum ClientSocketMessageEvent {
   AUTHENTICATION = "authentication",
@@ -37,7 +37,9 @@ export const useRetro = (boardId: string, teamId: string) => {
   const [retro, setRetro] = useState<any>(null);
   const [retroUsers, setRetroUsers] = useState<any[]>([]);
 
-  const errorRedirect = () => {
+  const { user } = useCurrentUser();
+
+  const redirectToTeamDashboard = () => {
     window.location.href = `${MainScreenPath.TEAM}/${teamId}`;
   };
 
@@ -147,7 +149,12 @@ export const useRetro = (boardId: string, teamId: string) => {
         (note: any) => note.id === data.id
       );
 
-      if (boardSectionNoteIndex !== -1) {
+      if (
+        boardSectionNoteIndex !== -1 &&
+        (user?.id !== data.createdBy ||
+          boardSection.boardNotes[boardSectionNoteIndex].parentId !==
+            data.parentId)
+      ) {
         boardSection.boardNotes[boardSectionNoteIndex] = data;
       }
 
@@ -220,6 +227,98 @@ export const useRetro = (boardId: string, teamId: string) => {
         return;
     }
   };
+
+  const handleActionItemCreate = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const clonedRetro = _.cloneDeep(retro);
+
+      const actionItem = clonedRetro.actionItems.find(
+        (item: any) => item.id === data.id
+      );
+
+      if (actionItem) return retro;
+
+      clonedRetro.actionItems.push(data);
+
+      return clonedRetro;
+    });
+  };
+
+  const handleActionItemDelete = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const clonedRetro = _.cloneDeep(retro);
+
+      clonedRetro.actionItems = clonedRetro.actionItems.filter(
+        (item: any) => item.id !== data.id
+      );
+
+      return clonedRetro;
+    });
+  };
+
+  const handleActionItemUpdate = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const clonedRetro = _.cloneDeep(retro);
+
+      const actionItemIndex = clonedRetro.actionItems.findIndex(
+        (item: any) => item.id === data.id
+      );
+
+      if (actionItemIndex !== -1 && data.updatedBy !== user?.id) {
+        clonedRetro.actionItems[actionItemIndex] = data;
+        return clonedRetro;
+      }
+
+      return retro;
+    });
+  };
+
+  const handleActionItem = (eventData: any) => {
+    switch (eventData.type) {
+      case "CREATE":
+        handleActionItemCreate(eventData.data);
+        return;
+      case "DELETE":
+        handleActionItemDelete(eventData.data);
+        return;
+      case "UPDATE":
+        handleActionItemUpdate(eventData.data);
+        return;
+    }
+  };
+
+  const handleBoardCreateEvent = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      return {
+        ...retro,
+        ...data,
+      };
+    });
+  };
+
+  const handleBoardDeleteEvent = (_: any) => {
+    redirectToTeamDashboard();
+  };
+
+  const handleBoardEvent = (eventData: any) => {
+    switch (eventData.type) {
+      case "UPDATE":
+        handleBoardCreateEvent(eventData.data);
+        return;
+      case "DELETE":
+        handleBoardDeleteEvent(eventData.data);
+        return;
+    }
+  };
+
   //end ------------------------------------------
 
   useEffect(() => {
@@ -237,7 +336,7 @@ export const useRetro = (boardId: string, teamId: string) => {
         return;
       }
 
-      errorRedirect();
+      redirectToTeamDashboard();
     });
 
     socket.on(ClientSocketMessageEvent.RETRO_ROOM_USERS, (payload: string) => {
@@ -248,7 +347,7 @@ export const useRetro = (boardId: string, teamId: string) => {
     socket.on(ClientSocketMessageEvent.BOARD, (payload: string) => {
       const data = JSON.parse(payload);
 
-      // TODO: philip to do
+      handleBoardEvent(data);
     });
 
     socket.on(ClientSocketMessageEvent.BOARD_SECTION, (payload: string) => {
@@ -272,7 +371,7 @@ export const useRetro = (boardId: string, teamId: string) => {
     socket.on(ClientSocketMessageEvent.BOARD_ACTION_ITEM, (payload: string) => {
       const data = JSON.parse(payload);
 
-      // TODO: philip to do
+      handleActionItem(data);
     });
 
     socket.on("disconnect", () => {
@@ -302,10 +401,21 @@ export const useRetro = (boardId: string, teamId: string) => {
           setRetro(result.data);
         })
         .catch((_) => {
-          errorRedirect();
+          redirectToTeamDashboard();
         });
     }
   }, [hasJoinedRoom]);
+
+  useEffect(() => {
+    request
+      .get(GET_RETRO(boardId, teamId))
+      .then((result) => {
+        setRetro(result.data);
+      })
+      .catch((_) => {
+        redirectToTeamDashboard();
+      });
+  }, [retro?.stage]);
 
   useEffect(() => {
     return () => {
@@ -317,7 +427,6 @@ export const useRetro = (boardId: string, teamId: string) => {
 
   useEffect(() => {
     (async () => {
-      await authService.refreshToken();
       socket.connect();
     })();
   }, []);

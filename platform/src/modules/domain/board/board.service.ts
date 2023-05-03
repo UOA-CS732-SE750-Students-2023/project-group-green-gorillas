@@ -67,4 +67,16 @@ export class BoardService {
 
     return !!boards.find((board) => board.stage !== BoardStage.FINALIZE);
   }
+
+  public async updateStage(
+    id: UUID,
+    teamId: UUID,
+    stage: BoardStage,
+  ): Promise<Board> {
+    const board = await this.getByIdOrThrow(id, teamId);
+
+    board.updateStage(stage);
+
+    return this.boardRepository.save(board);
+  }
 }

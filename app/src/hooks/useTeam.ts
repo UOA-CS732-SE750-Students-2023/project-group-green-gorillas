@@ -28,7 +28,7 @@ export const useTeam = (id: string) => {
    (async () => {
       await getTeam();
     })();
-  }, []);
+  }, [id]);
 
   return {
     getTeam,

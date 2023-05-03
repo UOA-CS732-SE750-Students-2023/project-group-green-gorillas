@@ -24,7 +24,6 @@ const Think = ({ retro }: Props) => {
 
   useEffect(() => {
     if (focusedNoteRef?.current) {
-      console.log(focusedNoteRef?.current?.offsetTop);
       thinkContainerRef?.current.scrollTo({
         top: focusedNoteRef?.current?.offsetTop
           ? focusedNoteRef?.current?.offsetTop - 200

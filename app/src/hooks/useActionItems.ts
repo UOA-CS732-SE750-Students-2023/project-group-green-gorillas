@@ -30,6 +30,7 @@ export const useActionItems = (id: string) => {
         try{
             const {data} = await request.get<ActionItem[]>(ACTIONITEMS_LIST_BY_ID(id));
             setActionItems(data);
+            console.log('fetch action items sucess', data);
         }catch (error) {
             console.log(error); 
         }finally {
@@ -78,7 +79,7 @@ export const useActionItems = (id: string) => {
         (async () => {
             await getActionItems();
         })();
-    },[]);
+    },[id]);
 
     return {
         getActionItems,

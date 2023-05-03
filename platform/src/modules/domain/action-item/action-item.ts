@@ -32,6 +32,8 @@ export class ActionItem {
 
   public readonly createdBy: UUID;
 
+  public updatedBy: UUID;
+
   constructor(
     teamId: UUID,
     organisationId: UUID,
@@ -48,15 +50,18 @@ export class ActionItem {
     this.updatedAt = DateTime.now();
     this.createdAt = DateTime.now();
     this.createdBy = createdBy;
+    this.updatedBy = createdBy;
   }
 
-  public updateNote(note: string): void {
+  public updateNote(note: string, updatedBy: UUID): void {
     this.note = note;
     this.updatedAt = DateTime.now();
+    this.updatedBy = updatedBy;
   }
 
-  public updateStatus(status: ActionItemStatus): void {
+  public updateStatus(status: ActionItemStatus, updatedBy: UUID): void {
     this.status = status;
     this.updatedAt = DateTime.now();
+    this.updatedBy = updatedBy;
   }
 }

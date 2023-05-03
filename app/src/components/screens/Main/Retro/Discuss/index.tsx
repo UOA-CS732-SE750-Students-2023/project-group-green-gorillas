@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useState } from "react";
 import DiscussGroup from "./DiscussGroup";
 import DiscussNote from "./DiscussNote";
@@ -11,7 +11,10 @@ import styles from "../styles/styles.module.css";
 import { Box } from "@mui/system";
 import { useAggregateRetro } from "../utils/use-aggregate-retro";
 import { request } from "../../../../../api/request";
-import { ADD_ACTION_ITEM } from "../../../../../api/api";
+import {
+  ADD_ACTION_ITEM,
+  SET_RETRO_SESSION_PAYLOAD,
+} from "../../../../../api/api";
 
 function Discuss({ retro }: any) {
   const aggregateRetro = useAggregateRetro(retro);
@@ -49,25 +52,59 @@ function Discuss({ retro }: any) {
     });
   };
 
-  const [index, setIndex] = useState(0);
+  const selectedDiscussNoteId =
+    retro?.sessionPayload?.selectedDiscussNoteId ?? "";
+
+  const noteIndex = useMemo(() => {
+    const noteIndex = notes.findIndex(
+      (note: any) => note.id === selectedDiscussNoteId
+    );
+
+    if (noteIndex === -1) return 0;
+
+    return noteIndex;
+  }, [selectedDiscussNoteId]);
+
+  const onNext = async () => {
+    if (noteIndex === notes.length - 1) return;
+
+    await request.patch(SET_RETRO_SESSION_PAYLOAD, {
+      retroId: retro.id,
+      teamId: retro.teamId,
+      sessionPayload: JSON.stringify({
+        ...retro.sessionPayload,
+        selectedDiscussNoteId: notes[noteIndex + 1].id,
+      }),
+    });
+  };
+
+  const onPrev = async () => {
+    if (noteIndex === 0) return;
+
+    await request.patch(SET_RETRO_SESSION_PAYLOAD, {
+      retroId: retro.id,
+      teamId: retro.teamId,
+      sessionPayload: JSON.stringify({
+        ...retro.sessionPayload,
+        selectedDiscussNoteId: notes[noteIndex - 1].id,
+      }),
+    });
+  };
 
   return (
     <Box className={stageStyles.discuss__container}>
       <Box className={stageStyles.discuss__wrapper}>
         <Box className={stageStyles.discussion__item}>
-          <Box className={styles.heading}>{notes[index].sectionName}</Box>
-          {notes[index]?.items ? (
-            <DiscussGroup group={notes[index]} />
+          <Box className={styles.heading}>{notes[noteIndex].sectionName}</Box>
+          {notes[noteIndex]?.items ? (
+            <DiscussGroup group={notes[noteIndex]} />
           ) : (
-            <DiscussNote note={notes[index]} />
+            <DiscussNote note={notes[noteIndex]} />
           )}
-          (Vote: {notes[index].boardNoteVotes.length})
+          (Vote: {notes[noteIndex].boardNoteVotes.length})
         </Box>
         <Box className={stageStyles.discussion__buttons}>
-          <Box
-            className={stageStyles.vote__button}
-            onClick={() => index !== notes.length - 1 && setIndex(index + 1)}
-          >
+          <Box className={stageStyles.vote__button} onClick={onNext}>
             <Box
               component="img"
               src={nextItem}
@@ -84,13 +121,10 @@ function Discuss({ retro }: any) {
             }}
           >
             <Box>
-              {index + 1} / {notes.length}
+              {noteIndex + 1} / {notes.length}
             </Box>
           </Box>
-          <Box
-            className={stageStyles.vote__button}
-            onClick={() => index !== 0 && setIndex(index - 1)}
-          >
+          <Box className={stageStyles.vote__button} onClick={onPrev}>
             <Box
               component="img"
               src={lastItem}

@@ -48,3 +48,4 @@ export const ISRETROACTIVE = (teamId: string) =>
   `${apiBaseUrl}/team/has-in-progress-retro/${teamId}`;
 export const DELETE_RETRO = (retroId: string, teamId: string) =>
   `${apiBaseUrl}/retrospective/${retroId}/team/${teamId}`;
+export const SET_RETRO_SESSION_PAYLOAD = `${apiBaseUrl}/retrospective/set-retro-session-payload`;

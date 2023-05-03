@@ -11,6 +11,7 @@ function DiscussGroup({ group }: any) {
           {group.items.map((item: any) => {
             return (
               <Box
+                key={item.id}
                 className={stageStyles.note__wrapper}
                 style={{ marginBottom: "8px" }}
               >

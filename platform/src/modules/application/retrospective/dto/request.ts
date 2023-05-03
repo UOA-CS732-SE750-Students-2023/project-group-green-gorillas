@@ -163,3 +163,14 @@ export class MoveNextStageRequest {
   @IsUUID()
   teamId: UUID;
 }
+
+export class SetRetroSessionPayload {
+  @IsUUID()
+  retroId: UUID;
+
+  @IsUUID()
+  teamId: UUID;
+
+  @IsString()
+  sessionPayload: string;
+}

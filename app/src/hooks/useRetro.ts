@@ -6,6 +6,7 @@ import { MainScreenPath } from "../components/screens/Main";
 import { request } from "../api/request";
 import * as _ from "lodash";
 import { useCurrentUser } from "./useCurrentUser";
+import { authService } from "../services/authService";
 
 enum ClientSocketMessageEvent {
   AUTHENTICATION = "authentication",
@@ -35,6 +36,7 @@ export const useRetro = (boardId: string, teamId: string) => {
   const [hasSocketConnected, setHasSocketConnected] = useState<boolean>(false);
   const [hasJoinedRoom, setHasJoinedRoom] = useState<boolean>(false);
   const [retro, setRetro] = useState<any>(null);
+  const [isLoadingRetroData, setIsLoadingRetroData] = useState<boolean>(true);
   const [retroUsers, setRetroUsers] = useState<any[]>([]);
 
   const { user } = useCurrentUser();
@@ -44,7 +46,9 @@ export const useRetro = (boardId: string, teamId: string) => {
   };
 
   const isLoading = useMemo(() => {
-    return !hasSocketConnected || !hasJoinedRoom || !retro;
+    return (
+      !hasSocketConnected || !hasJoinedRoom || !retro || isLoadingRetroData
+    );
   }, [hasSocketConnected, hasJoinedRoom, retro]);
 
   // start event handlers --------------------------------------
@@ -393,28 +397,27 @@ export const useRetro = (boardId: string, teamId: string) => {
     }
   }, [hasSocketConnected]);
 
-  useEffect(() => {
-    if (hasJoinedRoom) {
-      request
-        .get(GET_RETRO(boardId, teamId))
-        .then((result) => {
-          setRetro(result.data);
-        })
-        .catch((_) => {
-          redirectToTeamDashboard();
-        });
-    }
-  }, [hasJoinedRoom]);
-
-  useEffect(() => {
+  const getRetro = async () => {
+    setIsLoadingRetroData(true);
     request
       .get(GET_RETRO(boardId, teamId))
       .then((result) => {
         setRetro(result.data);
+        setIsLoadingRetroData(false);
       })
       .catch((_) => {
         redirectToTeamDashboard();
       });
+  };
+
+  useEffect(() => {
+    if (hasJoinedRoom) {
+      getRetro();
+    }
+  }, [hasJoinedRoom]);
+
+  useEffect(() => {
+    getRetro();
   }, [retro?.stage]);
 
   useEffect(() => {
@@ -427,6 +430,9 @@ export const useRetro = (boardId: string, teamId: string) => {
 
   useEffect(() => {
     (async () => {
+      await authService.refreshToken().catch(() => {
+        // ignore refresh failure
+      });
       socket.connect();
     })();
   }, []);

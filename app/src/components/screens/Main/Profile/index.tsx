@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-    Avatar,
     Box,
     Button,
     Container,
@@ -36,7 +35,6 @@ interface UserData {
     phone: string;
     address: string;
     gender: boolean;
-    password: string;
 }
 
 export const ProfileScreen = () => {
@@ -50,34 +48,10 @@ export const ProfileScreen = () => {
         phone: user!.phone,
         address: user!.address,
         gender: user!.gender,
-        password: user!.password,
-
-
-
-        // phone: 'user!.phone',
-        // address: 'user!.address',
-        // password: 'user!.password',
-        // gender: true
     });
 
 
-    useEffect(() => {
-        // setUserData(user)
-        console.log(user);
-    })
 
-    // // Get user initial info
-    // const fetchData = () => {
-    //
-    //     axios.put('https://jsonplaceholder.typicode.com/posts')
-    //         .then(response => {
-    //
-    //             }
-    //         )
-    //         .catch(error => {
-    //             console.log(error);
-    //         })
-    // }
 
 
     // Avatar animation
@@ -146,7 +120,6 @@ export const ProfileScreen = () => {
 
     const updateInfo = () => {
 
-
         userData!.displayName = currentDisplayName;
         userData!.firstName = currentFirstName;
         userData!.lastName = currentLastName;
@@ -154,15 +127,14 @@ export const ProfileScreen = () => {
         userData!.address = currentAddress;
         userData!.gender = currentGender;
 
-        // setUserData(userData);
-
-
         console.log(userData);
 
         try {
-            const data = request.put<UserData>('https://localhost:8080/api/user/current', userData);
-
-            console.log(data);
+            request.put<UserData>('https://localhost:8080/api/user/current', userData)
+                .then(r => {
+                    history.go(0);
+                    }
+                );
         } catch (error){
             console.log(error);
         }
@@ -212,9 +184,7 @@ export const ProfileScreen = () => {
     };
 
     const handleSave = () => {
-        if (oldPassword !== 'old'){
-            alert('Current Password is not correct!')
-        }
+
 
 
         if (newPassword !== confirmNewPassword) {
@@ -223,9 +193,18 @@ export const ProfileScreen = () => {
         }
 
         try {
-            const data = request.put<UserData>('https://localhost:8080/api/auth/change-password', newPassword);
 
-            console.log(data);
+            const req = {
+                "newPassword": {newPassword},
+                "oldPassword": {oldPassword}
+            }
+
+            request.put<UserData>('https://localhost:8080/api/auth/change-password', req)
+                .then(r => {
+                        history.go(0);
+                    }
+                );
+
         } catch (error){
             console.log(error);
         }

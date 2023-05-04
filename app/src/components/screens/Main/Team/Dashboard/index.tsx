@@ -38,6 +38,9 @@ import { useTeamRole } from "../../../../../hooks/useTeamRole";
 import { request } from "../../../../../api/request";
 import { InProgressRetro } from "./InProgressRetro";
 import { useInProgressRetro } from "../../../../../hooks/useInProgressRetro";
+import { TeamMembers } from "./TeamMembers";
+import { NewRetroButton } from "./NewRetroButton";
+
 
 export const TeamDashboardScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -55,16 +58,16 @@ export const TeamDashboardScreen = () => {
   };
   const { teamRole } = useTeamRole(teamId);
 
-  useEffect(() => {
-    request.put("http://localhost:8080/api/user/current", {
-      displayName: "Shunyuan",
-      firstName: "AAA",
-      lastName: "VBBB",
-      phone: "123123",
-      address: "6 coventry way",
-      gender: true,
-    });
-  }, []);
+  // useEffect(() => {
+  //   request.put("http://localhost:8080/api/user/current", {
+  //     displayName: "Shunyuan",
+  //     firstName: "AAA",
+  //     lastName: "VBBB",
+  //     phone: "123123",
+  //     address: "6 coventry way",
+  //     gender: true,
+  //   });
+  // }, []);
 
   const {
     isLoading,
@@ -120,27 +123,10 @@ export const TeamDashboardScreen = () => {
               >
                 {team?.name}
               </Typography>
-              <AvatarGroup sx={{ width: 185 }}>
-                {team?.teamMembers?.map((member) => (
-                  <Avatar
-                    key={member.id}
-                    text={`${member.firstName} ${member.lastName}`}
-                  />
-                ))}
-              </AvatarGroup>
+              <TeamMembers />
             </Grid>
             <Grid item xs={8} alignItems="flex-start">
-              {teamRole?.role !== "MEMBER" ? (
-                <Button
-                  onClick={() =>
-                    history.push(`${MainScreenPath.TEAM}/${teamId}/template`)
-                  }
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                >
-                  New Retro
-                </Button>
-              ) : null}
+              <NewRetroButton teamId={teamId} teamRole={teamRole} />
             </Grid>
           </Grid>
           <Divider sx={{ marginTop: 2, marginBottom: 5 }} />

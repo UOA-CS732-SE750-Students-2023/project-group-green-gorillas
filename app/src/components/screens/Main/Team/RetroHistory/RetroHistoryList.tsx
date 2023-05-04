@@ -2,11 +2,12 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useRetroHistory } from "../../../../../hooks/useRetroHistory";
 import { Avatar } from "../../../../common/Avatar";
 
-type RetroHistoryListProps = {
+type Props = {
   selectedTeam: string | undefined;
 };
 
-export const RetroHistoryList = ({ selectedTeam }: RetroHistoryListProps) => {
+export const RetroHistoryList = ({ selectedTeam }: Props) => {
+
   const { retroList } = useRetroHistory(selectedTeam || "");
 
   return (

@@ -1,20 +1,6 @@
-import {
-  Box,
-  Container,
-  Divider,
-  FormControl,
-  Grid,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Typography,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { TeamDrawer } from "../../../../common/TeamDrawer";
+import { Container, Divider } from "@mui/material";
 import { useTeam } from "../../../../../hooks/useTeam";
 import { useParams } from "react-router-dom";
-import { useCurrentUser } from "../../../../../hooks/useCurrentUser";
-import { TeamFilter } from "./TeamFilter";
 import { RetroHistoryList } from "./RetroHistoryList";
 
 export const RetroHistoryScreen = () => {

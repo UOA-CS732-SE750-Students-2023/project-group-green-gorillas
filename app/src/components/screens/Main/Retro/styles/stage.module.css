@@ -216,6 +216,20 @@
   font-size: 16px;
 }
 
+.section_name {
+  resize: none;
+  outline: none;
+  overflow: auto;
+  width: 100%;
+  border: none;
+  background: transparent;
+  box-sizing: border-box;
+  border-radius: 8px;
+  color: #333333;
+  font-size: 24px;
+  font-weight: bold;
+}
+
 .note__textarea::placeholder {
   color: #333333;
   font-family: inherit;

@@ -1,4 +1,4 @@
-import { Box, Container, Input } from "@mui/material";
+import { Box, Container, Input, TextareaAutosize } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import stageStyles from "../styles/stage.module.css";
 import styles from "../styles/styles.module.css";
@@ -70,17 +70,11 @@ const ThinkColumn = ({
           <Box className={styles.select__heading}>
             {boardSection.description}
           </Box>
-          <Input
-            className={styles.heading}
-            sx={{
-              "& .MuiInput-underline": {
-                "&::before": {
-                  borderBottom: "none",
-                },
-              },
-            }}
+          <TextareaAutosize
+            className={stageStyles.section_name}
             value={sectionName}
             onChange={onChangeBoardSecionName}
+            autoFocus={true}
           />
         </Box>
         <Box

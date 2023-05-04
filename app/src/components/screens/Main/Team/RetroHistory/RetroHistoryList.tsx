@@ -7,6 +7,7 @@ type Props = {
 };
 
 export const RetroHistoryList = ({ selectedTeam }: Props) => {
+
   const { retroList } = useRetroHistory(selectedTeam || "");
 
   return (

@@ -12,6 +12,11 @@ type Props = {
 
 const Think = ({ retro }: Props) => {
   const thinkContainerRef: any = useRef();
+  const [boardSections, setBoardSections] = useState([]);
+
+  useEffect(() => {
+    setBoardSections(retro.boardSections);
+  }, [retro.boardSections]);
 
   const [focusedNoteRef, setFocusedNoteRef] = useState<any>(null);
 
@@ -52,7 +57,7 @@ const Think = ({ retro }: Props) => {
       // @ts-ignore
       maxWidth="false"
     >
-      {retro.boardSections
+      {boardSections
         .sort((a: any, b: any) => a.order - b.order)
         .map((boardSection: any) => (
           <ThinkColumn

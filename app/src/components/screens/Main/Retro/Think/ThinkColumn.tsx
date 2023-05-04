@@ -1,4 +1,4 @@
-import { Box, Container, Input, TextareaAutosize } from "@mui/material";
+import { Box, Button, Container, Input, TextareaAutosize } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import stageStyles from "../styles/stage.module.css";
 import addIcon from "../../../../../assets/add.svg";
@@ -6,6 +6,7 @@ import { ThinkNote } from "./ThinkNote";
 import { request } from "../../../../../api/request";
 import {
   ADD_RETRO_NOTE,
+  DELETE_SECTION,
   UPDATE_SECTION_DESC,
   UPDATE_SECTION_NAME,
 } from "../../../../../api/api";
@@ -83,6 +84,10 @@ const ThinkColumn = ({
     );
   };
 
+  const deleteColumn = async () => {
+    await request.delete(DELETE_SECTION(boardSection.id, boardSection.boardId));
+  };
+
   return (
     <Container
       className={stageStyles.column}
@@ -104,6 +109,14 @@ const ThinkColumn = ({
             onChange={onChangeBoardSecionName}
             autoFocus={true}
           />
+          <Button
+            onClick={deleteColumn}
+            variant="text"
+            color="error"
+            sx={{ marginTop: 0, marginBottom: 1 }}
+          >
+            Delete
+          </Button>
         </Box>
         <Box
           className={stageStyles.add__note__button}

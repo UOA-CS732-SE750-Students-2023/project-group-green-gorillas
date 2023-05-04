@@ -249,8 +249,8 @@ export class RetrospectiveService {
       boardId,
       organisationId,
       teamId,
-      'Add New Name',
-      'Add New Description',
+      '',
+      '',
       order,
       createdBy,
     );

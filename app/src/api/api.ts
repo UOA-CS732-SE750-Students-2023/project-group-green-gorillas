@@ -45,6 +45,7 @@ export const UPDATE_RETRO_NOTE = `${apiBaseUrl}/retrospective/update-note`;
 
 export const UPDATE_RETRO_NOTE_GROUP = `${apiBaseUrl}/retrospective/update-note-group`;
 export const CREATERETRO = `${apiBaseUrl}/retrospective/create`;
+export const UPDATE_RETRO_NAME = `${apiBaseUrl}/retrospective/update-name`;
 
 export const ASSIGN_NOTE_GROUP = `${apiBaseUrl}/retrospective/assign-note-group`;
 export const UNASSIGN_NOTE_GROUP = `${apiBaseUrl}/retrospective/un-assign-note-group`;

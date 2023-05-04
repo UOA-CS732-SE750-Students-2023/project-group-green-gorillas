@@ -9,7 +9,7 @@ export const HomeScreen = () => {
 
   useEffect(() => {
     if (user?.teams && user.teams.length > 0) {
-      history.replace(`${MainScreenPath.TEAM}/${user.teams[0].id}`);
+      history.replace(`${MainScreenPath.TEAM}/${user.teams[0].id}/dashboard`);
     }
   }, [history, user]);
 

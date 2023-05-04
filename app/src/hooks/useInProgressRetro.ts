@@ -9,6 +9,7 @@ export type InProgressRetro = {
     name: string,
     stage: string,
     createdBy: User,
+    createdAt: string,
 }
 
 export const useInProgressRetro = (id: string) => {

@@ -102,12 +102,14 @@ const ThinkColumn = ({
             value={sectionDesc}
             autoFocus={true}
             onChange={onChangeSectionDescription}
+            placeholder={"Add New Description"}
           />
           <TextareaAutosize
             className={stageStyles.section_name}
             value={sectionName}
             onChange={onChangeBoardSecionName}
             autoFocus={true}
+            placeholder={"Add New Name"}
           />
           <Button
             onClick={deleteColumn}

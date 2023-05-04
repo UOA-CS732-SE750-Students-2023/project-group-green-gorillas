@@ -9,7 +9,7 @@ import { useTeamRole } from "../../../../../hooks/useTeamRole";
 import { InProgressRetro } from "./InProgressRetro";
 import { TeamMembers } from "./TeamMembers";
 import { NewRetroButton } from "./NewRetroButton";
-import { TeamScreenLoading } from "./TeamScreenLoading";
+import { TeamSkeleton } from "./TeamSkeleton";
 import { ActionList } from "./ActionList";
 import { InsightChart } from "./InsightChart";
 
@@ -28,7 +28,8 @@ export const TeamDashboardScreen = () => {
     <>
       {loading ? (
         <Box sx={{ flexGrow: 1, marginTop: 5, width: "100%" }}>
-          <LoadingIndicator />
+          {/* <LoadingIndicator /> */}
+          <TeamSkeleton />
         </Box>
       ) : (
         <Box sx={{ flexGrow: 1, marginTop: 5, width: "100%" }}>

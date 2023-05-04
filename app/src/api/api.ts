@@ -15,10 +15,12 @@ export const CURRENT_USER = `${apiBaseUrl}/user/current`;
 export const TEAM_BY_ID = (teamId: string) => `${apiBaseUrl}/team/${teamId}`;
 export const INSIGHT_BY_ID = (teamId: string) =>
   `${apiBaseUrl}/team/insight/${teamId}`;
-export const RETROLIST_BY_ID = (teamId: string) => `${apiBaseUrl}/team/retro-history/${teamId}`;
+export const RETROLIST_BY_ID = (teamId: string) =>
+  `${apiBaseUrl}/team/retro-history/${teamId}`;
 export const GET_RETRO = (retroId: string, teamId: string) =>
   `${apiBaseUrl}/retrospective/${retroId}/team/${teamId}`;
-export const INPROGRESS_RETRO = (teamId: string) =>`${apiBaseUrl}/team/in-progress-retro/${teamId}`;
+export const INPROGRESS_RETRO = (teamId: string) =>
+  `${apiBaseUrl}/team/in-progress-retro/${teamId}`;
 
 export const ACTIONITEMS_LIST_BY_ID = (teamId: string) =>
   `${apiBaseUrl}/action-item/list-outstanding/${teamId}`;
@@ -30,6 +32,8 @@ export const TEAM_ROLE_BY_ID = (teamId: string) =>
   `${apiBaseUrl}/team/team-role/${teamId}`;
 export const TEMPLATE = () => `${apiBaseUrl}/retrospective/template/list`;
 export const UPDATE_SECTION_NAME = `${apiBaseUrl}/retrospective/update-section-name`;
+export const UPDATE_SECTION_DESC = `${apiBaseUrl}/retrospective/update-section-description`;
+
 export const ADD_RETRO_NOTE = `${apiBaseUrl}/retrospective/add-note`;
 export const DELETE_RETRO_NOTE = (boardNoteId: string) =>
   `${apiBaseUrl}/retrospective/delete-note/${boardNoteId}`;

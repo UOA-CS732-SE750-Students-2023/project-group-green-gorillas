@@ -160,6 +160,20 @@
   justify-content: flex-end;
 }
 
+.section_heading {
+  resize: none;
+  outline: none;
+  overflow: auto;
+  width: 100%;
+  border: none;
+  background: transparent;
+  box-sizing: border-box;
+  border-radius: 8px;
+  font-size: 18px;
+  color: #999999;
+  font-weight: bold;
+}
+
 .add__note__button {
   background: rgb(111, 133, 255);
   padding: 8px 16px;

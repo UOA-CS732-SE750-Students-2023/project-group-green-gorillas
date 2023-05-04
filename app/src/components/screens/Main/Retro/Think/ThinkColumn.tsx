@@ -1,11 +1,14 @@
 import { Box, Container, Input, TextareaAutosize } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import stageStyles from "../styles/stage.module.css";
-import styles from "../styles/styles.module.css";
 import addIcon from "../../../../../assets/add.svg";
 import { ThinkNote } from "./ThinkNote";
 import { request } from "../../../../../api/request";
-import { ADD_RETRO_NOTE, UPDATE_SECTION_NAME } from "../../../../../api/api";
+import {
+  ADD_RETRO_NOTE,
+  UPDATE_SECTION_DESC,
+  UPDATE_SECTION_NAME,
+} from "../../../../../api/api";
 import { debounce } from "../../../../../utils/debounce";
 
 enum BoardNoteType {
@@ -22,6 +25,11 @@ const ThinkColumn = ({
   focusedNoteRef,
 }: any) => {
   const [sectionName, setSectionName] = useState("");
+  const [sectionDesc, setSectionDesc] = useState("");
+
+  useEffect(() => {
+    setSectionDesc(boardSection.description);
+  }, [boardSection.description]);
 
   useEffect(() => {
     setSectionName(boardSection.name);
@@ -48,6 +56,14 @@ const ThinkColumn = ({
     });
   };
 
+  const updateBoardSectionDesc = async (sectionDesc: string) => {
+    await request.patch(UPDATE_SECTION_DESC, {
+      boardSectionId: boardSection.id,
+      boardId: boardSection.boardId,
+      description: sectionDesc,
+    });
+  };
+
   const onChangeBoardSecionName = async (e: any) => {
     const newSectionName = e.target.value;
 
@@ -55,6 +71,15 @@ const ThinkColumn = ({
 
     boardSectionNameRequestDebounce(() =>
       updateBoardSectionName(newSectionName)
+    );
+  };
+
+  const onChangeSectionDescription = async (e: any) => {
+    const newSectionDescription = e.target.value;
+
+    setSectionDesc(newSectionDescription);
+    boardSectionNameRequestDebounce(() =>
+      updateBoardSectionDesc(newSectionDescription)
     );
   };
 
@@ -67,9 +92,12 @@ const ThinkColumn = ({
     >
       <Box className={stageStyles.column__header}>
         <Box>
-          <Box className={styles.select__heading}>
-            {boardSection.description}
-          </Box>
+          <TextareaAutosize
+            className={stageStyles.section_heading}
+            value={sectionDesc}
+            autoFocus={true}
+            onChange={onChangeSectionDescription}
+          />
           <TextareaAutosize
             className={stageStyles.section_name}
             value={sectionName}

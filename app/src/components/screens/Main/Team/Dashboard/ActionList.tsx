@@ -36,7 +36,15 @@ export const ActionList = ({ teamId, user, teamRole }: Props) => {
     setChecked(event.target.checked);
   };
   return (
-    <Box>
+    <Box
+      component="div"
+      sx={{
+        bgcolor: "#F5F7F9",
+        padding: 3,
+        borderRadius: 2,
+        justifyItems: "center",
+      }}
+    >
       <FormControlLabel
         value="start"
         control={

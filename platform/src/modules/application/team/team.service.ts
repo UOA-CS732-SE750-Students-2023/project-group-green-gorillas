@@ -66,7 +66,9 @@ export class TeamService {
   }
 
   public async getOrganisationTeams(organisationId: UUID) {
-    const teams = this.teamDomainService.listByOrganisationId(organisationId);
+    const teams = await this.teamDomainService.listByOrganisationId(
+      organisationId,
+    );
 
     return Bluebird.map(teams, async (team) => {
       const teamMembers = await this.getTeamRemembers(
@@ -88,6 +90,10 @@ export class TeamService {
     active: boolean,
   ) {
     return this.teamDomainService.update(teamId, organisationId, name, active);
+  }
+
+  public async addTeam(name: string, organisationId: UUID) {
+    return this.teamDomainService.create(organisationId, name);
   }
 
   public async updateTeamActive(

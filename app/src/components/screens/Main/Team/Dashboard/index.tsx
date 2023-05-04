@@ -42,6 +42,7 @@ import { TeamMembers } from "./TeamMembers";
 import { NewRetroButton } from "./NewRetroButton";
 import { TeamScreenLoading } from "./TeamScreenLoading";
 import { ActionList } from "./ActionList";
+import { InsightChart } from "./InsightChart";
 
 export const TeamDashboardScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -131,7 +132,6 @@ export const TeamDashboardScreen = () => {
             </Grid>
           </Grid>
           <Divider sx={{ marginTop: 2, marginBottom: 5 }} />
-          {/* {inProgressRetro ? <InProgressRetro /> : null} */}
           <InProgressRetro />
           {/* Sort to my action items */}
           <Grid
@@ -142,7 +142,6 @@ export const TeamDashboardScreen = () => {
             }}
             spacing={2}
           >
-            {/* Outstanding Action Items */}
             <Grid item xs={4}>
               <Box
                 component="div"
@@ -158,89 +157,7 @@ export const TeamDashboardScreen = () => {
             </Grid>
             {/* Charts */}
             <Grid item xs={8}>
-              <Box
-                component="div"
-                sx={{
-                  bgcolor: "#F5F7F9",
-                  padding: 3,
-                  borderRadius: 2,
-                  justifyItems: "center",
-                }}
-              >
-                <Typography
-                  variant="h5"
-                  fontWeight="bold"
-                  noWrap
-                  component="div"
-                  sx={{ marginBottom: 2 }}
-                >
-                  Dashboard
-                </Typography>
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <Paper
-                      sx={{
-                        p: 2,
-                        display: "flex",
-                        flexDirection: "column",
-                        height: 120,
-                      }}
-                    >
-                      {" "}
-                      Total Outstanding Action Items
-                      <Typography>
-                        {insight?.outstandingActionItemCount}
-                      </Typography>
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Paper
-                      sx={{
-                        p: 2,
-                        display: "flex",
-                        flexDirection: "column",
-                        height: 120,
-                      }}
-                    >
-                      {" "}
-                      Completed Action Items
-                      <Typography>
-                        {insight?.completedActionItemCount}
-                      </Typography>
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Paper
-                      sx={{
-                        p: 2,
-                        display: "flex",
-                        flexDirection: "column",
-                        height: 120,
-                      }}
-                    >
-                      {" "}
-                      Left Action Items
-                      <Typography>
-                        {insight?.outstandingActionItemCount &&
-                          insight?.outstandingActionItemCount -
-                            insight?.completedActionItemCount}
-                      </Typography>
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Paper
-                      sx={{
-                        p: 2,
-                        display: "flex",
-                        flexDirection: "column",
-                        height: 80,
-                      }}
-                    >
-                      Progeress
-                    </Paper>
-                  </Grid>
-                </Grid>
-              </Box>
+              <InsightChart insight={insight} />
             </Grid>
           </Grid>
         </Box>

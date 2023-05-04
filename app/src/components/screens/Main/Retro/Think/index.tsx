@@ -1,7 +1,10 @@
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import stageStyles from "../styles/stage.module.css";
 import ThinkColumn from "./ThinkColumn";
+import addIcon from "../../../../../assets/add.svg";
+import { request } from "../../../../../api/request";
+import { ADD_SECTION } from "../../../../../api/api";
 
 type Props = {
   retro: any;
@@ -33,6 +36,14 @@ const Think = ({ retro }: Props) => {
     }
   }, [retro, focusedNoteRef]);
 
+  const createColumn = async () => {
+    await request.post(ADD_SECTION, {
+      boardId: retro.id,
+      teamId: retro.teamId,
+      order: retro.boardSections.length + 1,
+    });
+  };
+
   return (
     <Container
       ref={thinkContainerRef}
@@ -51,6 +62,13 @@ const Think = ({ retro }: Props) => {
             boardSection={boardSection}
           />
         ))}
+      <Box
+        className={stageStyles.add__column__button}
+        onClick={() => createColumn()}
+      >
+        Add Column
+        <img src={addIcon} alt="" className={stageStyles.add__button__img} />
+      </Box>
     </Container>
   );
 };

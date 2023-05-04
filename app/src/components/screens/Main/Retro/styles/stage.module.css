@@ -188,6 +188,29 @@
   color: #fff;
 }
 
+.add__column__button {
+  background: rgb(111, 133, 255);
+  padding: 8px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease all;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  height: 50px;
+}
+
+.add__column__button:hover {
+  background: rgb(129, 148, 255);
+}
+
+.add__column__button:active {
+  transform: scale(0.98);
+}
+
 .add__button__img {
   height: 14px;
   margin-left: 8px;

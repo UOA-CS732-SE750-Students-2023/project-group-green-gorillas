@@ -4,7 +4,7 @@ import { TEAM_BY_ID } from "../api/api";
 import { Team } from "../types/team";
 import { User } from "../types/user";
 
-type TeamWithMembers = Team & {
+export type TeamWithMembers = Team & {
   teamMembers: User[];
 };
 

@@ -40,7 +40,8 @@ import { InProgressRetro } from "./InProgressRetro";
 import { useInProgressRetro } from "../../../../../hooks/useInProgressRetro";
 import { TeamMembers } from "./TeamMembers";
 import { NewRetroButton } from "./NewRetroButton";
-
+import { TeamScreenLoading } from "./TeamScreenLoading";
+import { ActionList } from "./ActionList";
 
 export const TeamDashboardScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -152,145 +153,7 @@ export const TeamDashboardScreen = () => {
                   justifyItems: "center",
                 }}
               >
-                <Grid container spacing={2}>
-                  <Grid item xs={10}>
-                    <Typography
-                      variant="h5"
-                      fontWeight="bold"
-                      noWrap
-                      component="div"
-                      justifyContent="flex-end"
-                      sx={{ marginBottom: 2 }}
-                    >
-                      {showAll ? "Team Action Items" : "My Action Items"}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <IconButton
-                      color="primary"
-                      sx={{ marginLeft: "auto" }}
-                      size="small"
-                      component="div"
-                      aria-label="Sort by user"
-                      onClick={() => setShowAll(!showAll)}
-                    >
-                      <SortIcon />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-
-                {showAll ? (
-                  <Stack spacing={2}>
-                    {actionItems?.map((actionItem) => (
-                      <Card key={actionItem.id} sx={{ maxWidth: 450 }}>
-                        <CardContent>
-                          <Typography variant="h6" component="div">
-                            {actionItem.note}
-                          </Typography>
-                          <Chip
-                            label={actionItem.status}
-                            color="success"
-                            size="small"
-                          />
-
-                          <Typography color="text.secondary" component="div">
-                            {actionItem.createdAt.slice(0, 10)}
-                          </Typography>
-                          <AvatarGroup max={4}>
-                            {actionItem.assignees?.map((assignee) => (
-                              <Avatar
-                                key={assignee.id}
-                                text={`${assignee.firstName} ${assignee.lastName}`}
-                              />
-                            ))}
-                          </AvatarGroup>
-                        </CardContent>
-                        <CardActions>
-                          {teamRole?.role !== "MEMBER" ? (
-                            <Button
-                              variant="outlined"
-                              color="error"
-                              size="small"
-                              sx={{ marginLeft: "auto" }}
-                              // disabled={true}
-                              onClick={() => {
-                                deleteActionItems(actionItem);
-                              }}
-                            >
-                              DELETE
-                            </Button>
-                          ) : null}
-
-                          <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => {
-                              updateActionItems(actionItem);
-                            }}
-                            sx={{ marginLeft: "auto" }}
-                          >
-                            Complete
-                          </Button>
-                        </CardActions>
-                      </Card>
-                    ))}
-                  </Stack>
-                ) : (
-                  <Stack spacing={2}>
-                    {currentUserActionItems?.map((actionItem) => (
-                      <Card key={actionItem.id} sx={{ maxWidth: 450 }}>
-                        <CardContent>
-                          <Typography variant="h6" component="div">
-                            {actionItem.note}
-                          </Typography>
-                          <Chip
-                            label={actionItem.status}
-                            color="success"
-                            size="small"
-                          />
-
-                          <Typography color="text.secondary" component="div">
-                            {actionItem.createdAt.slice(0, 10)}
-                          </Typography>
-                          <AvatarGroup max={4}>
-                            {actionItem.assignees?.map((assignee) => (
-                              <Avatar
-                                key={assignee.id}
-                                text={`${assignee.firstName} ${assignee.lastName}`}
-                              />
-                            ))}
-                          </AvatarGroup>
-                        </CardContent>
-                        <CardActions>
-                          {teamRole?.role !== "MEMBER" ? (
-                            <Button
-                              variant="outlined"
-                              color="error"
-                              size="small"
-                              sx={{ marginLeft: "auto" }}
-                              // disabled={true}
-                              onClick={() => {
-                                deleteActionItems(actionItem);
-                              }}
-                            >
-                              DELETE
-                            </Button>
-                          ) : null}
-                          <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => {
-                              updateActionItems(actionItem);
-                            }}
-                            sx={{ marginLeft: "auto" }}
-                          >
-                            Complete
-                          </Button>
-                        </CardActions>
-                      </Card>
-                    ))}
-                  </Stack>
-                )}
+                <ActionList teamId={teamId} user={user} teamRole={teamRole} />
               </Box>
             </Grid>
             {/* Charts */}

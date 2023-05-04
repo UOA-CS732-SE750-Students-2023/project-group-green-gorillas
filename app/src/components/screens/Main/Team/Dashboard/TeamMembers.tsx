@@ -2,8 +2,14 @@ import { AvatarGroup, Box, Skeleton } from "@mui/material";
 import { Avatar } from "../../../../common/Avatar";
 
 import { useParams } from "react-router-dom";
-import { useTeam } from "../../../../../hooks/useTeam";
+import { TeamWithMembers, useTeam } from "../../../../../hooks/useTeam";
 import { AvatarSkeleton } from "./AvatarSkeleton";
+import { Team } from "../../../../../types/team";
+
+type Props = {
+  team: TeamWithMembers | null;
+  loading: boolean;
+};
 
 export const TeamMembers = () => {
   const { teamId } = useParams<{ teamId: string }>();

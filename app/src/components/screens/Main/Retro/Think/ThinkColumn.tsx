@@ -1,5 +1,5 @@
 import { Box, Container, Input } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import stageStyles from "../styles/stage.module.css";
 import styles from "../styles/styles.module.css";
 import addIcon from "../../../../../assets/add.svg";
@@ -21,7 +21,11 @@ const ThinkColumn = ({
   setFocusedNoteRef,
   focusedNoteRef,
 }: any) => {
-  const [sectionName, setSectionName] = useState(boardSection.name);
+  const [sectionName, setSectionName] = useState("");
+
+  useEffect(() => {
+    setSectionName(boardSection.name);
+  }, [boardSection.name]);
 
   const boardSectionNameRequestDebounce = useMemo(() => {
     return debounce(1000);
@@ -88,7 +92,7 @@ const ThinkColumn = ({
         </Box>
       </Box>
       {boardSection.boardNotes
-        .sort((a: any, b: any) => (a.createdAt < b.createdAt ? 1 : -1))
+        ?.sort((a: any, b: any) => (a.createdAt < b.createdAt ? 1 : -1))
         .map((note: any) => (
           <ThinkNote
             note={note}

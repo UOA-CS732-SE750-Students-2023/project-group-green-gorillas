@@ -5,12 +5,16 @@ import {
   CardActions,
   CardContent,
   Chip,
+  Link,
   Typography,
 } from "@mui/material";
 import { Avatar } from "../../../../common/Avatar";
 import { useActionItems } from "../../../../../hooks/useActionItems";
 import { ActionItem } from "../../../../../types/actionItems";
 import { TeamRole } from "../../../../../types/teamRole";
+import { useHistory } from "react-router-dom";
+import { RetroStage } from "../../Retro/Stage";
+import { MainScreenPath } from "../../index";
 
 type Props = {
   actionItem: ActionItem;
@@ -21,6 +25,21 @@ type Props = {
 export const ActionListItem = ({ actionItem, teamId, teamRole }: Props) => {
   const { updateActionItems, deleteActionItems } = useActionItems(teamId || "");
 
+  const history = useHistory();
+
+  const onNavigateToRetroHistory = (retro: any): void => {
+    if (!retro) return;
+
+    if (retro.stage !== RetroStage.FINALIZE) {
+      history.replace(
+        `${MainScreenPath.Retro}/${retro.id}/team/${retro.teamId}`
+      );
+      return;
+    }
+
+    // TODO: navigate me to retro history
+  };
+
   return (
     <Card key={actionItem.id} sx={{ maxWidth: 450, marginBottom: 2 }}>
       <CardContent>
@@ -28,6 +47,15 @@ export const ActionListItem = ({ actionItem, teamId, teamRole }: Props) => {
           {actionItem.note}
         </Typography>
         <Chip label={actionItem.status} color="success" size="small" />
+
+        <Link
+          onClick={() => onNavigateToRetroHistory(actionItem.retro)}
+          sx={{ cursor: "pointer" }}
+        >
+          <Typography color="text.secondary" component="div">
+            {actionItem?.retro?.name}
+          </Typography>
+        </Link>
 
         <Typography color="text.secondary" component="div">
           {actionItem.createdAt.slice(0, 10)}
@@ -50,7 +78,7 @@ export const ActionListItem = ({ actionItem, teamId, teamRole }: Props) => {
             sx={{ marginLeft: "auto" }}
             // disabled={true}
             onClick={() => {
-              deleteActionItems(actionItem);
+              return deleteActionItems(actionItem);
             }}
           >
             DELETE
@@ -61,7 +89,7 @@ export const ActionListItem = ({ actionItem, teamId, teamRole }: Props) => {
           variant="contained"
           size="small"
           onClick={() => {
-            updateActionItems(actionItem);
+            return updateActionItems(actionItem);
           }}
           sx={{ marginLeft: "auto" }}
         >

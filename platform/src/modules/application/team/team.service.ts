@@ -155,7 +155,22 @@ export class TeamService {
       (board) => board.stage !== BoardStage.FINALIZE,
     );
 
-    return _.first(inProgressRetros) ?? null;
+    const inProgressRetrosWithCreatedByUser = await Bluebird.map(
+      inProgressRetros,
+      async (retro) => {
+        const user = await this.userService.getById(
+          retro.createdBy,
+          retro.organisationId,
+        );
+
+        return {
+          ...retro,
+          createdByUser: user ?? null,
+        };
+      },
+    );
+
+    return _.first(inProgressRetrosWithCreatedByUser) ?? null;
   }
 
   public async getTeamRetroHistory(teamId: UUID) {

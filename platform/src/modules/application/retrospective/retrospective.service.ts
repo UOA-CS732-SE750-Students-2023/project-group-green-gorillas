@@ -8,7 +8,7 @@ import { TeamDashboardService } from '../../domain/team-dashboard/team-dashboard
 import { TeamDashboardCountKey } from '../../domain/team-dashboard/team-dashboard';
 import { BoardSectionService } from '../../domain/board-section/board-section.service';
 import { BoardNoteService } from '../../domain/board-note/board-note.service';
-import { groupBy } from 'lodash';
+import { groupBy, uniq } from 'lodash';
 import { InternalException } from '../../../exceptions/internal-exception';
 import { ActionItemService } from '../../domain/action-item/action-item.service';
 import { UtilsService } from '../utils/utils.service';
@@ -17,6 +17,8 @@ import {
   BoardNoteType,
 } from '../../domain/board-note/board-note';
 import { BoardNoteVoteService } from '../../domain/board-note-vote/board-note-vote.service';
+import * as Bluebird from 'bluebird';
+import { UserService } from '../../domain/user/user.service';
 
 @Injectable()
 export class RetrospectiveService {
@@ -29,6 +31,7 @@ export class RetrospectiveService {
     private readonly actionItemService: ActionItemService,
     private readonly utilsService: UtilsService,
     private readonly boardNoteVoteService: BoardNoteVoteService,
+    private readonly userService: UserService,
   ) {}
 
   public async getRetrospectiveTemplates(
@@ -117,6 +120,23 @@ export class RetrospectiveService {
         this.boardNoteVoteService.listByBoardId(boardId),
       ]);
 
+    const participantIds = uniq(
+      [board.createdBy].concat(
+        boardNotes.map((boardNote) => boardNote.createdBy),
+      ),
+    );
+
+    const participants = await Bluebird.map(participantIds, async (userId) => {
+      const user = await this.userService.getById(userId, board.organisationId);
+
+      return user ?? null;
+    });
+
+    const createdByUser = await this.userService.getById(
+      board.createdBy,
+      board.organisationId,
+    );
+
     const boardNoteVotesGroup = groupBy(boardNoteVotes, 'boardNoteId');
 
     const boardNotesWithVotes = boardNotes.map((boardNote) => ({
@@ -139,6 +159,8 @@ export class RetrospectiveService {
       ...board,
       boardSections: mappedBoardSections,
       actionItems: mappedActionItems,
+      participants: participants.filter((user) => !!user),
+      createdByUser: createdByUser ?? null,
     };
   }
 

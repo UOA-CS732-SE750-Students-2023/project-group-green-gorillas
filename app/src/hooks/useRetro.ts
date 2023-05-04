@@ -274,6 +274,15 @@ export const useRetro = (boardId: string, teamId: string) => {
         (item: any) => item.id === data.id
       );
 
+      if (
+        actionItemIndex !== -1 &&
+        JSON.stringify(data.assignees) !==
+          JSON.stringify(clonedRetro.actionItems[actionItemIndex].assignees)
+      ) {
+        clonedRetro.actionItems[actionItemIndex] = data;
+        return clonedRetro;
+      }
+
       if (actionItemIndex !== -1 && data.updatedBy !== user?.id) {
         clonedRetro.actionItems[actionItemIndex] = data;
         return clonedRetro;

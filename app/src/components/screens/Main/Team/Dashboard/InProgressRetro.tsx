@@ -51,7 +51,7 @@ export const InProgressRetro = () => {
           <Typography variant="h6">Name:{inProgressRetro?.name}</Typography>
           <Typography>Stage: {inProgressRetro?.stage}</Typography>
           <Typography>
-            Created By:{inProgressRetro?.createdBy?.firstName}
+            Created By:{inProgressRetro?.createdByUser?.displayName}
           </Typography>
           <Typography color="text.secondary">
             Created At:{inProgressRetro?.createdAt?.slice(0, 10)}

@@ -8,7 +8,7 @@ export type InProgressRetro = {
   teamId: string;
   name: string;
   stage: string;
-  createdBy: User;
+  createdByUser: User;
   createdAt: string;
 };
 

@@ -39,7 +39,7 @@ export const TeamDrawer: React.FC<Props> = ({ teamId }) => {
       return;
     }
 
-    if (pathname.endsWith("/retro-history")) {
+    if (pathname.includes("/retro-history")) {
       history.replace(`${MainScreenPath.TEAM}/${teamId}/retro-history`);
       return;
     }
@@ -85,7 +85,7 @@ export const TeamDrawer: React.FC<Props> = ({ teamId }) => {
             <ListItemText primary="Template" />
           </ListItemButton>
           <ListItemButton
-            selected={history.location.pathname.endsWith("/retro-history")}
+            selected={history.location.pathname.includes("/retro-history")}
             onClick={() =>
               history.push(`${MainScreenPath.TEAM}/${teamId}/retro-history`)
             }

@@ -28,7 +28,6 @@ export const TeamDashboardScreen = () => {
     <>
       {loading ? (
         <Box sx={{ flexGrow: 1, marginTop: 5, width: "100%" }}>
-          {/* <LoadingIndicator /> */}
           <TeamSkeleton />
         </Box>
       ) : (

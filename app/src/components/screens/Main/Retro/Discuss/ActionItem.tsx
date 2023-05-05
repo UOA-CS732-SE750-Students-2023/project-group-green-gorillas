@@ -27,7 +27,7 @@ function ActionItem({ action }: any) {
 
   useEffect(() => {
     setActionItem(action.note);
-  }, [action]);
+  }, [action.note]);
 
   const updateActionItemNote = async (note: string) => {
     await request.patch(UPDATE_ACTION_ITEM_NOTE, {

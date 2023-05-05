@@ -30,11 +30,15 @@ interface Team {
 }
 
 
+
 export default function UpdateTeam() {
 
+  const [selectedRow, setSelectedRow] = useState<Team | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [teamUsers, setTeamUsers] = useState<User | null>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const [teamMembers, setTeamMembers] = useState<User[]>([]);
 
   const handleDisableEnableTeam = (teamId: string, active: boolean) => {
     const updatedTeam = { active };
@@ -66,7 +70,11 @@ export default function UpdateTeam() {
 
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', width: 130 },
-    { field: 'active', headerName: 'Active', width: 130 },
+    {
+      field: 'active', headerName: 'Active', width: 130,
+      renderCell: (params) => params.value ? 'Yes' : 'No',
+    },
+
     {
       field: 'edit',
       headerName: '',
@@ -105,15 +113,41 @@ export default function UpdateTeam() {
       ),
     }
   ];
+
+  const teamMemberColumns: GridColDef[] = [
+    { field: 'email', headerName: 'Email', width: 250 },
+    { field: 'displayName', headerName: 'Display Name', width: 130 },
+    { field: 'firstName', headerName: 'First Name', width: 130 },
+    { field: 'lastName', headerName: 'Last Name', width: 130 }
+  ];
   const [loading, setLoading] = useState<boolean>(false);
   const [team, setTeam] = useState<Team[]>([]);
+  //const [teamMembers, setTeamMembers] = useState<User[]>([]);
+
 
   const getTeamList = async () => {
     setLoading(true);
     try {
       const { data } = await request.get<Team[]>(TEAM_LIST());
-      setTeam(data);
-      console.log(data);
+      const teamsWithMembers = data.map((team) => {
+        const teamMembers = team.teamMembers.map((member) => ({
+          ...member,
+          id: member.id.toString(),
+        }));
+        return {
+          ...team,
+          teamMembers: teamMembers,
+        };
+      });
+      setTeam(teamsWithMembers);
+    //setUsers(teamUsers);
+      console.log(teamsWithMembers);
+      //console.log("tk1");
+      console.log(teamMembers);
+      //console.log("tk2");
+      //const teamId = selectedTeam?.id;
+      //console.log(teamId);
+
     } catch (error) {
       console.log(error);
     } finally {
@@ -133,6 +167,15 @@ export default function UpdateTeam() {
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
+  };
+
+  const handleRowSelection = (params: GridRowParams, event: MouseEvent) => {
+    setSelectedRow(params.row as Team);
+    console.log(`Row ${params.id} clicked!`);
+    console.log(`Team Name ${params.row.name} clicked!`);
+    const teamMembers=params.row.teamMembers;
+    setTeamMembers(teamMembers);
+    console.log(`Team Members:`, teamMembers);
   };
 
   const handleSaveName = () => {
@@ -163,8 +206,12 @@ export default function UpdateTeam() {
 
   return (
     <>
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid rows={team} columns={columns} />
+      <div style={{ height: 300, width: '100%' }}>
+        <DataGrid rows={team} columns={columns} onRowClick={handleRowSelection}/>
+        <div style={{ height: 500, width: '100%' }}>
+          <DataGrid rows={teamMembers} columns={teamMemberColumns} />
+        </div>
+
       </div>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Edit team name</DialogTitle>

@@ -44,6 +44,34 @@ export default function UpdateUser() {
   const lastNameInputRef = useRef<HTMLInputElement>(null);
   const roleSelectRef = useRef<HTMLSelectElement>(null);
 
+  const handleDisableEnableUser = (userId: string, active: boolean) => {
+    const updatedUser = { active };
+    try {
+      request.patch(`http://localhost:8080/api/user/update-active/${userId}`, updatedUser, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((response) => {
+        console.log('User updated successfully', response.data);
+        // Update the User in the UI state or trigger a re-fetch
+        const updatedUsers = user.map((t) => {
+          if (t.id === userId) {
+            return {
+              ...t,
+              active: !active,
+            };
+          }
+          return t;
+        });
+        setUser(updatedUsers);
+      })
+    }
+    catch (error) {
+      console.error('Failed to update user', error);
+      // Handle error, e.g. display a message to the user
+    };
+  };
+
 
   const columns: GridColDef[] = [
     { field: 'email', headerName: 'Email', width: 250 },
@@ -51,7 +79,8 @@ export default function UpdateUser() {
     { field: 'firstName', headerName: 'First Name', width: 130 },
     { field: 'lastName', headerName: 'Last Name', width: 130 },
     { field: 'role', headerName: 'User Role', width: 130 },
-    { field: 'active', headerName: 'Active', width: 130 },
+    { field: 'active', headerName: 'Active', width: 130, 
+    renderCell: (params) => params.value ? 'Yes' : 'No' },
     {
       field: 'edit',
       headerName: '',
@@ -70,6 +99,25 @@ export default function UpdateUser() {
         </Button>
       ),
     },
+    {
+      field: 'disable',
+      headerName: '',
+      width: 100,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => {
+            const selectedUser = params.row as User;
+            const isActive = selectedUser.active;
+            handleDisableEnableUser(selectedUser.id, isActive);
+          }}
+        >
+          {params.row.active ? 'Disable' : 'Enable'}
+        </Button>
+      ),
+    }
   ];
   const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState<User[]>([]);
@@ -107,7 +155,7 @@ export default function UpdateUser() {
     const updatedDisplayName = displayNameInputRef.current?.value;
     const updatedFirstName = firstNameInputRef.current?.value;
     const updatedLastName = lastNameInputRef.current?.value;
-    const updatedRole = roleInputRef.current?.value;
+    const updatedRole = roleSelectRef.current?.value;
     if (selectedUser && firstNameInputRef.current && lastNameInputRef.current && displayNameInputRef.current) {
       // Make API request to update the user name here...
       const updatedUser = {
@@ -144,7 +192,7 @@ export default function UpdateUser() {
 
   return (
     <>
-      <div style={{ height: 400, width: '100%' }}>
+      <div style={{ height: 600, width: '100%' }}>
         <DataGrid rows={user} columns={columns} />
       </div>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>

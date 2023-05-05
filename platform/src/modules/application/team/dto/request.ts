@@ -68,3 +68,8 @@ export class GetTeamRetroHistoryRequestParam {
   @IsUUID()
   teamId: UUID;
 }
+
+export class AddTeamRequest {
+  @IsString()
+  name: string;
+}

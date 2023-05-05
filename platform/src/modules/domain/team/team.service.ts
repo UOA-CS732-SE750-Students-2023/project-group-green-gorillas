@@ -3,6 +3,7 @@ import { UUID } from '../../../types/uuid.type';
 import { Team } from './team';
 import { TeamRepository } from './team.repository';
 import { InternalException } from '../../../exceptions/internal-exception';
+import { TeamFactory } from './team.factory';
 
 @Injectable()
 export class TeamService {
@@ -61,5 +62,9 @@ export class TeamService {
     team.disable();
 
     return this.teamRepository.save(team);
+  }
+
+  public create(name: string, organisationId: UUID): Promise<Team> {
+    return this.teamRepository.save(TeamFactory.create(name, organisationId));
   }
 }

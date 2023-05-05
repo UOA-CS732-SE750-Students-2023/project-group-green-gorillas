@@ -274,6 +274,15 @@ export const useRetro = (boardId: string, teamId: string) => {
         (item: any) => item.id === data.id
       );
 
+      if (
+        actionItemIndex !== -1 &&
+        JSON.stringify(data.assignees) !==
+          JSON.stringify(clonedRetro.actionItems[actionItemIndex].assignees)
+      ) {
+        clonedRetro.actionItems[actionItemIndex] = data;
+        return clonedRetro;
+      }
+
       if (actionItemIndex !== -1 && data.updatedBy !== user?.id) {
         clonedRetro.actionItems[actionItemIndex] = data;
         return clonedRetro;
@@ -334,7 +343,10 @@ export const useRetro = (boardId: string, teamId: string) => {
       );
 
       if (!boardSection) {
-        cloneRetro.boardSections.push(data);
+        cloneRetro.boardSections.push({
+          ...data,
+          boardNotes: [],
+        });
       }
 
       return cloneRetro;
@@ -347,8 +359,8 @@ export const useRetro = (boardId: string, teamId: string) => {
 
       const cloneRetro = _.cloneDeep(retro);
 
-      cloneRetro.boardSections.filter(
-        (section: any) => section.id !== data.boardSectionId
+      cloneRetro.boardSections = cloneRetro.boardSections.filter(
+        (section: any) => section.id !== data.id
       );
 
       return cloneRetro;
@@ -366,7 +378,10 @@ export const useRetro = (boardId: string, teamId: string) => {
       );
 
       if (boardSectionIndex !== -1) {
-        cloneRetro.boardSections[boardSectionIndex] = data;
+        cloneRetro.boardSections[boardSectionIndex] = {
+          ...cloneRetro.boardSections[boardSectionIndex],
+          ...data,
+        };
         return cloneRetro;
       }
       return retro;

@@ -61,3 +61,5 @@ export const ISRETROACTIVE = (teamId: string) =>
 export const DELETE_RETRO = (retroId: string, teamId: string) =>
   `${apiBaseUrl}/retrospective/${retroId}/team/${teamId}`;
 export const SET_RETRO_SESSION_PAYLOAD = `${apiBaseUrl}/retrospective/set-retro-session-payload`;
+export const ASSIGN_USER_TO_ACTION_ITEM = `${apiBaseUrl}/action-item/assign-user`;
+export const UNASSIGN_USER_TO_ACTION_ITEM = `${apiBaseUrl}/action-item/un-assign-user`;

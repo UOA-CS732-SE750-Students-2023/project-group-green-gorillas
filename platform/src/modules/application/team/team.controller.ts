@@ -14,6 +14,7 @@ import {
 } from '../../../utils/guards/auth-guard/auth.guard';
 import {
   AddOrUpdateTeamUserRequest,
+  AddTeamRequest,
   GetHasInProgressRetro,
   GetTeamByIdRequestParams,
   GetTeamInsightRequestParams,
@@ -133,6 +134,15 @@ export class TeamController {
       user.organisationId,
       active,
     );
+  }
+
+  @Post('/')
+  @AllowedRoles([UserRole.ADMIN])
+  public async addTeam(
+    @RequestUser() user: RequestUserType,
+    @Body() { name }: AddTeamRequest,
+  ) {
+    return this.teamService.addTeam(name, user.organisationId);
   }
 
   @Post('add-team-user')

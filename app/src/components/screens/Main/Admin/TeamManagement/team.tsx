@@ -17,7 +17,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { request } from '../../../../../api/request';
 import { TEAM_LIST } from '../../../../../api/api';
-import { UseRole } from '../../../../../types/user';
+import { UseRole, User } from '../../../../../types/user';
 
 interface Team {
   id: string;
@@ -26,6 +26,7 @@ interface Team {
   active: boolean;
   updatedAt: string;
   createdAt: string;
+  teamMembers: User[];
 }
 
 

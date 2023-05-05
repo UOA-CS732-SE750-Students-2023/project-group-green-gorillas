@@ -26,10 +26,10 @@ interface User {
   firstName: string;
   lastName: string;
   role: UseRole;
-  active: boolean;
   phone: string;
   address: string;
-  gender: true;
+  gender: boolean;
+  active: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -42,30 +42,16 @@ export default function UpdateUser() {
   const displayNameInputRef = useRef<HTMLInputElement>(null);
   const firstNameInputRef = useRef<HTMLInputElement>(null);
   const lastNameInputRef = useRef<HTMLInputElement>(null);
-  const phoneInputRef = useRef<HTMLInputElement>(null);
-  const addressInputRef = useRef<HTMLInputElement>(null);
-  const genderInputRef = 
-  
+  const roleSelectRef = useRef<HTMLSelectElement>(null);
 
 
   const columns: GridColDef[] = [
-    /*id: string;
-    email: string;
-    organisationId: string;
-    displayName: string;
-    firstName: string;
-    lastName: string;
-    role: UseRole;
-    active: boolean;
-    createdAt: string;
-    updatedAt: string;*/
     { field: 'email', headerName: 'Email', width: 250 },
     { field: 'displayName', headerName: 'Display Name', width: 130 },
     { field: 'firstName', headerName: 'First Name', width: 130 },
     { field: 'lastName', headerName: 'Last Name', width: 130 },
     { field: 'role', headerName: 'User Role', width: 130 },
     { field: 'active', headerName: 'Active', width: 130 },
-
     {
       field: 'edit',
       headerName: '',
@@ -121,9 +107,19 @@ export default function UpdateUser() {
     const updatedDisplayName = displayNameInputRef.current?.value;
     const updatedFirstName = firstNameInputRef.current?.value;
     const updatedLastName = lastNameInputRef.current?.value;
+    const updatedRole = roleInputRef.current?.value;
     if (selectedUser && firstNameInputRef.current && lastNameInputRef.current && displayNameInputRef.current) {
       // Make API request to update the user name here...
-      const updatedUser = { displayName: updatedDisplayName, firstName: updatedFirstName, lastName: updatedLastName };
+      const updatedUser = {
+        displayName: updatedDisplayName,
+        firstName: updatedFirstName,
+        lastName: updatedLastName,
+        role: updatedRole,
+        phone: selectedUser?.phone,
+        address: selectedUser?.address,
+        active: true,
+        gender: selectedUser?.gender
+      }
       try {
         request.put(`http://localhost:8080/api/user/${userId}`, updatedUser, {
           headers: {
@@ -156,20 +152,26 @@ export default function UpdateUser() {
         <DialogContent>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label htmlFor="displayName">Display Name:  </label>
-            <input type="text" id="displayName" defaultValue={selectedUser?.displayName} ref={displayNameInputRef} />
+            <input type="text" id="displayName" defaultValue={selectedUser?.displayName} ref={displayNameInputRef} style={{ width: "55%" }} />
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label htmlFor="firstName">First Name:  </label>
-            <input type="text" id="firstName" defaultValue={selectedUser?.firstName} ref={firstNameInputRef} />
+            <input type="text" id="firstName" defaultValue={selectedUser?.firstName} ref={firstNameInputRef} style={{ width: "55%" }} />
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label htmlFor="lastName">Last Name:  </label>
-            <input type="text" id="lastName" defaultValue={selectedUser?.lastName} ref={lastNameInputRef} />
+            <input type="text" id="lastName" defaultValue={selectedUser?.lastName} ref={lastNameInputRef} style={{ width: "55%" }}  />
           </div>
 
-
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+            <label htmlFor="role">User Role:  </label>
+            <select id="role" defaultValue={selectedUser?.role} ref={roleSelectRef} style={{ width: "55%" }}>
+              <option value="USER">USER</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>

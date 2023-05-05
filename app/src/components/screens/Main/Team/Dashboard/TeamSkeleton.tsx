@@ -10,27 +10,11 @@ export const TeamSkeleton = () => {
       <Grid container spacing={2}>
         <Grid item xs={4}>
           {" "}
-          <Box
-            sx={{
-              bgcolor: "#F5F7F9",
-              padding: 3,
-              borderRadius: 2,
-              justifyItems: "center",
-              height: 800,
-            }}
-          ></Box>
+          <Skeleton variant="rounded" height={800} />
         </Grid>
         <Grid item xs={8}>
           {" "}
-          <Box
-            sx={{
-              bgcolor: "#F5F7F9",
-              padding: 3,
-              borderRadius: 2,
-              justifyItems: "center",
-              height: 800,
-            }}
-          ></Box>
+          <Skeleton variant="rounded" height={800} />
         </Grid>
       </Grid>
     </Box>

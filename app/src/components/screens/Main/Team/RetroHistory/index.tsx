@@ -1,25 +1,20 @@
-import { Box, Container, Divider } from "@mui/material";
-import { useTeam } from "../../../../../hooks/useTeam";
-import { useParams } from "react-router-dom";
-import { RetroHistoryList } from "./RetroHistoryList";
-import { RetroHistorySkeleton } from "./RetroHistorySkeleton";
+import { Route, Switch } from "react-router-dom";
+import { MainScreenPath } from "../../index";
+import { RetrosScreen } from "./Retros";
+import { SingleRetroHistory } from "./SingleRetroHistory";
 
-export const RetroHistoryScreen = () => {
-  const { teamId } = useParams<{ teamId: string }>();
-
-  const { team, loading } = useTeam(teamId);
-
+export const RetroHistoryScreens = () => {
   return (
-    <Container sx={{ marginTop: 5 }}>
-      {loading ? (
-        <RetroHistorySkeleton />
-      ) : (
-        <Box>
-          <h1>Retrospective History-{team?.name}</h1>
-          <Divider sx={{ marginY: 2 }} />
-          <RetroHistoryList selectedTeam={team?.id} />
-        </Box>
-      )}
-    </Container>
+    <Switch>
+      <Route
+        path={`${MainScreenPath.TEAM}/:teamId/retro-history`}
+        exact={true}
+        component={RetrosScreen}
+      />
+      <Route
+        path={`${MainScreenPath.TEAM}/:teamId/retro-history/:retroId`}
+        component={SingleRetroHistory}
+      />
+    </Switch>
   );
 };

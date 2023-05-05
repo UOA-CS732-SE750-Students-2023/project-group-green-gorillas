@@ -64,10 +64,10 @@ export const InsightChart = ({ insight }: Props) => {
             }}
           >
             {" "}
-            Left Action Items
+            Total Action Items
             <Typography>
               {insight?.outstandingActionItemCount &&
-                insight?.outstandingActionItemCount -
+                insight?.outstandingActionItemCount +
                   insight?.completedActionItemCount}
             </Typography>
           </Paper>

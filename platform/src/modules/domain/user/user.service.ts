@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { User, UserRole } from './user';
 import { InternalException } from '../../../exceptions/internal-exception';
@@ -6,6 +6,8 @@ import { UUID } from '../../../types/uuid.type';
 import { UserFactory } from './user.factory';
 import { UserAuthService } from '../user-auth/user-auth.service';
 import { OrganisationService } from '../organisation/organisation.service';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class UserService {
@@ -13,6 +15,7 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly userAuthService: UserAuthService,
     private readonly organisationService: OrganisationService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   public async update(
@@ -65,7 +68,23 @@ export class UserService {
     id: UUID,
     organisationId: UUID,
   ): Promise<User | undefined> {
-    return this.userRepository.getById(id, organisationId);
+    const rawCacheUser = await this.cacheManager.get<string>(
+      UserService.buildUserCacheKey(id, organisationId),
+    );
+
+    if (rawCacheUser) {
+      return JSON.parse(rawCacheUser);
+    }
+
+    const user = await this.userRepository.getById(id, organisationId);
+
+    await this.cacheManager.set(
+      UserService.buildUserCacheKey(user.id, user.organisationId),
+      JSON.stringify(user),
+      3600,
+    );
+
+    return user;
   }
 
   public async getByIdOrThrow(id: UUID, organisationId: UUID): Promise<User> {
@@ -91,7 +110,7 @@ export class UserService {
 
     user.activate();
 
-    return this.userRepository.save(user);
+    return this.save(user);
   }
 
   public async disable(id: UUID, organisationId: UUID): Promise<User> {
@@ -99,10 +118,18 @@ export class UserService {
 
     user.disable();
 
-    return this.userRepository.save(user);
+    return this.save(user);
   }
 
-  public save(user: User): Promise<User> {
+  private static buildUserCacheKey(userId: UUID, organisationId: UUID): string {
+    return `user-${userId}-${organisationId}`;
+  }
+
+  public async save(user: User): Promise<User> {
+    await this.cacheManager.del(
+      UserService.buildUserCacheKey(user.id, user.organisationId),
+    );
+
     return this.userRepository.save(user);
   }
 
@@ -131,7 +158,7 @@ export class UserService {
       );
     }
 
-    const user = await this.userRepository.save(
+    const user = await this.save(
       UserFactory.create(
         email,
         organisation.id,

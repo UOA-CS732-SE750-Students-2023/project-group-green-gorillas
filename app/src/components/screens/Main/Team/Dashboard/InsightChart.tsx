@@ -1,6 +1,5 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { Insight } from "../../../../../types/insights";
-
 type Props = {
   insight: Insight | null;
 };
@@ -78,10 +77,12 @@ export const InsightChart = ({ insight }: Props) => {
               p: 2,
               display: "flex",
               flexDirection: "column",
-              height: 80,
+              height: 120,
             }}
           >
-            Progeress
+            {" "}
+            Number of Retros
+            <Typography>{insight?.retrospectiveCount}</Typography>
           </Paper>
         </Grid>
       </Grid>

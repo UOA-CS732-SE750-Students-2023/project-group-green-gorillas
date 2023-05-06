@@ -6,11 +6,12 @@ function DiscussGroup({ group }: any) {
   return (
     <div>
       <Box className={stageStyles.notes__group}>
-        <Box className={stageStyles.group__heading}>{group.name}</Box>
+        <Box className={stageStyles.group__heading}>{group.note}</Box>
         <div>
-          {group.items.map((item, index) => {
+          {group.items.map((item: any) => {
             return (
               <Box
+                key={item.id}
                 className={stageStyles.note__wrapper}
                 style={{ marginBottom: "8px" }}
               >
@@ -22,7 +23,7 @@ function DiscussGroup({ group }: any) {
                     ] as any
                   }
                 >
-                  {item.value}
+                  {item.note}
                 </Box>
               </Box>
             );

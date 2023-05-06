@@ -10,6 +10,9 @@ import { Team } from '../../domain/team/team';
 import { UserTeam, UserTeamRole } from '../../domain/user-team/user-team';
 import { TeamDashboardService } from '../../domain/team-dashboard/team-dashboard.service';
 import { TeamDashboard } from '../../domain/team-dashboard/team-dashboard';
+import { BoardService } from '../../domain/board/board.service';
+import { BoardStage } from '../../domain/board/board';
+import * as _ from 'lodash';
 
 @Injectable()
 export class TeamService {
@@ -18,6 +21,7 @@ export class TeamService {
     private readonly userTeamService: UserTeamService,
     private readonly userService: UserService,
     private readonly teamDashboardService: TeamDashboardService,
+    private readonly boardService: BoardService,
   ) {}
 
   private async getTeamRemembers(
@@ -62,7 +66,9 @@ export class TeamService {
   }
 
   public async getOrganisationTeams(organisationId: UUID) {
-    const teams = this.teamDomainService.listByOrganisationId(organisationId);
+    const teams = await this.teamDomainService.listByOrganisationId(
+      organisationId,
+    );
 
     return Bluebird.map(teams, async (team) => {
       const teamMembers = await this.getTeamRemembers(
@@ -84,6 +90,10 @@ export class TeamService {
     active: boolean,
   ) {
     return this.teamDomainService.update(teamId, organisationId, name, active);
+  }
+
+  public async addTeam(name: string, organisationId: UUID) {
+    return this.teamDomainService.create(organisationId, name);
   }
 
   public async updateTeamActive(
@@ -130,5 +140,42 @@ export class TeamService {
     organisationId: UUID,
   ): Promise<TeamDashboard> {
     return this.teamDashboardService.getByTeamId(teamId, organisationId);
+  }
+
+  public async hasInProgressRetro(teamId: UUID): Promise<boolean> {
+    const boards = await this.boardService.listByTeamId(teamId);
+
+    return !!boards.find((board) => board.stage !== BoardStage.FINALIZE);
+  }
+
+  public async getInProgressRetro(teamId: UUID) {
+    const boards = await this.boardService.listByTeamId(teamId);
+
+    const inProgressRetros = boards.filter(
+      (board) => board.stage !== BoardStage.FINALIZE,
+    );
+
+    const inProgressRetrosWithCreatedByUser = await Bluebird.map(
+      inProgressRetros,
+      async (retro) => {
+        const user = await this.userService.getById(
+          retro.createdBy,
+          retro.organisationId,
+        );
+
+        return {
+          ...retro,
+          createdByUser: user ?? null,
+        };
+      },
+    );
+
+    return _.first(inProgressRetrosWithCreatedByUser) ?? null;
+  }
+
+  public async getTeamRetroHistory(teamId: UUID) {
+    const boards = await this.boardService.listByTeamId(teamId);
+
+    return boards.filter((board) => board.stage === BoardStage.FINALIZE);
   }
 }

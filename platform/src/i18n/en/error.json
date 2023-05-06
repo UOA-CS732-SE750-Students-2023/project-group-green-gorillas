@@ -89,5 +89,12 @@
   "TEAM_DASHBOARD": {
     "FAILED_TO_SAVE": "Failed to save team dashboard",
     "FAILED_TO_GET": "Failed to get team dashboard"
+  },
+  "BOARD_NOTE_VOTE": {
+    "FAILED_TO_LIST_BOARD_ID": "Failed to list board note votes by board id",
+    "FAILED_TO_GET": "Failed to save board note vote",
+    "FAILED_TO_SAVE": "Failed to get board note vote",
+    "FAILED_TO_DELETE": "Failed to delete board note vote",
+    "NOT_FOUND": "Board note vote is not found"
   }
 }

@@ -10,6 +10,7 @@ function GroupNote({ id, index, note }: any) {
     <Draggable draggableId={id} index={index} key={id}>
       {(provided, snapshot) => {
         return (
+          // @ts-ignore
           <Box
             ref={provided.innerRef}
             {...provided.draggableProps}
@@ -42,7 +43,7 @@ function GroupNote({ id, index, note }: any) {
                 alt=""
                 className={stageStyles.drag__icon}
               />
-              {note.value}
+              {note.note}
             </Box>
           </Box>
         );

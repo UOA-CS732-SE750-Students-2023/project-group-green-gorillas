@@ -43,3 +43,11 @@ export class UpdateActionStatusRequest {
   @IsEnum(ActionItemStatus)
   status!: ActionItemStatus;
 }
+
+export class AssignUserToActionItemRequest {
+  @IsUUID()
+  userId: UUID;
+
+  @IsUUID()
+  actionItemId: UUID;
+}

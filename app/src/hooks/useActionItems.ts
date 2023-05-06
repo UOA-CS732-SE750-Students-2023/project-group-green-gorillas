@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ACTIONITEMS_BY_ID, UPDATE_ACTIONITEMS_BY_ID } from "../api/api";
+import { ACTIONITEMS_LIST_BY_ID, UPDATE_ACTIONITEMS_BY_ID, DELETE_ACTIONITEMS_BY_ID } from "../api/api";
 import { request } from "../api/request";
 // import { ActionItem, Status } from "../types/actionItems";
 import {User} from '../types/user';
@@ -28,7 +28,7 @@ export const useActionItems = (id: string) => {
     const getActionItems = async () => {
         setLoading(true)
         try{
-            const {data} = await request.get<ActionItem[]>(ACTIONITEMS_BY_ID(id));
+            const {data} = await request.get<ActionItem[]>(ACTIONITEMS_LIST_BY_ID(id));
             setActionItems(data);
         }catch (error) {
             console.log(error); 
@@ -47,31 +47,43 @@ export const useActionItems = (id: string) => {
         setActionItems(actionItems?.map((a) => {
             return a.id === actionItem.id ? updatedActionItem : a;
         }) ?? null);
-
-        // const updatedActionItem.status: keyof typeof ActionItemStatus = 'COMPLETED';
         try{
-            console.log(updatedActionItem.status);
-            
             await request.patch(UPDATE_ACTIONITEMS_BY_ID, {actionItemId: updatedActionItem.id, status: updatedActionItem.status} );
+            const updatedActionItems = actionItems?.filter(a => a.id !== actionItem.id) ?? null;
+            setActionItems(updatedActionItems);
         }catch(err){
             console.log(err);
         }finally{
             setLoading(false);
         }
-        
     };
 
+    // delete action items 
+    const deleteActionItems = async(actionItem: ActionItem) => {
+        setLoading(true);
+        try{
+            await request.delete(DELETE_ACTIONITEMS_BY_ID(actionItem.id) );
+            const updatedActionItems = actionItems?.filter(a => a.id !== actionItem.id) ?? null;
+            setActionItems(updatedActionItems);
+        }catch(err){
+            console.log(err);
+            
+        }finally{
+            setLoading(false);
+        }
+    }
 
 
     useEffect(()=>{
         (async () => {
             await getActionItems();
         })();
-    },[]);
+    },[id]);
 
     return {
         getActionItems,
         updateActionItems,
+        deleteActionItems,
         actionItems,
         isLoading,
     };

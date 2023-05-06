@@ -2,8 +2,7 @@ import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import stageStyles from "./styles/stage.module.css";
 
-export const Timer = ({ startTime }: any) => {
-  const [time, setTime] = useState(startTime);
+export const Timer = ({ time }: any) => {
   const [color, setColor] = useState("green");
 
   function formatTime(toFormat: any) {
@@ -15,21 +14,16 @@ export const Timer = ({ startTime }: any) => {
   }
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (time >= 1) {
-        setTime(time - 1);
-        formatTime(time);
-        if (time <= 45 && color === "green") setColor("yellow");
-        if (time <= 15 && color === "yellow") setColor("red");
-      } else {
-        clearInterval(timer);
-      }
-    }, 1000);
+    setColor(() => {
+      if (time <= 45 && time >= 15) return "yellow";
+      if (time <= 45) return "red";
+      return "green";
+    });
+  }, [time]);
 
-    return () => {
-      clearInterval(timer);
-    };
-  });
+  if (time <= 0) {
+    return null;
+  }
 
   return (
     <Box className={[stageStyles.timer, stageStyles[`timer--${color}`]] as any}>

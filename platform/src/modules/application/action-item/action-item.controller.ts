@@ -10,6 +10,7 @@ import {
 import { UseAuthGuard } from '../../../utils/guards/auth-guard/auth.guard';
 import { ActionItemService } from './action-item.service';
 import {
+  AssignUserToActionItemRequest,
   CreateActionItemRequest,
   DeleteActionItemRequestParams,
   ListOutstandingActionItemsParams,
@@ -52,6 +53,43 @@ export class ActionItemController {
     return this.actionItemService.listRetroActionItems(teamId, retroId);
   }
 
+  @Post('/assign-user')
+  public async assignUserToActionItem(
+    @Body() { userId, actionItemId }: AssignUserToActionItemRequest,
+  ) {
+    const actionItemAssignee =
+      await this.actionItemService.assignUserToActionItem(userId, actionItemId);
+
+    const actionItem = await this.actionItemService.getActionItemById(
+      actionItemAssignee.actionItemId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      actionItem.boardId,
+      ClientSocketMessageEvent.BOARD_ACTION_ITEM,
+      buildSocketEvent(SocketEventOperation.UPDATE, actionItem),
+    );
+
+    return actionItemAssignee;
+  }
+
+  @Delete('/un-assign-user')
+  public async unAssignUserToActionItem(
+    @Body() { userId, actionItemId }: AssignUserToActionItemRequest,
+  ) {
+    await this.actionItemService.unAssignUserToActionItem(userId, actionItemId);
+
+    const actionItem = await this.actionItemService.getActionItemById(
+      actionItemId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      actionItem.boardId,
+      ClientSocketMessageEvent.BOARD_ACTION_ITEM,
+      buildSocketEvent(SocketEventOperation.UPDATE, actionItem),
+    );
+  }
+
   @Post('/')
   public async createActionItem(
     @RequestUser() user: RequestUserType,
@@ -92,11 +130,13 @@ export class ActionItemController {
 
   @Patch('update-note')
   public async updateActionItemNote(
+    @RequestUser() user: RequestUserType,
     @Body() { actionItemId, note }: UpdateActionItemNoteRequest,
   ) {
     const actionItem = await this.actionItemService.updateActionItemNote(
       actionItemId,
       note,
+      user.id,
     );
 
     this.socketEventService.broadcastRoom(
@@ -110,11 +150,13 @@ export class ActionItemController {
 
   @Patch('update-status')
   public async updateActionStatus(
+    @RequestUser() user: RequestUserType,
     @Body() { actionItemId, status }: UpdateActionStatusRequest,
   ) {
     const actionItem = await this.actionItemService.updateActionItemStatus(
       actionItemId,
       status,
+      user.id,
     );
 
     this.socketEventService.broadcastRoom(

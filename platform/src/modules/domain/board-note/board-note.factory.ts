@@ -1,5 +1,5 @@
 import { UUID } from '../../../types/uuid.type';
-import { BoardNote } from './board-note';
+import { BoardNote, BoardNoteColor, BoardNoteType } from './board-note';
 
 export class BoardNoteFactory {
   static create(
@@ -9,6 +9,9 @@ export class BoardNoteFactory {
     teamId: UUID,
     note: string,
     createdBy: UUID,
+    type: BoardNoteType,
+    parentId: UUID | null,
+    color: BoardNoteColor,
   ): BoardNote {
     return new BoardNote(
       boardSectionId,
@@ -17,6 +20,9 @@ export class BoardNoteFactory {
       teamId,
       note,
       createdBy,
+      type,
+      parentId,
+      color,
     );
   }
 }

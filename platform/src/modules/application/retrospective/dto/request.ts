@@ -1,5 +1,15 @@
-import { IsNumber, IsString, IsUUID } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { UUID } from '../../../../types/uuid.type';
+import {
+  BoardNoteColor,
+  BoardNoteType,
+} from '../../../domain/board-note/board-note';
 
 export class CreateRetroRequestRequest {
   @IsUUID()
@@ -48,25 +58,48 @@ export class AddNoteRequest {
 
   @IsUUID()
   teamId: UUID;
+
+  @IsEnum(BoardNoteType)
+  boardNoteType: BoardNoteType;
+
+  @IsEnum(BoardNoteColor)
+  boardNoteColor: BoardNoteColor;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
 }
 
 export class DeleteNoteRequestParams {
   @IsUUID()
   boardNoteId!: UUID;
-
-  @IsUUID()
-  boardSectionId!: UUID;
 }
 
 export class UpdateNoteRequest {
   @IsUUID()
   boardNoteId: UUID;
 
-  @IsUUID()
-  boardSectionId!: UUID;
-
   @IsString()
   note: string;
+}
+
+export class AssignNoteGroup {
+  @IsUUID()
+  boardNoteId: UUID;
+
+  @IsUUID()
+  parentNoteId!: UUID;
+
+  @IsUUID()
+  boardSectionId!: UUID;
+}
+
+export class UnAssignNoteGroup {
+  @IsUUID()
+  boardNoteId: UUID;
+
+  @IsUUID()
+  boardSectionId!: UUID;
 }
 
 export class AddSectionRequest {
@@ -108,4 +141,36 @@ export class UpdateSectionDescriptionRequest {
 
   @IsString()
   description!: string;
+}
+
+export class VoteNoteRequest {
+  @IsUUID()
+  boardNoteId!: UUID;
+
+  @IsUUID()
+  boardId!: UUID;
+}
+
+export class UnVoteNoteRequestParams {
+  @IsUUID()
+  boardNoteId!: UUID;
+}
+
+export class MoveNextStageRequest {
+  @IsUUID()
+  retroId: UUID;
+
+  @IsUUID()
+  teamId: UUID;
+}
+
+export class SetRetroSessionPayload {
+  @IsUUID()
+  retroId: UUID;
+
+  @IsUUID()
+  teamId: UUID;
+
+  @IsString()
+  sessionPayload: string;
 }

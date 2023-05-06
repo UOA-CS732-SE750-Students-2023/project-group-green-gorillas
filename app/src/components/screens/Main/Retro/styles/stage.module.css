@@ -2,7 +2,7 @@
   height: 83vh;
   position: relative;
   box-sizing: border-box;
-  padding: 32px;
+  padding: 8px 32px;
 }
 
 .timer {
@@ -156,6 +156,22 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.section_heading {
+  resize: none;
+  outline: none;
+  overflow: auto;
+  width: 100%;
+  border: none;
+  background: transparent;
+  box-sizing: border-box;
+  border-radius: 8px;
+  font-size: 18px;
+  color: #999999;
+  font-weight: bold;
 }
 
 .add__note__button {
@@ -170,6 +186,29 @@
   display: flex;
   align-items: center;
   color: #fff;
+}
+
+.add__column__button {
+  background: rgb(111, 133, 255);
+  padding: 8px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease all;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  height: 50px;
+}
+
+.add__column__button:hover {
+  background: rgb(129, 148, 255);
+}
+
+.add__column__button:active {
+  transform: scale(0.98);
 }
 
 .add__button__img {
@@ -214,9 +253,27 @@
   font-size: 16px;
 }
 
+.section_name {
+  resize: none;
+  outline: none;
+  overflow: auto;
+  width: 100%;
+  border: none;
+  background: transparent;
+  box-sizing: border-box;
+  border-radius: 8px;
+  color: #333333;
+  font-size: 24px;
+  font-weight: bold;
+}
+
 .note__textarea::placeholder {
   color: #333333;
   font-family: inherit;
+}
+
+.note__container_blur {
+  filter: blur(5px);
 }
 
 .note__container {
@@ -368,6 +425,7 @@
   padding: 32px;
   border-radius: 16px;
   height: 90%;
+  overflow: auto;
 }
 
 .discussion__item {
@@ -400,6 +458,10 @@
 .action__items__wrapper {
   width: 40%;
   margin-top: 16px;
+}
+
+.action__items {
+  overflow: auto;
 }
 
 .mark {

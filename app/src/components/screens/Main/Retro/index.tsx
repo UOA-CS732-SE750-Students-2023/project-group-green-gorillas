@@ -15,16 +15,10 @@ import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import retroStyles from "./styles/retro.module.css";
 import Stage from "./Stage";
 import { useRetro } from "../../../../hooks/useRetro";
-import { retros } from "./defaultData";
 
 export const RetroScreen = () => {
-  const [selectedRetro, setSelectedRetro] = useState(0);
-  const [actionItems, setActionItems] = useState([]);
-  const dummyRetro = retros[selectedRetro];
-  const [retroStage, setRetroStage] = useState(0);
-
   const { teamId, retroId } = useParams<{ teamId: string; retroId: string }>();
-  const { isLoading, retroUsers } = useRetro(retroId, teamId);
+  const { isLoading, retroUsers, retro } = useRetro(retroId, teamId);
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -40,31 +34,32 @@ export const RetroScreen = () => {
         className={retroStyles.retro__header}
       >
         <Box className={retroStyles.header__section}>
-          <Typography className={retroStyles.header__title}>
-            Participants
-          </Typography>
-          <List className={retroStyles.participants__list}>
-            {retroUsers?.map((user) => (
-              <ListItem className={retroStyles.participant} key={user.id}>
-                <Tooltip
-                  title={`${user.displayName} (${user.firstName} ${user.lastName}) (${user.email})`}
-                >
-                  <ListItemAvatar>
-                    <Avatar text={`${user.firstName} ${user.lastName}`} />
-                  </ListItemAvatar>
-                </Tooltip>
-              </ListItem>
-            ))}
-          </List>
+          <Box style={{ display: "flex", alignItems: "center" }}>
+            <Typography className={retroStyles.retro__name}>
+              {retro.name}
+            </Typography>
+          </Box>
+          <Box style={{ display: "flex", flexDirection: "column" }}>
+            <Typography className={retroStyles.header__title}>
+              Participants
+            </Typography>
+            <List className={retroStyles.participants__list}>
+              {retroUsers?.map((user) => (
+                <ListItem className={retroStyles.participant} key={user.id}>
+                  <Tooltip
+                    title={`${user.displayName} (${user.firstName} ${user.lastName}) (${user.email})`}
+                  >
+                    <ListItemAvatar>
+                      <Avatar text={`${user.firstName} ${user.lastName}`} />
+                    </ListItemAvatar>
+                  </Tooltip>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
         </Box>
       </Container>
-      <Stage
-        retro={dummyRetro}
-        stage={retroStage}
-        setStage={setRetroStage}
-        actionItems={actionItems}
-        setActionItems={setActionItems}
-      />
+      <Stage retro={retro} />
     </React.Fragment>
   );
 };

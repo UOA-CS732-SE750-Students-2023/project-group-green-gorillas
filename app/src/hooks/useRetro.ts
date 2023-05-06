@@ -2,9 +2,11 @@ import { io } from "socket.io-client";
 import { baseUrl, GET_RETRO } from "../api/api";
 import { tokenService, TokenType } from "../services/tokenService";
 import { useEffect, useMemo, useState } from "react";
-import { authService } from "../services/authService";
 import { MainScreenPath } from "../components/screens/Main";
 import { request } from "../api/request";
+import * as _ from "lodash";
+import { useCurrentUser } from "./useCurrentUser";
+import { authService } from "../services/authService";
 
 enum ClientSocketMessageEvent {
   AUTHENTICATION = "authentication",
@@ -14,6 +16,7 @@ enum ClientSocketMessageEvent {
   BOARD_SECTION = "board-section",
   BOARD_NOTE = "board-note",
   BOARD_ACTION_ITEM = "board-action-item",
+  BOARD_VOTE_NOTE = "board-vote-note",
 }
 
 enum ServerSocketMessageEvent {
@@ -33,15 +36,373 @@ export const useRetro = (boardId: string, teamId: string) => {
   const [hasSocketConnected, setHasSocketConnected] = useState<boolean>(false);
   const [hasJoinedRoom, setHasJoinedRoom] = useState<boolean>(false);
   const [retro, setRetro] = useState<any>(null);
+  const [isLoadingRetroData, setIsLoadingRetroData] = useState<boolean>(true);
   const [retroUsers, setRetroUsers] = useState<any[]>([]);
 
-  const errorRedirect = () => {
-    window.location.href = `${MainScreenPath.TEAM}/${teamId}`;
+  const { user } = useCurrentUser();
+
+  const redirectToTeamDashboard = () => {
+    window.location.href = `${MainScreenPath.TEAM}/${teamId}/dashboard`;
   };
 
   const isLoading = useMemo(() => {
-    return !hasSocketConnected || !hasJoinedRoom || !retro;
+    return (
+      !hasSocketConnected || !hasJoinedRoom || !retro || isLoadingRetroData
+    );
   }, [hasSocketConnected, hasJoinedRoom, retro]);
+
+  // start event handlers --------------------------------------
+  const handleNoteCreate = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      const boardSection = cloneRetro.boardSections.find(
+        (section: any) => section.id === data.boardSectionId
+      );
+
+      if (!boardSection) return cloneRetro;
+
+      const boardSectionNote = boardSection.boardNotes.find(
+        (note: any) => note.id === data.id
+      );
+
+      if (!boardSectionNote) {
+        boardSection.boardNotes.push(data);
+      }
+
+      return cloneRetro;
+    });
+  };
+
+  const handleNoteDelete = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      const boardSection = cloneRetro.boardSections.find(
+        (section: any) => section.id === data.boardSectionId
+      );
+
+      if (!boardSection) return cloneRetro;
+
+      boardSection.boardNotes = boardSection.boardNotes.filter(
+        (note: any) => note.id !== data.id
+      );
+
+      return cloneRetro;
+    });
+  };
+
+  const findBoardSectionByBoardNoteId = (retro: any, boardNoteId: string) => {
+    let result = null;
+    retro.boardSections.forEach((boardSection: any) => {
+      boardSection.boardNotes.forEach((boardNote: any) => {
+        if (boardNote.id === boardNoteId) {
+          result = boardNote.boardSectionId;
+        }
+      });
+    });
+
+    return result;
+  };
+
+  const handleNoteUpdate = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      const existingBoardNoteBoardSectionId = findBoardSectionByBoardNoteId(
+        retro,
+        data.id
+      );
+
+      if (
+        existingBoardNoteBoardSectionId &&
+        data.boardSectionId !== existingBoardNoteBoardSectionId
+      ) {
+        const foundSection = cloneRetro.boardSections.find(
+          (section: any) => section.id === existingBoardNoteBoardSectionId
+        );
+
+        foundSection.boardNotes = foundSection.boardNotes.filter(
+          (s: any) => s.id !== data.id
+        );
+
+        const boardSection = cloneRetro.boardSections.find(
+          (section: any) => section.id === data.boardSectionId
+        );
+
+        if (!boardSection) return cloneRetro;
+
+        boardSection.boardNotes.push(data);
+
+        return cloneRetro;
+      }
+
+      const boardSection = cloneRetro.boardSections.find(
+        (section: any) => section.id === data.boardSectionId
+      );
+
+      if (!boardSection) return cloneRetro;
+
+      const boardSectionNoteIndex = boardSection.boardNotes.findIndex(
+        (note: any) => note.id === data.id
+      );
+
+      if (
+        boardSectionNoteIndex !== -1 &&
+        (user?.id !== data.createdBy ||
+          boardSection.boardNotes[boardSectionNoteIndex].parentId !==
+            data.parentId)
+      ) {
+        boardSection.boardNotes[boardSectionNoteIndex] = data;
+      }
+
+      return cloneRetro;
+    });
+  };
+
+  const handleNoteEvent = (eventData: any) => {
+    switch (eventData.type) {
+      case "CREATE":
+        handleNoteCreate(eventData.data);
+        return;
+      case "DELETE":
+        handleNoteDelete(eventData.data);
+      case "UPDATE":
+        handleNoteUpdate(eventData.data);
+    }
+  };
+
+  const handleNoteVoteCreate = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      for (let boardSection of cloneRetro.boardSections) {
+        for (let boardNote of boardSection.boardNotes) {
+          if (
+            boardNote.id === data.boardNoteId &&
+            !boardNote.boardNoteVotes.find((vote: any) => vote.id === data.id)
+          ) {
+            boardNote.boardNoteVotes.push(data);
+            break;
+          }
+        }
+      }
+
+      return cloneRetro;
+    });
+  };
+
+  const handleNoteVoteDelete = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      for (let boardSection of cloneRetro.boardSections) {
+        for (let boardNote of boardSection.boardNotes) {
+          if (boardNote.id === data.boardNoteId) {
+            boardNote.boardNoteVotes = boardNote.boardNoteVotes.filter(
+              (vote: any) => vote.id !== data.id
+            );
+            break;
+          }
+        }
+      }
+
+      return cloneRetro;
+    });
+  };
+
+  const handleBoardNoteVote = (eventData: any) => {
+    switch (eventData.type) {
+      case "CREATE":
+        handleNoteVoteCreate(eventData.data);
+        return;
+      case "DELETE":
+        handleNoteVoteDelete(eventData.data);
+        return;
+    }
+  };
+
+  const handleActionItemCreate = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const clonedRetro = _.cloneDeep(retro);
+
+      const actionItem = clonedRetro.actionItems.find(
+        (item: any) => item.id === data.id
+      );
+
+      if (actionItem) return retro;
+
+      clonedRetro.actionItems.push(data);
+
+      return clonedRetro;
+    });
+  };
+
+  const handleActionItemDelete = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const clonedRetro = _.cloneDeep(retro);
+
+      clonedRetro.actionItems = clonedRetro.actionItems.filter(
+        (item: any) => item.id !== data.id
+      );
+
+      return clonedRetro;
+    });
+  };
+
+  const handleActionItemUpdate = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const clonedRetro = _.cloneDeep(retro);
+
+      const actionItemIndex = clonedRetro.actionItems.findIndex(
+        (item: any) => item.id === data.id
+      );
+
+      if (
+        actionItemIndex !== -1 &&
+        JSON.stringify(data.assignees) !==
+          JSON.stringify(clonedRetro.actionItems[actionItemIndex].assignees)
+      ) {
+        clonedRetro.actionItems[actionItemIndex] = data;
+        return clonedRetro;
+      }
+
+      if (actionItemIndex !== -1 && data.updatedBy !== user?.id) {
+        clonedRetro.actionItems[actionItemIndex] = data;
+        return clonedRetro;
+      }
+
+      return retro;
+    });
+  };
+
+  const handleActionItem = (eventData: any) => {
+    switch (eventData.type) {
+      case "CREATE":
+        handleActionItemCreate(eventData.data);
+        return;
+      case "DELETE":
+        handleActionItemDelete(eventData.data);
+        return;
+      case "UPDATE":
+        handleActionItemUpdate(eventData.data);
+        return;
+    }
+  };
+
+  const handleBoardCreateEvent = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      return {
+        ...retro,
+        ...data,
+      };
+    });
+  };
+
+  const handleBoardDeleteEvent = (_: any) => {
+    redirectToTeamDashboard();
+  };
+
+  const handleBoardEvent = (eventData: any) => {
+    switch (eventData.type) {
+      case "UPDATE":
+        handleBoardCreateEvent(eventData.data);
+        return;
+      case "DELETE":
+        handleBoardDeleteEvent(eventData.data);
+        return;
+    }
+  };
+
+  const handleBoardSectionCreateEvent = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      const boardSection = cloneRetro.boardSections.find(
+        (section: any) => section.id === data.boardSectionId
+      );
+
+      if (!boardSection) {
+        cloneRetro.boardSections.push({
+          ...data,
+          boardNotes: [],
+        });
+      }
+
+      return cloneRetro;
+    });
+  };
+
+  const handleBoardSectionDeleteEvent = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      cloneRetro.boardSections = cloneRetro.boardSections.filter(
+        (section: any) => section.id !== data.id
+      );
+
+      return cloneRetro;
+    });
+  };
+
+  const handleBoardSectionUpdateEvent = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      const boardSectionIndex = cloneRetro.boardSections.findIndex(
+        (section: any) => section.id === data.id
+      );
+
+      if (boardSectionIndex !== -1) {
+        cloneRetro.boardSections[boardSectionIndex] = {
+          ...cloneRetro.boardSections[boardSectionIndex],
+          ...data,
+        };
+        return cloneRetro;
+      }
+      return retro;
+    });
+  };
+
+  const handleBoardSectionEvent = (eventData: any) => {
+    switch (eventData.type) {
+      case "CREATE":
+        handleBoardSectionCreateEvent(eventData.data);
+        return;
+      case "DELETE":
+        handleBoardSectionDeleteEvent(eventData.data);
+        return;
+      case "UPDATE":
+        handleBoardSectionUpdateEvent(eventData.data);
+        return;
+    }
+  };
+
+  //end ------------------------------------------
 
   useEffect(() => {
     socket.on(ClientSocketMessageEvent.AUTHENTICATION, (payload: string) => {
@@ -58,7 +419,7 @@ export const useRetro = (boardId: string, teamId: string) => {
         return;
       }
 
-      errorRedirect();
+      redirectToTeamDashboard();
     });
 
     socket.on(ClientSocketMessageEvent.RETRO_ROOM_USERS, (payload: string) => {
@@ -69,30 +430,37 @@ export const useRetro = (boardId: string, teamId: string) => {
     socket.on(ClientSocketMessageEvent.BOARD, (payload: string) => {
       const data = JSON.parse(payload);
 
-      // TODO: philip to do
+      handleBoardEvent(data);
     });
 
     socket.on(ClientSocketMessageEvent.BOARD_SECTION, (payload: string) => {
       const data = JSON.parse(payload);
 
-      // TODO: philip to do
+      handleBoardSectionEvent(data);
     });
 
     socket.on(ClientSocketMessageEvent.BOARD_NOTE, (payload: string) => {
       const data = JSON.parse(payload);
 
-      // TODO: philip to do
+      handleNoteEvent(data);
+    });
+
+    socket.on(ClientSocketMessageEvent.BOARD_VOTE_NOTE, (payload: string) => {
+      const data = JSON.parse(payload);
+
+      handleBoardNoteVote(data);
     });
 
     socket.on(ClientSocketMessageEvent.BOARD_ACTION_ITEM, (payload: string) => {
       const data = JSON.parse(payload);
 
-      // TODO: philip to do
+      handleActionItem(data);
     });
 
     socket.on("disconnect", () => {
       setHasSocketConnected(false);
       setHasJoinedRoom(false);
+      setRetro(null);
     });
   }, []);
 
@@ -108,18 +476,28 @@ export const useRetro = (boardId: string, teamId: string) => {
     }
   }, [hasSocketConnected]);
 
+  const getRetro = async () => {
+    setIsLoadingRetroData(true);
+    request
+      .get(GET_RETRO(boardId, teamId))
+      .then((result) => {
+        setRetro(result.data);
+        setIsLoadingRetroData(false);
+      })
+      .catch((_) => {
+        redirectToTeamDashboard();
+      });
+  };
+
   useEffect(() => {
     if (hasJoinedRoom) {
-      request
-        .get(GET_RETRO(boardId, teamId))
-        .then((result) => {
-          setRetro(result.data);
-        })
-        .catch((_) => {
-          errorRedirect();
-        });
+      getRetro();
     }
   }, [hasJoinedRoom]);
+
+  useEffect(() => {
+    getRetro();
+  }, [retro?.stage]);
 
   useEffect(() => {
     return () => {
@@ -131,7 +509,9 @@ export const useRetro = (boardId: string, teamId: string) => {
 
   useEffect(() => {
     (async () => {
-      await authService.refreshToken();
+      await authService.refreshToken().catch(() => {
+        // ignore refresh failure
+      });
       socket.connect();
     })();
   }, []);
@@ -139,5 +519,6 @@ export const useRetro = (boardId: string, teamId: string) => {
   return {
     isLoading,
     retroUsers,
+    retro,
   };
 };

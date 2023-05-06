@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { BoardNoteRepository } from './board-note.repository';
-import { BoardNote } from './board-note';
+import { BoardNote, BoardNoteColor, BoardNoteType } from './board-note';
 import { UUID } from '../../../types/uuid.type';
 import { BoardNoteFactory } from './board-note.factory';
 import { InternalException } from '../../../exceptions/internal-exception';
@@ -20,6 +20,9 @@ export class BoardNoteService {
     teamId: UUID,
     note: string,
     createdBy: UUID,
+    type: BoardNoteType,
+    parentId: UUID | null,
+    color: BoardNoteColor,
   ): Promise<BoardNote> {
     return this.boardNoteRepository.save(
       BoardNoteFactory.create(
@@ -29,26 +32,23 @@ export class BoardNoteService {
         teamId,
         note,
         createdBy,
+        type,
+        parentId,
+        color,
       ),
     );
   }
 
-  public delete(id: UUID, boardSectionId: UUID): Promise<void> {
-    return this.boardNoteRepository.delete(id, boardSectionId);
+  public delete(id: UUID): Promise<void> {
+    return this.boardNoteRepository.delete(id);
   }
 
-  public getById(
-    id: UUID,
-    boardSectionId: UUID,
-  ): Promise<BoardNote | undefined> {
-    return this.boardNoteRepository.getById(id, boardSectionId);
+  public getById(id: UUID): Promise<BoardNote | undefined> {
+    return this.boardNoteRepository.getById(id);
   }
 
-  public async getByIdOrThrow(
-    id: UUID,
-    boardSectionId: UUID,
-  ): Promise<BoardNote> {
-    const boardNote = await this.getById(id, boardSectionId);
+  public async getByIdOrThrow(id: UUID): Promise<BoardNote> {
+    const boardNote = await this.getById(id);
 
     if (!boardNote) {
       throw new InternalException(
@@ -61,14 +61,37 @@ export class BoardNoteService {
     return boardNote;
   }
 
-  public async updateNote(
-    id: UUID,
-    boardSectionId: UUID,
-    note: string,
-  ): Promise<BoardNote> {
-    const boardNote = await this.getByIdOrThrow(id, boardSectionId);
+  public async updateNote(id: UUID, note: string): Promise<BoardNote> {
+    const boardNote = await this.getByIdOrThrow(id);
 
     boardNote.updateNote(note);
+
+    return this.boardNoteRepository.save(boardNote);
+  }
+
+  public async assignNoteGroup(
+    id: UUID,
+    parentId: UUID,
+    boardSectionId: UUID,
+  ): Promise<BoardNote> {
+    const boardNote = await this.getByIdOrThrow(id);
+
+    boardNote.updateParentId(parentId);
+
+    boardNote.updateBoardSectionId(boardSectionId);
+
+    return this.boardNoteRepository.save(boardNote);
+  }
+
+  public async unAssignNoteGroup(
+    id: UUID,
+    boardSectionId: UUID,
+  ): Promise<BoardNote> {
+    const boardNote = await this.getByIdOrThrow(id);
+
+    boardNote.updateParentId(null);
+
+    boardNote.updateBoardSectionId(boardSectionId);
 
     return this.boardNoteRepository.save(boardNote);
   }

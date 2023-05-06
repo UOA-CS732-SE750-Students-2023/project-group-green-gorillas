@@ -9,8 +9,7 @@ export enum BoardStage {
   GROUP = 'Group',
   VOTE = 'Vote',
   DISCUSS = 'Discuss',
-  REVIEW = 'Review',
-  FINALIZE = 'FINALIZE',
+  FINALIZE = 'Finalized',
 }
 
 export class Board {
@@ -34,6 +33,8 @@ export class Board {
   @DynamoTimestampTransformer()
   public readonly createdAt: DateTime;
 
+  public sessionPayload: { [key in string]: any };
+
   constructor(
     name: string,
     organisationId: UUID,
@@ -48,9 +49,19 @@ export class Board {
     this.updatedAt = DateTime.now();
     this.createdAt = DateTime.now();
     this.createdBy = createdBy;
+    this.sessionPayload = {};
   }
 
   public updateName(name: string): void {
     this.name = name;
+  }
+
+  public updateStage(stage: BoardStage): void {
+    this.stage = stage;
+  }
+
+  public setSessionPayload(payload: { [key in string]: any }): void {
+    this.sessionPayload = payload;
+    this.updatedAt = DateTime.now();
   }
 }

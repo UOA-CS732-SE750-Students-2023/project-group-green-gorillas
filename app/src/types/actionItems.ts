@@ -1,14 +1,19 @@
-import {User} from './user';
+import { User } from "./user";
 
-export enum Status {
-  IN_PROGRESS = "In-Progress",
-  COMPLETED = "Completed",
+export enum ActionItemStatus {
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
 }
 
 export type ActionItem = {
-  id: string,
-  note: string,
-  status: Status,
-  createdAt: string,
-  assignees: User[],
+  id: string;
+  note: string;
+  status: ActionItemStatus;
+  createdAt: string;
+  assignees: User[];
+  retro?: {
+    id: string;
+    name: string;
+    teamId: string;
+  };
 };

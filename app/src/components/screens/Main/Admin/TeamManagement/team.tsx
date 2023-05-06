@@ -6,7 +6,7 @@ import {
   GridColDef,
   GridRowId,
   GridRowsProp,
-  GridRowParams,
+  GridRowParams
 } from '@mui/x-data-grid';
 
 
@@ -35,10 +35,13 @@ export default function UpdateTeam() {
 
   const [selectedRow, setSelectedRow] = useState<Team | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [team, setTeam] = useState<Team[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
-  const [teamUsers, setTeamUsers] = useState<User | null>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [teamMembers, setTeamMembers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<Team | null>(null);
+  const [selectedTeamId, setSelectedTeamId] = useState('');
 
   const handleDisableEnableTeam = (teamId: string, active: boolean) => {
     const updatedTeam = { active };
@@ -68,13 +71,42 @@ export default function UpdateTeam() {
     };
   };
 
+  const handleRemove = (removedTeamId: string, removedUserId: string) => {
+    console.log("teamId: " + removedTeamId);
+    console.log("userId: " + removedUserId);
+    // Make API request to update the user name here...
+    const removedTeamUser = {
+      teamId: removedTeamId,
+      userId: removedUserId
+    }
+    try {
+      request.delete(`http://localhost:8080/api/team/remove-team-user`, {
+        data: removedTeamUser,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((response) => {
+        console.log('Team User removed successfully', response.data);
+        // Update the Team user in the UI state or trigger a re-fetch
+        // Update the team in the UI state or trigger a re-fetch
+        const updatedTeamMembers = teamMembers.filter((m) => m.id !== removedUserId);
+        setTeamMembers(updatedTeamMembers);
+      })
+    }
+    catch (error) {
+      console.error('Failed to remove Team user', error);
+      // Handle error, e.g. display a message to the user
+    };
+  }
+
+
+
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', width: 130 },
     {
       field: 'active', headerName: 'Active', width: 130,
       renderCell: (params) => params.value ? 'Yes' : 'No',
     },
-
     {
       field: 'edit',
       headerName: '',
@@ -118,12 +150,32 @@ export default function UpdateTeam() {
     { field: 'email', headerName: 'Email', width: 250 },
     { field: 'displayName', headerName: 'Display Name', width: 130 },
     { field: 'firstName', headerName: 'First Name', width: 130 },
-    { field: 'lastName', headerName: 'Last Name', width: 130 }
+    { field: 'lastName', headerName: 'Last Name', width: 130 },
+    {
+      field: 'active', headerName: 'Active', width: 130,
+      renderCell: (params) => params.value ? 'Yes' : 'No'
+    },
+    {
+      field: 'remove',
+      headerName: '',
+      width: 100,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => {
+            //setSelectedUser(params.row as User);
+            console.log("before remove");
+            handleRemove(selectedTeamId, params.row.id);
+            console.log("after remove");
+          }}
+        >
+          Remove
+        </Button>
+      ),
+    },
   ];
-  const [loading, setLoading] = useState<boolean>(false);
-  const [team, setTeam] = useState<Team[]>([]);
-  //const [teamMembers, setTeamMembers] = useState<User[]>([]);
-
 
   const getTeamList = async () => {
     setLoading(true);
@@ -140,14 +192,8 @@ export default function UpdateTeam() {
         };
       });
       setTeam(teamsWithMembers);
-    //setUsers(teamUsers);
       console.log(teamsWithMembers);
-      //console.log("tk1");
       console.log(teamMembers);
-      //console.log("tk2");
-      //const teamId = selectedTeam?.id;
-      //console.log(teamId);
-
     } catch (error) {
       console.log(error);
     } finally {
@@ -169,12 +215,17 @@ export default function UpdateTeam() {
     setDialogOpen(false);
   };
 
-  const handleRowSelection = (params: GridRowParams, event: MouseEvent) => {
+  //const handleRowSelection = (params: GridRowParams, event: MouseEvent) => {
+  const handleRowSelection = (params: GridRowParams) => {
     setSelectedRow(params.row as Team);
     console.log(`Row ${params.id} clicked!`);
     console.log(`Team Name ${params.row.name} clicked!`);
-    const teamMembers=params.row.teamMembers;
+
+    const teamMembers = params.row.teamMembers;
+    const selectedTeamId = params.row.id;
+    setSelectedTeamId(selectedTeamId);
     setTeamMembers(teamMembers);
+    console.log(`Team ID ${selectedTeamId} clicked!`);
     console.log(`Team Members:`, teamMembers);
   };
 
@@ -204,14 +255,40 @@ export default function UpdateTeam() {
     }
   };
 
+  const handleNewTeam = () => { 
+      try {
+        request.post(`http://localhost:8080/api/team`, {
+          data: {name: "New Team"},
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).then((response) => {
+          console.log('New Team created successfully', response.data);
+          //  New team in the UI state or trigger a re-fetch
+          getTeamList();
+        })
+      }
+      catch (error) {
+        console.error('Failed to create team', error);
+        // Handle error, e.g. display a message to the user
+      };
+      handleCloseDialog();
+  };
+
   return (
     <>
+      <div>
+        <p></p>
+        <Button variant="contained" color="primary" onClick={handleOpenDialog}>
+        Create Team
+      </Button>
+      <p></p>
+      </div>
       <div style={{ height: 300, width: '100%' }}>
-        <DataGrid rows={team} columns={columns} onRowClick={handleRowSelection}/>
+        <DataGrid rows={team} columns={columns} onRowClick={handleRowSelection} />
         <div style={{ height: 500, width: '100%' }}>
           <DataGrid rows={teamMembers} columns={teamMemberColumns} />
         </div>
-
       </div>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Edit team name</DialogTitle>
@@ -223,6 +300,20 @@ export default function UpdateTeam() {
           <Button onClick={handleSaveName}>Save</Button>
         </DialogActions>
       </Dialog>
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>Create new team</DialogTitle>
+        <DialogContent>
+          <input type="text" defaultValue={selectedTeam?.name} ref={nameInputRef} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleNewTeam}>Save</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
+
+
+
+

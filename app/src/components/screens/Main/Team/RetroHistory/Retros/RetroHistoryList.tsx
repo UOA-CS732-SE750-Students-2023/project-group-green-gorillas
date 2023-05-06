@@ -1,6 +1,8 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useRetroHistory } from "../../../../../../hooks/useRetroHistory";
 import { Avatar } from "../../../../../common/Avatar";
+import { MainScreenPath } from "../../../index";
+import { useHistory } from "react-router-dom";
 
 type Props = {
   selectedTeam: string | undefined;
@@ -8,11 +10,22 @@ type Props = {
 
 export const RetroHistoryList = ({ selectedTeam }: Props) => {
   const { retroList } = useRetroHistory(selectedTeam || "");
+  const history = useHistory();
+
+  const navigateToRetroHistoryOverview = (retro: any) => {
+    history.replace(
+      `${MainScreenPath.TEAM}/${retro.teamId}/retro-history/${retro.id}`
+    );
+  };
 
   return (
     <Box>
       {retroList?.map((retro) => (
-        <Card key={retro.id} sx={{ maxWidth: 250 }}>
+        <Card
+          onClick={() => navigateToRetroHistoryOverview(retro)}
+          key={retro.id}
+          sx={{ maxWidth: 250, cursor: "pointer" }}
+        >
           <CardContent>
             <Typography variant="h5" noWrap sx={{ marginBottom: 2 }}>
               {retro.name}

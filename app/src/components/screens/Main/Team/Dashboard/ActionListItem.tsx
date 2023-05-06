@@ -43,11 +43,9 @@ export const ActionListItem = ({
       return;
     }
 
-    const navigateToSingleRetroHistory = () => {
-      window.location.href = `${MainScreenPath.TEAM}/${retro.teamId}/retro-history/${retro.id}`;
-    };
-
-    return navigateToSingleRetroHistory();
+    history.replace(
+      `${MainScreenPath.TEAM}/${retro.teamId}/retro-history/${retro.id}`
+    );
   };
 
   return (

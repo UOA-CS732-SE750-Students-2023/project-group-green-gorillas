@@ -25,7 +25,6 @@ import retroStyles from "../../../Retro/styles/retro.module.css";
 //64bc116d-0f81-4f27-8324-b9b172142b73
 export const SingleRetroHistory = () => {
   const [retro, setRetro] = useState<any>(null);
-  console.log("🚀 ~ file: index.tsx:14 ~ SingleRetroHistory ~ retro:", retro);
   const [isLoadingRetroData, setIsLoadingRetroData] = useState<boolean>(true);
 
   const { teamId, retroId } = useParams<{
@@ -48,10 +47,6 @@ export const SingleRetroHistory = () => {
     }
   };
   const retroUsers = retro?.participants;
-  console.log(
-    "🚀 ~ file: index.tsx:51 ~ SingleRetroHistory ~ retroUsers:",
-    retroUsers
-  );
   const author = retro?.createdByUser;
   const { teamRole } = useTeamRole(teamId);
 

@@ -21,9 +21,15 @@ type Props = {
   teamId: string | null;
   user: User | null;
   teamRole: TeamRole | null;
+  isSingleRetro?: boolean;
 };
 
-export const ActionList = ({ teamId, user, teamRole }: Props) => {
+export const ActionList = ({
+  teamId,
+  user,
+  teamRole,
+  isSingleRetro,
+}: Props) => {
   const { isLoading, actionItems } = useActionItems(teamId || "");
 
   const currentUserActionItems = actionItems?.filter((item) =>
@@ -45,20 +51,22 @@ export const ActionList = ({ teamId, user, teamRole }: Props) => {
         justifyItems: "center",
       }}
     >
-      <FormControlLabel
-        value="start"
-        control={
-          <Switch
-            checked={checked}
-            onChange={handleChange}
-            inputProps={{ "aria-label": "controlled" }}
-            color="primary"
-          />
-        }
-        label="Show My Actions"
-        labelPlacement="start"
-        sx={{ marginLeft: 0 }}
-      />
+      {!isSingleRetro && (
+        <FormControlLabel
+          value="start"
+          control={
+            <Switch
+              checked={checked}
+              onChange={handleChange}
+              inputProps={{ "aria-label": "controlled" }}
+              color="primary"
+            />
+          }
+          label="Show My Actions"
+          labelPlacement="start"
+          sx={{ marginLeft: 0 }}
+        />
+      )}
       {checked ? (
         <Box>
           <Typography

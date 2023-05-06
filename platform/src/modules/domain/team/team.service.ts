@@ -6,6 +6,7 @@ import { InternalException } from '../../../exceptions/internal-exception';
 import { TeamFactory } from './team.factory';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { classToPlain, plainToClass } from 'class-transformer';
 
 @Injectable()
 export class TeamService {
@@ -23,14 +24,16 @@ export class TeamService {
     );
 
     if (rawCacheTeam) {
-      return JSON.parse(rawCacheTeam);
+      const cacheTeam = JSON.parse(rawCacheTeam);
+
+      return cacheTeam ? plainToClass(Team, cacheTeam) : undefined;
     }
 
     const team = await this.teamRepository.getById(id, organisationId);
 
     await this.cacheManager.set(
-      TeamService.buildTeamCacheKey(team.id, team.organisationId),
-      JSON.stringify(team),
+      TeamService.buildTeamCacheKey(id, organisationId),
+      !!team ? JSON.stringify(classToPlain(team)) : undefined,
       3600,
     );
 

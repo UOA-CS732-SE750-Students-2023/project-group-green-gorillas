@@ -37,7 +37,9 @@ export const ActionListItem = ({ actionItem, teamId, teamRole }: Props) => {
       return;
     }
 
-    // TODO: navigate me to retro history
+    history.replace(
+      `${MainScreenPath.TEAM}/${retro.teamId}/retro-history/${retro.id}`
+    );
   };
 
   return (

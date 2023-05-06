@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { TokenRepository } from './token.repository';
 import { UUID } from '../../../types/uuid.type';
 import { Token, TokenType } from './token';
@@ -9,7 +9,9 @@ import { InternalConfigService } from '../../global/config/internal-config.servi
 import { TokenFactory } from './token.factory';
 import { User } from '../user/user';
 import { UserService } from '../user/user.service';
-import { Organisation } from '../organisation/organisation';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { classToPlain, plainToClass } from 'class-transformer';
 
 @Injectable()
 export class TokenService {
@@ -19,15 +21,34 @@ export class TokenService {
     private readonly tokenRepository: TokenRepository,
     private readonly internalConfigService: InternalConfigService,
     private readonly userService: UserService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {
     this.tokenSecret = this.internalConfigService.getTokenConfig().tokenSecret;
   }
 
-  public getByUserId(
+  public async getByUserId(
     userId: UUID,
     tokenValue: string,
   ): Promise<Token | undefined> {
-    return this.tokenRepository.getByUserId(userId, tokenValue);
+    const rawCacheToken = await this.cacheManager.get<string>(
+      TokenService.buildTokenKey(userId, tokenValue),
+    );
+
+    if (rawCacheToken) {
+      const cacheToken = JSON.parse(rawCacheToken);
+
+      return cacheToken ? plainToClass(Token, cacheToken) : undefined;
+    }
+
+    const token = await this.tokenRepository.getByUserId(userId, tokenValue);
+
+    await this.cacheManager.set(
+      TokenService.buildTokenKey(userId, tokenValue),
+      !!token ? JSON.stringify(classToPlain(token)) : undefined,
+      3600,
+    );
+
+    return token;
   }
 
   public async getByUserIdOrThrow(
@@ -41,6 +62,17 @@ export class TokenService {
     }
 
     return token;
+  }
+
+  private static buildTokenKey(userId: UUID, tokenValue: string): string {
+    return `token-${userId}-${tokenValue}`;
+  }
+
+  public async save(token: Token): Promise<Token> {
+    await this.cacheManager.del(
+      TokenService.buildTokenKey(token.userId, token.value),
+    );
+    return this.tokenRepository.save(token);
   }
 
   public async create(
@@ -62,9 +94,7 @@ export class TokenService {
       this.tokenSecret,
     );
 
-    return this.tokenRepository.save(
-      TokenFactory.create(userId, tokenValue, type, expiryDate),
-    );
+    return this.save(TokenFactory.create(userId, tokenValue, type, expiryDate));
   }
 
   public async verify(tokenValue: string, tokenType: TokenType): Promise<User> {

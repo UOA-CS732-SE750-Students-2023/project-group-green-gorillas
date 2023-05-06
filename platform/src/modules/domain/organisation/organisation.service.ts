@@ -6,6 +6,8 @@ import { UUID } from '../../../types/uuid.type';
 import { InternalException } from '../../../exceptions/internal-exception';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { classToPlain, plainToClass } from 'class-transformer';
+import { User } from '../user/user';
 
 @Injectable()
 export class OrganisationService {
@@ -30,15 +32,18 @@ export class OrganisationService {
     );
 
     if (rawCacheOrganisation) {
-      console.log(rawCacheOrganisation);
-      return JSON.parse(rawCacheOrganisation);
+      const cacheOrganisation = JSON.parse(rawCacheOrganisation);
+
+      return cacheOrganisation
+        ? plainToClass(Organisation, cacheOrganisation)
+        : undefined;
     }
 
     const organisation = await this.organisationRepository.getById(id);
 
     await this.cacheManager.set(
       OrganisationService.buildOrganisationCacheKey(id),
-      JSON.stringify(organisation),
+      !!organisation ? JSON.stringify(classToPlain(organisation)) : undefined,
       3600,
     );
 

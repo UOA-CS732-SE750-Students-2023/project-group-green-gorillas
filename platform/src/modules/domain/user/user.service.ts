@@ -8,6 +8,7 @@ import { UserAuthService } from '../user-auth/user-auth.service';
 import { OrganisationService } from '../organisation/organisation.service';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { classToPlain, plainToClass } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -73,14 +74,16 @@ export class UserService {
     );
 
     if (rawCacheUser) {
-      return JSON.parse(rawCacheUser);
+      const cacheUser = JSON.parse(rawCacheUser);
+
+      return cacheUser ? plainToClass(User, cacheUser) : undefined;
     }
 
     const user = await this.userRepository.getById(id, organisationId);
 
     await this.cacheManager.set(
-      UserService.buildUserCacheKey(user.id, user.organisationId),
-      JSON.stringify(user),
+      UserService.buildUserCacheKey(id, organisationId),
+      !!user ? JSON.stringify(classToPlain(user)) : undefined,
       3600,
     );
 

@@ -6,7 +6,12 @@ import { Box } from "@mui/material";
 import { request } from "../../../../../api/request";
 import { UNVOTE_NOTE, VOTE_NOTE } from "../../../../../api/api";
 
-function VoteColumn({ column }: any) {
+type Props = {
+  column: any;
+  isSingleRetroHistory?: boolean;
+};
+
+function VoteColumn({ column, isSingleRetroHistory }: Props) {
   const vote = async (boardNoteId: string, boardId: string) => {
     await request.post(VOTE_NOTE, {
       boardNoteId,
@@ -41,11 +46,18 @@ function VoteColumn({ column }: any) {
             votes={group.boardNoteVotes}
             vote={vote}
             unvote={unvote}
+            isSingleRetroHistory={isSingleRetroHistory}
           />
         );
       })}
       {column.boardNotes.map((item: any) => (
-        <VoteNote key={item.id} vote={vote} unvote={unvote} note={item} />
+        <VoteNote
+          key={item.id}
+          vote={vote}
+          unvote={unvote}
+          note={item}
+          isSingleRetroHistory={isSingleRetroHistory}
+        />
       ))}
     </Box>
   );

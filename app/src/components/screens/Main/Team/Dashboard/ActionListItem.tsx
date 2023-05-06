@@ -20,9 +20,15 @@ type Props = {
   actionItem: ActionItem;
   teamId: string | null;
   teamRole: TeamRole | null;
+  completed?: boolean;
 };
 
-export const ActionListItem = ({ actionItem, teamId, teamRole }: Props) => {
+export const ActionListItem = ({
+  actionItem,
+  teamId,
+  teamRole,
+  completed,
+}: Props) => {
   const { updateActionItems, deleteActionItems } = useActionItems(teamId || "");
 
   const history = useHistory();
@@ -37,7 +43,11 @@ export const ActionListItem = ({ actionItem, teamId, teamRole }: Props) => {
       return;
     }
 
-    // TODO: navigate me to retro history
+    const navigateToSingleRetroHistory = () => {
+      window.location.href = `${MainScreenPath.TEAM}/${retro.teamId}/retro-history/${retro.id}`;
+    };
+
+    return navigateToSingleRetroHistory();
   };
 
   return (
@@ -85,16 +95,18 @@ export const ActionListItem = ({ actionItem, teamId, teamRole }: Props) => {
           </Button>
         ) : null}
 
-        <Button
-          variant="contained"
-          size="small"
-          onClick={() => {
-            return updateActionItems(actionItem);
-          }}
-          sx={{ marginLeft: "auto" }}
-        >
-          Complete
-        </Button>
+        {!completed && (
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => {
+              return updateActionItems(actionItem);
+            }}
+            sx={{ marginLeft: "auto" }}
+          >
+            Complete
+          </Button>
+        )}
       </CardActions>
     </Card>
   );

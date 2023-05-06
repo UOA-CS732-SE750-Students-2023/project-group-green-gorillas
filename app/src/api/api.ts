@@ -28,12 +28,11 @@ export const DELETE_ACTIONITEMS_BY_ID = (teamId: string) =>
   `${apiBaseUrl}/action-item/${teamId}`;
 
 export const UPDATE_ACTIONITEMS_BY_ID = `${apiBaseUrl}/action-item/update-status`;
-export const TEMPLATE =()=> `${apiBaseUrl}/retrospective/template/list`;
-export const TEAM_LIST =()=> `${apiBaseUrl}/team/list`; 
-export const USER_LIST =()=> `${apiBaseUrl}/user/list`; 
+export const TEMPLATE = () => `${apiBaseUrl}/retrospective/template/list`;
+export const TEAM_LIST = () => `${apiBaseUrl}/team/list`;
+export const USER_LIST = () => `${apiBaseUrl}/user/list`;
 export const TEAM_ROLE_BY_ID = (teamId: string) =>
   `${apiBaseUrl}/team/team-role/${teamId}`;
-export const TEMPLATE = () => `${apiBaseUrl}/retrospective/template/list`;
 
 export const ADD_SECTION = `${apiBaseUrl}/retrospective/add-section`;
 export const DELETE_SECTION = (boardSectionId: string, boardId: string) =>

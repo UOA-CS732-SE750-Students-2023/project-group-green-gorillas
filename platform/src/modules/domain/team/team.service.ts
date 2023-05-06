@@ -1,19 +1,50 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { UUID } from '../../../types/uuid.type';
 import { Team } from './team';
 import { TeamRepository } from './team.repository';
 import { InternalException } from '../../../exceptions/internal-exception';
 import { TeamFactory } from './team.factory';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class TeamService {
-  constructor(private readonly teamRepository: TeamRepository) {}
+  constructor(
+    private readonly teamRepository: TeamRepository,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+  ) {}
 
-  public getById(id: UUID, organisationId: UUID): Promise<Team | undefined> {
-    return this.teamRepository.getById(id, organisationId);
+  public async getById(
+    id: UUID,
+    organisationId: UUID,
+  ): Promise<Team | undefined> {
+    const rawCacheTeam = await this.cacheManager.get<string>(
+      TeamService.buildTeamCacheKey(id, organisationId),
+    );
+
+    if (rawCacheTeam) {
+      return JSON.parse(rawCacheTeam);
+    }
+
+    const team = await this.teamRepository.getById(id, organisationId);
+
+    await this.cacheManager.set(
+      TeamService.buildTeamCacheKey(team.id, team.organisationId),
+      JSON.stringify(team),
+      3600,
+    );
+
+    return team;
   }
 
-  public save(team: Team): Promise<Team> {
+  private static buildTeamCacheKey(teamId: UUID, organisationId: UUID): string {
+    return `team-${teamId}-${organisationId}`;
+  }
+
+  public async save(team: Team): Promise<Team> {
+    await this.cacheManager.del(
+      TeamService.buildTeamCacheKey(team.id, team.organisationId),
+    );
     return this.teamRepository.save(team);
   }
 
@@ -45,7 +76,7 @@ export class TeamService {
 
     team.update(name, active);
 
-    return this.teamRepository.save(team);
+    return this.save(team);
   }
 
   public async activate(id: UUID, organisationId: UUID): Promise<Team> {
@@ -53,7 +84,7 @@ export class TeamService {
 
     team.activate();
 
-    return this.teamRepository.save(team);
+    return this.save(team);
   }
 
   public async disable(id: UUID, organisationId: UUID): Promise<Team> {
@@ -61,10 +92,10 @@ export class TeamService {
 
     team.disable();
 
-    return this.teamRepository.save(team);
+    return this.save(team);
   }
 
   public create(name: string, organisationId: UUID): Promise<Team> {
-    return this.teamRepository.save(TeamFactory.create(name, organisationId));
+    return this.save(TeamFactory.create(name, organisationId));
   }
 }

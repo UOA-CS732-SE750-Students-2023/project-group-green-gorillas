@@ -1,4 +1,13 @@
-import { Box, Container, Skeleton, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Skeleton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MainScreenPath } from "../../../../../screens/Main";
@@ -6,7 +15,14 @@ import { request } from "../../../../../../api/request";
 import { GET_RETRO } from "../../../../../../api/api";
 import Styles from "../../../Retro/styles/styles.module.css";
 import { Avatar } from "../../../../../common/Avatar";
+import { ActionList } from "../../Dashboard/ActionList";
+import { useTeamRole } from "../../../../../../hooks/useTeamRole";
+import { ActionListItem } from "../../Dashboard/ActionListItem";
+import { ActionItemStatus } from "../../../../../../types/actionItems";
+import Vote from "../../../Retro/Vote";
+import retroStyles from "../../../Retro/styles/retro.module.css";
 
+//64bc116d-0f81-4f27-8324-b9b172142b73
 export const SingleRetroHistory = () => {
   const [retro, setRetro] = useState<any>(null);
   const [isLoadingRetroData, setIsLoadingRetroData] = useState<boolean>(true);
@@ -30,14 +46,15 @@ export const SingleRetroHistory = () => {
       setIsLoadingRetroData(false);
     }
   };
-
-  const user = retro?.createdByUser;
+  const retroUsers = retro?.participants;
+  const author = retro?.createdByUser;
+  const { teamRole } = useTeamRole(teamId);
 
   const userFullName = useMemo(() => {
-    if (!user) return "";
+    if (!author) return "";
 
-    return `${user.firstName} ${user.lastName}`;
-  }, [user]);
+    return `${author.firstName} ${author.lastName}`;
+  }, [author]);
 
   useEffect(() => {
     (async () => {
@@ -97,6 +114,83 @@ export const SingleRetroHistory = () => {
           ${retro?.createdAt.slice(0, 10)}`}
         </Typography>
       </Container>
+      <Box sx={{ height: "auto" }}>
+        <Vote retro={retro} isSingleRetroHistory={true} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
+        <Box sx={{ width: "50%" }}>
+          <ActionList
+            teamId={teamId}
+            user={author}
+            teamRole={teamRole}
+            isSingleRetro={true}
+          />
+        </Box>
+        <Box
+          component="div"
+          sx={{
+            bgcolor: "#F5F7F9",
+            padding: 3,
+            borderRadius: 2,
+            justifyItems: "center",
+            width: "50%",
+          }}
+        >
+          <Typography
+            variant="h5"
+            fontWeight="bold"
+            noWrap
+            sx={{ marginBottom: 2 }}
+          >
+            Completed Action Items
+          </Typography>
+          {retro?.actionItems
+            ?.filter(
+              (actionItem) => actionItem.status === ActionItemStatus.COMPLETED
+            )
+            .map((actionItem) => (
+              <ActionListItem
+                key={actionItem.id}
+                actionItem={actionItem}
+                teamId={teamId}
+                teamRole={teamRole}
+                completed={true}
+              />
+            ))}
+        </Box>
+      </Box>
+      <Box
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography className={retroStyles.header__title}>
+          Participants
+        </Typography>
+        <List className={retroStyles.participants__list}>
+          {retroUsers?.map((user) => (
+            <ListItem className={retroStyles.participant} key={user.id}>
+              <Tooltip
+                title={`${user.displayName} (${user.firstName} ${user.lastName}) (${user.email})`}
+              >
+                <ListItemAvatar>
+                  <Avatar text={`${user.firstName} ${user.lastName}`} />
+                </ListItemAvatar>
+              </Tooltip>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
     </Container>
   );
 };

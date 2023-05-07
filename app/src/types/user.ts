@@ -14,4 +14,8 @@ export type User = {
   active: boolean;
   createdAt: string;
   updatedAt: string;
+  phone: string;
+  address: string;
+  gender: boolean;
+  password: string;
 };

@@ -6,6 +6,7 @@ import { BoardService } from '../../domain/board/board.service';
 import { TeamDashboardService } from '../../domain/team-dashboard/team-dashboard.service';
 import { TeamDashboardCountKey } from '../../domain/team-dashboard/team-dashboard';
 import { UtilsService } from '../utils/utils.service';
+import { ActionItemAssigneeService } from '../../domain/action-item-assignee/action-item-assignee.service';
 
 @Injectable()
 export class ActionItemService {
@@ -14,7 +15,16 @@ export class ActionItemService {
     private readonly boardService: BoardService,
     private readonly teamDashboardService: TeamDashboardService,
     private readonly utilsService: UtilsService,
+    private readonly actionItemAssigneeService: ActionItemAssigneeService,
   ) {}
+
+  public async assignUserToActionItem(userId: UUID, actionItemId: UUID) {
+    return this.actionItemAssigneeService.create(userId, actionItemId);
+  }
+
+  public async unAssignUserToActionItem(userId: UUID, actionItemId: UUID) {
+    return this.actionItemAssigneeService.delete(userId, actionItemId);
+  }
 
   public async createActionItem(
     teamId: UUID,
@@ -45,7 +55,7 @@ export class ActionItemService {
     );
 
     await this.actionItemDomainService.delete(actionItemId);
-    console.log(actionItem);
+
     await this.teamDashboardService.decrease(
       actionItem.teamId,
       actionItem.organisationId,

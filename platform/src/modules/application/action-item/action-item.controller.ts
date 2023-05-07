@@ -10,6 +10,7 @@ import {
 import { UseAuthGuard } from '../../../utils/guards/auth-guard/auth.guard';
 import { ActionItemService } from './action-item.service';
 import {
+  AssignUserToActionItemRequest,
   CreateActionItemRequest,
   DeleteActionItemRequestParams,
   ListOutstandingActionItemsParams,
@@ -50,6 +51,43 @@ export class ActionItemController {
     @Param() { teamId, retroId }: ListRetroActionItemsParams,
   ) {
     return this.actionItemService.listRetroActionItems(teamId, retroId);
+  }
+
+  @Post('/assign-user')
+  public async assignUserToActionItem(
+    @Body() { userId, actionItemId }: AssignUserToActionItemRequest,
+  ) {
+    const actionItemAssignee =
+      await this.actionItemService.assignUserToActionItem(userId, actionItemId);
+
+    const actionItem = await this.actionItemService.getActionItemById(
+      actionItemAssignee.actionItemId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      actionItem.boardId,
+      ClientSocketMessageEvent.BOARD_ACTION_ITEM,
+      buildSocketEvent(SocketEventOperation.UPDATE, actionItem),
+    );
+
+    return actionItemAssignee;
+  }
+
+  @Delete('/un-assign-user')
+  public async unAssignUserToActionItem(
+    @Body() { userId, actionItemId }: AssignUserToActionItemRequest,
+  ) {
+    await this.actionItemService.unAssignUserToActionItem(userId, actionItemId);
+
+    const actionItem = await this.actionItemService.getActionItemById(
+      actionItemId,
+    );
+
+    this.socketEventService.broadcastRoom(
+      actionItem.boardId,
+      ClientSocketMessageEvent.BOARD_ACTION_ITEM,
+      buildSocketEvent(SocketEventOperation.UPDATE, actionItem),
+    );
   }
 
   @Post('/')

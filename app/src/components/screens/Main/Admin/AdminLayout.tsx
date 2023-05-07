@@ -13,7 +13,7 @@ export const AdminLayout: React.FC<Props> = ({ children }) => {
       <Grid item xs={2}>
         <LeftNavBar />
       </Grid>
-      <Grid item xs={10}>
+      <Grid item xs={8}>
         {children}
       </Grid>
     </Grid>

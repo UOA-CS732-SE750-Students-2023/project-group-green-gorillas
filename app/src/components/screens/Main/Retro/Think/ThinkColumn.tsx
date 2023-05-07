@@ -1,11 +1,15 @@
-import { Box, Container, Input } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import { Box, Button, Container, Input, TextareaAutosize } from "@mui/material";
+import React, { useEffect, useMemo, useState } from "react";
 import stageStyles from "../styles/stage.module.css";
-import styles from "../styles/styles.module.css";
 import addIcon from "../../../../../assets/add.svg";
 import { ThinkNote } from "./ThinkNote";
 import { request } from "../../../../../api/request";
-import { ADD_RETRO_NOTE, UPDATE_SECTION_NAME } from "../../../../../api/api";
+import {
+  ADD_RETRO_NOTE,
+  DELETE_SECTION,
+  UPDATE_SECTION_DESC,
+  UPDATE_SECTION_NAME,
+} from "../../../../../api/api";
 import { debounce } from "../../../../../utils/debounce";
 
 enum BoardNoteType {
@@ -21,7 +25,16 @@ const ThinkColumn = ({
   setFocusedNoteRef,
   focusedNoteRef,
 }: any) => {
-  const [sectionName, setSectionName] = useState(boardSection.name);
+  const [sectionName, setSectionName] = useState("");
+  const [sectionDesc, setSectionDesc] = useState("");
+
+  useEffect(() => {
+    setSectionDesc(boardSection.description);
+  }, [boardSection.description]);
+
+  useEffect(() => {
+    setSectionName(boardSection.name);
+  }, [boardSection.name]);
 
   const boardSectionNameRequestDebounce = useMemo(() => {
     return debounce(1000);
@@ -44,6 +57,14 @@ const ThinkColumn = ({
     });
   };
 
+  const updateBoardSectionDesc = async (sectionDesc: string) => {
+    await request.patch(UPDATE_SECTION_DESC, {
+      boardSectionId: boardSection.id,
+      boardId: boardSection.boardId,
+      description: sectionDesc,
+    });
+  };
+
   const onChangeBoardSecionName = async (e: any) => {
     const newSectionName = e.target.value;
 
@@ -52,6 +73,19 @@ const ThinkColumn = ({
     boardSectionNameRequestDebounce(() =>
       updateBoardSectionName(newSectionName)
     );
+  };
+
+  const onChangeSectionDescription = async (e: any) => {
+    const newSectionDescription = e.target.value;
+
+    setSectionDesc(newSectionDescription);
+    boardSectionNameRequestDebounce(() =>
+      updateBoardSectionDesc(newSectionDescription)
+    );
+  };
+
+  const deleteColumn = async () => {
+    await request.delete(DELETE_SECTION(boardSection.id, boardSection.boardId));
   };
 
   return (
@@ -63,21 +97,28 @@ const ThinkColumn = ({
     >
       <Box className={stageStyles.column__header}>
         <Box>
-          <Box className={styles.select__heading}>
-            {boardSection.description}
-          </Box>
-          <Input
-            className={styles.heading}
-            sx={{
-              "& .MuiInput-underline": {
-                "&::before": {
-                  borderBottom: "none",
-                },
-              },
-            }}
+          <TextareaAutosize
+            className={stageStyles.section_heading}
+            value={sectionDesc}
+            autoFocus={true}
+            onChange={onChangeSectionDescription}
+            placeholder={"Add New Description"}
+          />
+          <TextareaAutosize
+            className={stageStyles.section_name}
             value={sectionName}
             onChange={onChangeBoardSecionName}
+            autoFocus={true}
+            placeholder={"Add New Name"}
           />
+          <Button
+            onClick={deleteColumn}
+            variant="text"
+            color="error"
+            sx={{ marginTop: 0, marginBottom: 1 }}
+          >
+            Delete
+          </Button>
         </Box>
         <Box
           className={stageStyles.add__note__button}
@@ -88,7 +129,7 @@ const ThinkColumn = ({
         </Box>
       </Box>
       {boardSection.boardNotes
-        .sort((a: any, b: any) => (a.createdAt < b.createdAt ? 1 : -1))
+        ?.sort((a: any, b: any) => (a.createdAt < b.createdAt ? 1 : -1))
         .map((note: any) => (
           <ThinkNote
             note={note}

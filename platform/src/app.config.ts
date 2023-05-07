@@ -1,6 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
 import { InternalExceptionFilter } from './middlewares/filters/internal-exception.filter';
+import { RedisIoAdapter } from './modules/global/socket-adaptor/redis-io.adapter';
 
 export const configureApp = (app: INestApplication) => {
   configureValidation(app);
@@ -10,7 +11,7 @@ export const configureApp = (app: INestApplication) => {
 };
 
 const configSocketRedisAdaptor = (app: INestApplication) => {
-  // app.useWebSocketAdapter();
+  app.useWebSocketAdapter(new RedisIoAdapter(app));
 };
 
 const configCors = (app: INestApplication) => {

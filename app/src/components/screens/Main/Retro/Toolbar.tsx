@@ -14,6 +14,7 @@ import {
   DELETE_RETRO,
   MOVE_RETRO_NEXT_STAGE,
   SET_RETRO_SESSION_PAYLOAD,
+  UPDATE_RETRO_NAME,
 } from "../../../../api/api";
 import Swal from "sweetalert2";
 import { MainScreenPath } from "../index";
@@ -163,10 +164,42 @@ function Toolbar({ retro, timer }: any) {
     }
   };
 
+  const updateRetroName = async () => {
+    const result = await Swal.fire({
+      title: "Submit your new retro name",
+      input: "text",
+      inputAttributes: {
+        autocapitalize: "off",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Submit",
+      showLoaderOnConfirm: true,
+      inputValidator(inputValue: string) {
+        if (!inputValue) {
+          return "input cannot be empty.";
+        }
+
+        return null;
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+      async preConfirm(value: string) {
+        await request.patch(UPDATE_RETRO_NAME, {
+          id: retro.id,
+          teamId: retro.teamId,
+          name: value,
+        });
+      },
+    });
+  };
+
   return (
     <Box className={stageStyles.toolbar} component="div">
       <Box className={styles.flex__right} component="div">
-        <Box className={stageStyles.toolbar__button} component="div">
+        <Box
+          onClick={updateRetroName}
+          className={stageStyles.toolbar__button}
+          component="div"
+        >
           <Box
             src={settingsIcon}
             component="img"

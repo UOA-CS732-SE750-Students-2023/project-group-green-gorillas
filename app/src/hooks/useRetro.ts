@@ -274,6 +274,15 @@ export const useRetro = (boardId: string, teamId: string) => {
         (item: any) => item.id === data.id
       );
 
+      if (
+        actionItemIndex !== -1 &&
+        JSON.stringify(data.assignees) !==
+          JSON.stringify(clonedRetro.actionItems[actionItemIndex].assignees)
+      ) {
+        clonedRetro.actionItems[actionItemIndex] = data;
+        return clonedRetro;
+      }
+
       if (actionItemIndex !== -1 && data.updatedBy !== user?.id) {
         clonedRetro.actionItems[actionItemIndex] = data;
         return clonedRetro;
@@ -323,6 +332,76 @@ export const useRetro = (boardId: string, teamId: string) => {
     }
   };
 
+  const handleBoardSectionCreateEvent = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      const boardSection = cloneRetro.boardSections.find(
+        (section: any) => section.id === data.boardSectionId
+      );
+
+      if (!boardSection) {
+        cloneRetro.boardSections.push({
+          ...data,
+          boardNotes: [],
+        });
+      }
+
+      return cloneRetro;
+    });
+  };
+
+  const handleBoardSectionDeleteEvent = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      cloneRetro.boardSections = cloneRetro.boardSections.filter(
+        (section: any) => section.id !== data.id
+      );
+
+      return cloneRetro;
+    });
+  };
+
+  const handleBoardSectionUpdateEvent = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      const boardSectionIndex = cloneRetro.boardSections.findIndex(
+        (section: any) => section.id === data.id
+      );
+
+      if (boardSectionIndex !== -1) {
+        cloneRetro.boardSections[boardSectionIndex] = {
+          ...cloneRetro.boardSections[boardSectionIndex],
+          ...data,
+        };
+        return cloneRetro;
+      }
+      return retro;
+    });
+  };
+
+  const handleBoardSectionEvent = (eventData: any) => {
+    switch (eventData.type) {
+      case "CREATE":
+        handleBoardSectionCreateEvent(eventData.data);
+        return;
+      case "DELETE":
+        handleBoardSectionDeleteEvent(eventData.data);
+        return;
+      case "UPDATE":
+        handleBoardSectionUpdateEvent(eventData.data);
+        return;
+    }
+  };
+
   //end ------------------------------------------
 
   useEffect(() => {
@@ -357,7 +436,7 @@ export const useRetro = (boardId: string, teamId: string) => {
     socket.on(ClientSocketMessageEvent.BOARD_SECTION, (payload: string) => {
       const data = JSON.parse(payload);
 
-      // TODO: philip to do
+      handleBoardSectionEvent(data);
     });
 
     socket.on(ClientSocketMessageEvent.BOARD_NOTE, (payload: string) => {

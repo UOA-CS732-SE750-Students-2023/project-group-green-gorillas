@@ -1,172 +1,319 @@
 import * as React from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   DataGrid,
   GridRowModel,
   GridColDef,
   GridRowId,
   GridRowsProp,
+  GridRowParams
 } from '@mui/x-data-grid';
 
-import Snackbar from '@mui/material/Snackbar';
+
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import Alert, { AlertProps } from '@mui/material/Alert';
+import { request } from '../../../../../api/request';
+import { TEAM_LIST } from '../../../../../api/api';
+import { UseRole, User } from '../../../../../types/user';
 
-
-
-interface User {
-  name: string;
-  age: number;
-  id: GridRowId;
-  dateCreated: Date;
-  lastLogin: Date;
-}
-
-const useFakeMutation = () => {
-  return React.useCallback(
-    (user: Partial<User>) =>
-      new Promise<Partial<User>>((resolve, reject) => {
-        setTimeout(() => {
-          if (user.name?.trim() === '') {
-            reject();
-          } else {
-            resolve(user);
-          }
-        }, 200);
-      }),
-    [],
-  );
-};
-
-function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
-  if (newRow.name !== oldRow.name) {
-    return `Name from '${oldRow.name}' to '${newRow.name}'`;
-  }
-  if (newRow.age !== oldRow.age) {
-    return `Age from '${oldRow.age || ''}' to '${newRow.age || ''}'`;
-  }
-  return null;
-}
-
-export default function AskConfirmationBeforeSave() {
-  const mutateRow = useFakeMutation();
-  const noButtonRef = React.useRef<HTMLButtonElement>(null);
-  const [promiseArguments, setPromiseArguments] = React.useState<any>(null);
-
-  const [snackbar, setSnackbar] = React.useState<Pick<
-    AlertProps,
-    'children' | 'severity'
-  > | null>(null);
-
-  const handleCloseSnackbar = () => setSnackbar(null);
-
-  const processRowUpdate = React.useCallback(
-    (newRow: GridRowModel, oldRow: GridRowModel) =>
-      new Promise<GridRowModel>((resolve, reject) => {
-        const mutation = computeMutation(newRow, oldRow);
-        if (mutation) {
-          // Save the arguments to resolve or reject the promise later
-          setPromiseArguments({ resolve, reject, newRow, oldRow });
-        } else {
-          resolve(oldRow); // Nothing was changed
-        }
-      }),
-    [],
-  );
-
-  const handleNo = () => {
-    const { oldRow, resolve } = promiseArguments;
-    resolve(oldRow); // Resolve with the old row to not update the internal state
-    setPromiseArguments(null);
-  };
-
-  const handleYes = async () => {
-    const { newRow, oldRow, reject, resolve } = promiseArguments;
-
-    try {
-      // Make the HTTP request to save in the backend
-      const response = await mutateRow(newRow);
-      setSnackbar({ children: 'User successfully saved', severity: 'success' });
-      resolve(response);
-      setPromiseArguments(null);
-    } catch (error) {
-      setSnackbar({ children: "Name can't be empty", severity: 'error' });
-      reject(oldRow);
-      setPromiseArguments(null);
-    }
-  };
-
-  const handleEntered = () => {
-    // The `autoFocus` is not used because, if used, the same Enter that saves
-    // the cell triggers "No". Instead, we manually focus the "No" button once
-    // the dialog is fully open.
-    // noButtonRef.current?.focus();
-  };
-
-  const renderConfirmDialog = () => {
-    if (!promiseArguments) {
-      return null;
-    }
-
-    const { newRow, oldRow } = promiseArguments;
-    const mutation = computeMutation(newRow, oldRow);
-
-    return (
-      <Dialog
-        maxWidth="xs"
-        TransitionProps={{ onEntered: handleEntered }}
-        open={!!promiseArguments}
-      >
-        <DialogTitle>Are you sure?</DialogTitle>
-        <DialogContent dividers>
-          {`Pressing 'Yes' will change ${mutation}.`}
-        </DialogContent>
-        <DialogActions>
-          <Button ref={noButtonRef} onClick={handleNo}>
-            No
-          </Button>
-          <Button onClick={handleYes}>Yes</Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
-
-  return (
-    <div style={{ height: 400, width: '100%' }}>
-      {renderConfirmDialog()}
-      <DataGrid rows={rows} columns={columns} processRowUpdate={processRowUpdate} />
-      {!!snackbar && (
-        <Snackbar open onClose={handleCloseSnackbar} autoHideDuration={6000}>
-          <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>
-      )}
-    </div>
-  );
-}
-
-/*
+interface Team {
   id: string;
   name: string;
   organisationId: string;
   active: boolean;
   updatedAt: string;
   createdAt: string;
-*/
+  teamMembers: User[];
+}
 
-const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Name', width: 130, editable: true },
-    { field: 'organisationId', headerName: 'OrgID', width: 70 },
-    { field: 'active', headerName: 'Active', width: 130 },
-    { field: 'createdAt', headerName: 'CreatedAt', width: 180 },
-    { field: 'updatedAt', headerName: 'UpdatedAt', width: 180 },
+
+
+export default function UpdateTeam() {
+
+  const [selectedRow, setSelectedRow] = useState<Team | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [team, setTeam] = useState<Team[]>([]);
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const [teamMembers, setTeamMembers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<Team | null>(null);
+  const [selectedTeamId, setSelectedTeamId] = useState('');
+
+  const handleDisableEnableTeam = (teamId: string, active: boolean) => {
+    const updatedTeam = { active };
+    try {
+      request.patch(`http://localhost:8080/api/team/update-active/${teamId}`, updatedTeam, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((response) => {
+        console.log('Team updated successfully', response.data);
+        // Update the team in the UI state or trigger a re-fetch
+        const updatedTeams = team.map((t) => {
+          if (t.id === teamId) {
+            return {
+              ...t,
+              active: !active,
+            };
+          }
+          return t;
+        });
+        setTeam(updatedTeams);
+      })
+    }
+    catch (error) {
+      console.error('Failed to update team', error);
+      // Handle error, e.g. display a message to the user
+    };
+  };
+
+  const handleRemove = (removedTeamId: string, removedUserId: string) => {
+    console.log("teamId: " + removedTeamId);
+    console.log("userId: " + removedUserId);
+    // Make API request to update the user name here...
+    const removedTeamUser = {
+      teamId: removedTeamId,
+      userId: removedUserId
+    }
+    try {
+      request.delete(`http://localhost:8080/api/team/remove-team-user`, {
+        data: removedTeamUser,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((response) => {
+        console.log('Team User removed successfully', response.data);
+        // Update the Team user in the UI state or trigger a re-fetch
+        // Update the team in the UI state or trigger a re-fetch
+        const updatedTeamMembers = teamMembers.filter((m) => m.id !== removedUserId);
+        setTeamMembers(updatedTeamMembers);
+      })
+    }
+    catch (error) {
+      console.error('Failed to remove Team user', error);
+      // Handle error, e.g. display a message to the user
+    };
+  }
+
+
+
+  const columns: GridColDef[] = [
+    { field: 'name', headerName: 'Name', width: 130 },
+    {
+      field: 'active', headerName: 'Active', width: 130,
+      renderCell: (params) => params.value ? 'Yes' : 'No',
+    },
+    {
+      field: 'edit',
+      headerName: '',
+      width: 100,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => {
+            setSelectedTeam(params.row as Team);
+            handleOpenDialog();
+          }}
+        >
+          Edit
+        </Button>
+      ),
+    },
+    {
+      field: 'disable',
+      headerName: '',
+      width: 100,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => {
+            const selectedTeam = params.row as Team;
+            const isActive = selectedTeam.active;
+            handleDisableEnableTeam(selectedTeam.id, isActive);
+          }}
+        >
+          {params.row.active ? 'Disable' : 'Enable'}
+        </Button>
+      ),
+    }
   ];
-  
-  const rows = [
-    { id: 1, name: 'Kiwi Fruit', organisationId: 1, active: 'Y', createdAt: '05/01/2023', updatedAt: '06/01/2023'},
-    { id: 2, name: 'Apple Tree', organisationId: 1, active: 'Y', createdAt: '05/01/2023', updatedAt: '06/01/2023'},
+
+  const teamMemberColumns: GridColDef[] = [
+    { field: 'email', headerName: 'Email', width: 250 },
+    { field: 'displayName', headerName: 'Display Name', width: 130 },
+    { field: 'firstName', headerName: 'First Name', width: 130 },
+    { field: 'lastName', headerName: 'Last Name', width: 130 },
+    {
+      field: 'active', headerName: 'Active', width: 130,
+      renderCell: (params) => params.value ? 'Yes' : 'No'
+    },
+    {
+      field: 'remove',
+      headerName: '',
+      width: 100,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => {
+            //setSelectedUser(params.row as User);
+            console.log("before remove");
+            handleRemove(selectedTeamId, params.row.id);
+            console.log("after remove");
+          }}
+        >
+          Remove
+        </Button>
+      ),
+    },
   ];
-  
+
+  const getTeamList = async () => {
+    setLoading(true);
+    try {
+      const { data } = await request.get<Team[]>(TEAM_LIST());
+      const teamsWithMembers = data.map((team) => {
+        const teamMembers = team.teamMembers.map((member) => ({
+          ...member,
+          id: member.id.toString(),
+        }));
+        return {
+          ...team,
+          teamMembers: teamMembers,
+        };
+      });
+      setTeam(teamsWithMembers);
+      console.log(teamsWithMembers);
+      console.log(teamMembers);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      await getTeamList();
+    })();
+  }, []);
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  //const handleRowSelection = (params: GridRowParams, event: MouseEvent) => {
+  const handleRowSelection = (params: GridRowParams) => {
+    setSelectedRow(params.row as Team);
+    console.log(`Row ${params.id} clicked!`);
+    console.log(`Team Name ${params.row.name} clicked!`);
+
+    const teamMembers = params.row.teamMembers;
+    const selectedTeamId = params.row.id;
+    setSelectedTeamId(selectedTeamId);
+    setTeamMembers(teamMembers);
+    console.log(`Team ID ${selectedTeamId} clicked!`);
+    console.log(`Team Members:`, teamMembers);
+  };
+
+  const handleSaveName = () => {
+    const teamId = selectedTeam?.id;
+    const updatedName = nameInputRef.current?.value;
+    if (selectedTeam && nameInputRef.current) {
+      // Make API request to update the team name here...
+      const updatedTeam = { name: updatedName, active: true };
+      try {
+        request.put(`http://localhost:8080/api/team/${teamId}`, updatedTeam, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).then((response) => {
+          console.log('Team updated successfully', response.data);
+          // Update the team in the UI state or trigger a re-fetch
+          getTeamList();
+        })
+      }
+      catch (error) {
+        console.error('Failed to update team', error);
+        // Handle error, e.g. display a message to the user
+      };
+      console.log(`Updating team ${selectedTeam.id} name to "${nameInputRef.current.value}"`);
+      handleCloseDialog();
+    }
+  };
+
+  const handleNewTeam = () => { 
+      try {
+        request.post(`http://localhost:8080/api/team`, {
+          data: {name: "New Team"},
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).then((response) => {
+          console.log('New Team created successfully', response.data);
+          //  New team in the UI state or trigger a re-fetch
+          getTeamList();
+        })
+      }
+      catch (error) {
+        console.error('Failed to create team', error);
+        // Handle error, e.g. display a message to the user
+      };
+      handleCloseDialog();
+  };
+
+  return (
+    <>
+      <div>
+        <p></p>
+        <Button variant="contained" color="primary" onClick={handleOpenDialog}>
+        Create Team
+      </Button>
+      <p></p>
+      </div>
+      <div style={{ height: 300, width: '100%' }}>
+        <DataGrid rows={team} columns={columns} onRowClick={handleRowSelection} />
+        <div style={{ height: 500, width: '100%' }}>
+          <DataGrid rows={teamMembers} columns={teamMemberColumns} />
+        </div>
+      </div>
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>Edit team name</DialogTitle>
+        <DialogContent>
+          <input type="text" defaultValue={selectedTeam?.name} ref={nameInputRef} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleSaveName}>Save</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>Create new team</DialogTitle>
+        <DialogContent>
+          <input type="text" defaultValue={selectedTeam?.name} ref={nameInputRef} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleNewTeam}>Save</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
+
+
+

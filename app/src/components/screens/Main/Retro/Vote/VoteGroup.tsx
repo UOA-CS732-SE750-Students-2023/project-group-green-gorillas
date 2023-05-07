@@ -6,7 +6,27 @@ import voteDown from "../../../../../assets/votedown.svg";
 import stageStyles from "../styles/stage.module.css";
 import { useCurrentUser } from "../../../../../hooks/useCurrentUser";
 
-function VoteGroup({ name, items, votes, retroId, vote, id, unvote }: any) {
+type Props = {
+  name: string;
+  items: any;
+  votes: any;
+  retroId: string;
+  vote: any;
+  id: string;
+  unvote: any;
+  isSingleRetroHistory?: boolean;
+};
+
+function VoteGroup({
+  name,
+  items,
+  votes,
+  retroId,
+  vote,
+  id,
+  unvote,
+  isSingleRetroHistory,
+}: Props) {
   const { user } = useCurrentUser();
 
   const hasVoted = useMemo(() => {
@@ -40,36 +60,38 @@ function VoteGroup({ name, items, votes, retroId, vote, id, unvote }: any) {
           })}
         </div>
       </Box>
-      <Box className={stageStyles.votes__wrapper}>
-        <Box className={stageStyles.vote__buttons}>
-          {!hasVoted ? (
-            <Box
-              onClick={() => vote(id, retroId)}
-              className={stageStyles.vote__button}
-            >
+      {!isSingleRetroHistory && (
+        <Box className={stageStyles.votes__wrapper}>
+          <Box className={stageStyles.vote__buttons}>
+            {!hasVoted ? (
               <Box
-                component="img"
-                src={voteUp}
-                alt=""
-                className={stageStyles.vote__button__img}
-              />
-            </Box>
-          ) : (
-            <Box
-              onClick={() => unvote(id)}
-              className={stageStyles.vote__button}
-            >
+                onClick={() => vote(id, retroId)}
+                className={stageStyles.vote__button}
+              >
+                <Box
+                  component="img"
+                  src={voteUp}
+                  alt=""
+                  className={stageStyles.vote__button__img}
+                />
+              </Box>
+            ) : (
               <Box
-                component="img"
-                src={voteDown}
-                alt=""
-                className={stageStyles.vote__button__img}
-              />
-            </Box>
-          )}
+                onClick={() => unvote(id)}
+                className={stageStyles.vote__button}
+              >
+                <Box
+                  component="img"
+                  src={voteDown}
+                  alt=""
+                  className={stageStyles.vote__button__img}
+                />
+              </Box>
+            )}
+          </Box>
+          <Box className={stageStyles.votes}>{votes?.length ?? 0} votes</Box>
         </Box>
-        <Box className={stageStyles.votes}>{votes?.length ?? 0} votes</Box>
-      </Box>
+      )}
     </div>
   );
 }

@@ -1,13 +1,13 @@
 import { TeamDrawer } from "../../../common/TeamDrawer";
 import React, { useEffect } from "react";
 import { Container } from "@mui/material";
-import { useTeam } from "../../../../hooks/useTeam";
 import { Route, Switch, useHistory, useParams } from "react-router-dom";
 import { MainScreenPath } from "../index";
 import { TeamDashboardScreen } from "./Dashboard";
 import { TemplateScreen } from "./Template";
-import { RetroHistoryScreen } from "./RetroHistory";
+import { RetrosScreen } from "./RetroHistory/Retros";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
+import { RetroHistoryScreens } from "./RetroHistory";
 
 export const TeamScreen = () => {
   const history = useHistory();
@@ -34,7 +34,7 @@ export const TeamScreen = () => {
         />
         <Route
           path={`${MainScreenPath.TEAM}/:teamId/retro-history`}
-          component={RetroHistoryScreen}
+          component={RetroHistoryScreens}
         />
       </Switch>
     </Container>

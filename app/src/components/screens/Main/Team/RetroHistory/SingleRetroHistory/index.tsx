@@ -121,14 +121,18 @@ export const SingleRetroHistory = () => {
         sx={{
           display: "flex",
           flexDirection: "row",
+          justifyContent: "center",
+          width: "100%",
         }}
       >
-        <ActionList
-          teamId={teamId}
-          user={author}
-          teamRole={teamRole}
-          isSingleRetro={true}
-        />
+        <Box sx={{ width: "50%" }}>
+          <ActionList
+            teamId={teamId}
+            user={author}
+            teamRole={teamRole}
+            isSingleRetro={true}
+          />
+        </Box>
         <Box
           component="div"
           sx={{
@@ -136,6 +140,7 @@ export const SingleRetroHistory = () => {
             padding: 3,
             borderRadius: 2,
             justifyItems: "center",
+            width: "50%",
           }}
         >
           <Typography

@@ -37,12 +37,18 @@ interface User {
 
 export default function UpdateUser() {
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogEditOpen, setDialogEditOpen] = useState(false);
+  const [dialogNewOpen, setDialogNewOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
   const displayNameInputRef = useRef<HTMLInputElement>(null);
   const firstNameInputRef = useRef<HTMLInputElement>(null);
   const lastNameInputRef = useRef<HTMLInputElement>(null);
+  const genderSelectRef = useRef<HTMLSelectElement>(null);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
+  const addressInputRef = useRef<HTMLInputElement>(null);
   const roleSelectRef = useRef<HTMLSelectElement>(null);
+
 
   const handleDisableEnableUser = (userId: string, active: boolean) => {
     const updatedUser = { active };
@@ -78,9 +84,17 @@ export default function UpdateUser() {
     { field: 'displayName', headerName: 'Display Name', width: 130 },
     { field: 'firstName', headerName: 'First Name', width: 130 },
     { field: 'lastName', headerName: 'Last Name', width: 130 },
+    {
+      field: 'gender', headerName: 'Gender', width: 130,
+      renderCell: (params) => params.value ? 'Male' : 'Female'
+    },
+    { field: 'phone', headerName: 'Phone', width: 130 },
+    { field: 'address', headerName: 'Address', width: 130 },
     { field: 'role', headerName: 'User Role', width: 130 },
-    { field: 'active', headerName: 'Active', width: 130, 
-    renderCell: (params) => params.value ? 'Yes' : 'No' },
+    {
+      field: 'active', headerName: 'Active', width: 130,
+      renderCell: (params) => params.value ? 'Yes' : 'No'
+    },
     {
       field: 'edit',
       headerName: '',
@@ -92,7 +106,7 @@ export default function UpdateUser() {
           size="small"
           onClick={() => {
             setSelectedUser(params.row as User);
-            handleOpenDialog();
+            handleOpenEditDialog();
           }}
         >
           Edit
@@ -141,12 +155,20 @@ export default function UpdateUser() {
     })();
   }, []);
 
-  const handleOpenDialog = () => {
-    setDialogOpen(true);
+  const handleOpenEditDialog = () => {
+    setDialogEditOpen(true);
   };
 
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
+  const handleCloseEditDialog = () => {
+    setDialogEditOpen(false);
+  };
+
+  const handleOpenNewDialog = () => {
+    setDialogNewOpen(true);
+  };
+
+  const handleCloseNewDialog = () => {
+    setDialogNewOpen(false);
   };
 
   const handleSaveName = () => {
@@ -156,6 +178,9 @@ export default function UpdateUser() {
     const updatedFirstName = firstNameInputRef.current?.value;
     const updatedLastName = lastNameInputRef.current?.value;
     const updatedRole = roleSelectRef.current?.value;
+    const updatedGender = genderSelectRef.current?.value === "Male" ? true : false;
+    const updatedPhone  = phoneInputRef.current?.value;
+    const updatedAddress = addressInputRef.current?.value;
     if (selectedUser && firstNameInputRef.current && lastNameInputRef.current && displayNameInputRef.current) {
       // Make API request to update the user name here...
       const updatedUser = {
@@ -163,10 +188,10 @@ export default function UpdateUser() {
         firstName: updatedFirstName,
         lastName: updatedLastName,
         role: updatedRole,
-        phone: selectedUser?.phone,
-        address: selectedUser?.address,
+        phone: updatedPhone,
+        address: updatedAddress,
         active: true,
-        gender: selectedUser?.gender
+        gender: updatedGender
       }
       try {
         request.put(`http://localhost:8080/api/user/${userId}`, updatedUser, {
@@ -186,18 +211,59 @@ export default function UpdateUser() {
       };
 
       console.log(`Updating user ${selectedUser.id} name to "${displayNameInputRef.current.value} + ' ' +${firstNameInputRef.current.value} + ' ' + ${lastNameInputRef.current.value}"`);
-      handleCloseDialog();
+      handleCloseEditDialog();
     }
+  };
+
+  const handleNewUser = () => {
+    const newUser = {
+      email: emailInputRef.current?.value,
+      displayName: displayNameInputRef.current?.value,
+      firstName: firstNameInputRef.current?.value,
+      lastName: lastNameInputRef.current?.value,
+      role: roleSelectRef.current?.value,
+      temporaryPassword: "12345678",
+      phone: phoneInputRef.current?.value ? phoneInputRef.current.value : "",
+      gender: genderSelectRef.current?.value === "Male" ? true : false,
+      address: addressInputRef.current?.value ? addressInputRef.current.value : "",
+    }
+    try {
+      request.post(`http://localhost:8080/api/user`, newUser, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((response) => {
+        console.log('New User created successfully', response.data);
+        //  New User in the UI state or trigger a re-fetch
+        getUserList();
+      })
+    }
+    catch (error) {
+      console.error('Failed to create user', error);
+      // Handle error, e.g. display a message to the user
+    };
+    handleCloseNewDialog();
   };
 
   return (
     <>
+      <div>
+        <p></p>
+        <Button variant="contained" color="primary" onClick={handleOpenNewDialog}>
+          Create User
+        </Button>
+        <p></p>
+      </div>
       <div style={{ height: 600, width: '100%' }}>
         <DataGrid rows={user} columns={columns} />
       </div>
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+      <Dialog open={dialogEditOpen} onClose={handleCloseEditDialog}>
         <DialogTitle>Edit User</DialogTitle>
         <DialogContent>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="email">Email:  </label>
+            <input type="text" id="email" defaultValue={selectedUser?.email} ref={emailInputRef} style={{ width: "55%" }} />
+          </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label htmlFor="displayName">Display Name:  </label>
             <input type="text" id="displayName" defaultValue={selectedUser?.displayName} ref={displayNameInputRef} style={{ width: "55%" }} />
@@ -210,10 +276,28 @@ export default function UpdateUser() {
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label htmlFor="lastName">Last Name:  </label>
-            <input type="text" id="lastName" defaultValue={selectedUser?.lastName} ref={lastNameInputRef} style={{ width: "55%" }}  />
+            <input type="text" id="lastName" defaultValue={selectedUser?.lastName} ref={lastNameInputRef} style={{ width: "55%" }} />
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="gender">Gender:  </label>
+            <select id="gender" defaultValue={selectedUser?.gender ? "Male" : "Female"} ref={genderSelectRef} style={{ width: "55%" }}>
+              <option value="Male">MALE</option>
+              <option value="Female">FEMALE</option>
+            </select>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="phone">Phone:  </label>
+            <input type="text" id="phone" defaultValue={selectedUser?.phone} ref={phoneInputRef} style={{ width: "55%" }} />
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="address">Address:  </label>
+            <input type="text" id="address" defaultValue={selectedUser?.address} ref={addressInputRef} style={{ width: "55%" }} />
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label htmlFor="role">User Role:  </label>
             <select id="role" defaultValue={selectedUser?.role} ref={roleSelectRef} style={{ width: "55%" }}>
               <option value="USER">USER</option>
@@ -222,8 +306,62 @@ export default function UpdateUser() {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleCloseEditDialog}>Cancel</Button>
           <Button onClick={handleSaveName}>Save</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={dialogNewOpen} onClose={handleCloseNewDialog}>
+        <DialogTitle>Create new user</DialogTitle>
+        <DialogContent>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="email">Email:  </label>
+            <input type="text" id="email" ref={emailInputRef} style={{ width: "55%" }} />
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="displayName">Display Name:  </label>
+            <input type="text" id="displayName" ref={displayNameInputRef} style={{ width: "55%" }} />
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="firstName">First Name:  </label>
+            <input type="text" id="firstName" ref={firstNameInputRef} style={{ width: "55%" }} />
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="lastName">Last Name:  </label>
+            <input type="text" id="lastName" ref={lastNameInputRef} style={{ width: "55%" }} />
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="phone">Phone:  </label>
+            <input type="text" id="phone" ref={phoneInputRef} style={{ width: "55%" }} />
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="address">Address:  </label>
+            <input type="text" id="address" ref={addressInputRef} style={{ width: "55%" }} />
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="gender">Gender:  </label>
+            <select id="gender" ref={genderSelectRef} style={{ width: "55%" }}>
+              <option value="Male">MALE</option>
+              <option value="Female">FEMALE</option>
+            </select>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="role">User Role:  </label>
+            <select id="role" ref={roleSelectRef} style={{ width: "55%" }}>
+              <option value="USER">USER</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseNewDialog}>Cancel</Button>
+          <Button onClick={handleNewUser}>Save</Button>
         </DialogActions>
       </Dialog>
     </>

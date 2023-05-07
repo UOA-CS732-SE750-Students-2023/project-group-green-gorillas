@@ -10,6 +10,7 @@ import { BoardTemplateModule } from '../../domain/board-template/board-template.
 import { BoardModule } from '../../domain/board/board.module';
 import { ActionItemModule } from '../../domain/action-item/action-item.module';
 import { ActionItemAssigneeModule } from '../../domain/action-item-assignee/action-item-assignee.module';
+import { TeamDashboardModule } from '../../domain/team-dashboard/team-dashboard.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ActionItemAssigneeModule } from '../../domain/action-item-assignee/acti
     BoardModule,
     ActionItemModule,
     ActionItemAssigneeModule,
+    TeamDashboardModule,
   ],
   providers: [DataSeederService],
   controllers: [DataSeederController],

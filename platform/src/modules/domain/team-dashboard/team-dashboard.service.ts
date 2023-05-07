@@ -56,4 +56,8 @@ export class TeamDashboardService {
 
     await this.teamDashboardRepository.save(teamDashboard);
   }
+
+  public async save(teamDashboard: TeamDashboard): Promise<TeamDashboard> {
+    return this.teamDashboardRepository.save(teamDashboard);
+  }
 }

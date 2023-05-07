@@ -126,7 +126,7 @@
   width: 100%;
   display: flex;
   box-sizing: border-box;
-  padding: 32px;
+  padding: 8px 32px;
   height: calc(100% - 124px);
   max-height: calc(100% - 124px);
   overflow: auto;
@@ -163,15 +163,16 @@
 .section_heading {
   resize: none;
   outline: none;
-  overflow: auto;
+  overflow: scroll !important;
   width: 100%;
   border: none;
   background: transparent;
   box-sizing: border-box;
   border-radius: 8px;
-  font-size: 18px;
+  font-size: 16px;
   color: #999999;
   font-weight: bold;
+  height: 70px !important;
 }
 
 .add__note__button {
@@ -388,6 +389,20 @@
   cursor: pointer;
   transition: 0.2s ease;
   margin-right: 8px;
+}
+
+.vote__button__after {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  background: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+  margin-right: 8px;
+  opacity: 0.35;
 }
 
 .vote__button__disabled {

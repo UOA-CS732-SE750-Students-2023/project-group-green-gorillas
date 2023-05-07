@@ -31,7 +31,7 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
 
   useEffect(() => {
     isRetroActive();
-  }, []);
+  }, [tID]);
 
   async function createRetrospective(
     teamId: string,

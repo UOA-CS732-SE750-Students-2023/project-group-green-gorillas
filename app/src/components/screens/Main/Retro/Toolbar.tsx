@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import stageStyles from "./styles/stage.module.css";
 import styles from "./styles/styles.module.css";
@@ -23,7 +23,23 @@ import { DateTime } from "luxon";
 function Toolbar({ retro, timer }: any) {
   const isFinalStage = retro.stage === RetroStage.REVIEW;
 
+  const boardNoteLength = useMemo(() => {
+    return retro.boardSections.reduce((acc: any, section: any) => {
+      return acc + section.boardNotes.length;
+    }, 0);
+  }, [retro.boardSections]);
+
   const nextStage = async () => {
+    if (retro.stage === RetroStage.THINK && boardNoteLength === 0) {
+      await Swal.fire({
+        title: "You can not move to next stage",
+        text: "The board need to have at least one note",
+        icon: "error",
+        confirmButtonColor: "#3085d6",
+      });
+      return;
+    }
+
     const result = await Swal.fire({
       title: isFinalStage
         ? "Are you sure to end your retro?"

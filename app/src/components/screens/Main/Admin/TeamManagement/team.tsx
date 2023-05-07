@@ -16,8 +16,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { request } from '../../../../../api/request';
-import { TEAM_LIST } from '../../../../../api/api';
+import { TEAM_LIST, USER_LIST } from '../../../../../api/api';
 import { UseRole, User } from '../../../../../types/user';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormHelperText from '@mui/material/FormHelperText';
+import { Role } from '../../../../../types/teamRole';
 
 interface Team {
   id: string;
@@ -34,14 +40,20 @@ interface Team {
 export default function UpdateTeam() {
 
   const [selectedRow, setSelectedRow] = useState<Team | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogEditOpen, setDialogEditOpen] = useState(false);
+  const [dialogNewOpen, setDialogNewOpen] = useState(false);
+  const [dialogAddUserOpen, setDialogAddUserOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [team, setTeam] = useState<Team[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const newTeamInputRef = useRef<HTMLInputElement>(null);
   const [teamMembers, setTeamMembers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<Team | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedTeamId, setSelectedTeamId] = useState('');
+  const [selectedTeamRole, setSelectedTeamRole] = useState(Role.MEMBER);
 
   const handleDisableEnableTeam = (teamId: string, active: boolean) => {
     const updatedTeam = { active };
@@ -91,6 +103,7 @@ export default function UpdateTeam() {
         // Update the team in the UI state or trigger a re-fetch
         const updatedTeamMembers = teamMembers.filter((m) => m.id !== removedUserId);
         setTeamMembers(updatedTeamMembers);
+        getTeamList();
       })
     }
     catch (error) {
@@ -118,10 +131,28 @@ export default function UpdateTeam() {
           size="small"
           onClick={() => {
             setSelectedTeam(params.row as Team);
-            handleOpenDialog();
+            handleOpenEditDialog();
           }}
         >
           Edit
+        </Button>
+      ),
+    },
+    {
+      field: 'addUser',
+      headerName: '',
+      width: 120,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => {
+            setSelectedTeam(params.row as Team);
+            handleOpenAddUserDialog();
+          }}
+        >
+          Add Member
         </Button>
       ),
     },
@@ -192,8 +223,7 @@ export default function UpdateTeam() {
         };
       });
       setTeam(teamsWithMembers);
-      console.log(teamsWithMembers);
-      console.log(teamMembers);
+      console.log("TeamWithMembers: "+ teamsWithMembers);
     } catch (error) {
       console.log(error);
     } finally {
@@ -205,14 +235,30 @@ export default function UpdateTeam() {
     (async () => {
       await getTeamList();
     })();
-  }, []);
+  }, [teamMembers]);
 
-  const handleOpenDialog = () => {
-    setDialogOpen(true);
+  const handleOpenEditDialog = () => {
+    setDialogEditOpen(true);
   };
 
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
+  const handleCloseEditDialog = () => {
+    setDialogEditOpen(false);
+  };
+
+  const handleOpenNewDialog = () => {
+    setDialogNewOpen(true);
+  };
+
+  const handleCloseNewDialog = () => {
+    setDialogNewOpen(false);
+  };
+  const handleOpenAddUserDialog = () => {
+    setDialogAddUserOpen(true);
+    populateUsers();
+  };
+
+  const handleCloseAddUserDialog = () => {
+    setDialogAddUserOpen(false);
   };
 
   //const handleRowSelection = (params: GridRowParams, event: MouseEvent) => {
@@ -220,7 +266,6 @@ export default function UpdateTeam() {
     setSelectedRow(params.row as Team);
     console.log(`Row ${params.id} clicked!`);
     console.log(`Team Name ${params.row.name} clicked!`);
-
     const teamMembers = params.row.teamMembers;
     const selectedTeamId = params.row.id;
     setSelectedTeamId(selectedTeamId);
@@ -229,7 +274,7 @@ export default function UpdateTeam() {
     console.log(`Team Members:`, teamMembers);
   };
 
-  const handleSaveName = () => {
+  const handleEditTeam = () => {
     const teamId = selectedTeam?.id;
     const updatedName = nameInputRef.current?.value;
     if (selectedTeam && nameInputRef.current) {
@@ -251,69 +296,165 @@ export default function UpdateTeam() {
         // Handle error, e.g. display a message to the user
       };
       console.log(`Updating team ${selectedTeam.id} name to "${nameInputRef.current.value}"`);
-      handleCloseDialog();
+      handleCloseEditDialog();
     }
   };
 
-  const handleNewTeam = () => { 
-      try {
-        request.post(`http://localhost:8080/api/team`, {
-          data: {name: "New Team"},
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }).then((response) => {
-          console.log('New Team created successfully', response.data);
-          //  New team in the UI state or trigger a re-fetch
-          getTeamList();
-        })
-      }
-      catch (error) {
-        console.error('Failed to create team', error);
-        // Handle error, e.g. display a message to the user
-      };
-      handleCloseDialog();
+  const handleNewTeam = () => {
+    const newTeamName = { name: newTeamInputRef.current?.value };
+    try {
+      request.post(`http://localhost:8080/api/team`, newTeamName, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((response) => {
+        console.log('New Team created successfully', response.data);
+        //  New team in the UI state or trigger a re-fetch
+        getTeamList();
+      })
+    }
+    catch (error) {
+      console.error('Failed to create team', error);
+      // Handle error, e.g. display a message to the user
+    };
+    handleCloseNewDialog();
+  };
+
+  const populateUsers = async () => {
+    setLoading(true);
+    try {
+      const { data } = await request.get<User[]>(USER_LIST());
+      setUsers(data);
+      console.log("All users data: " + data.toString());
+      setDialogAddUserOpen(true);
+    } catch (error) {
+      console.error('Failed to fetch users', error);
+      // Handle error, e.g. display a message to the user
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddTeamUser = () => {
+    const newTeamUser = {
+      userId: selectedUserId,
+      userTeamRole: selectedTeamRole,
+      teamId: selectedTeamId
+    };
+    console.log("userId: " + selectedUserId);
+    console.log("userTeamRole: " + selectedTeamRole);
+    console.log("teamId: " + selectedTeamId);
+    try {
+      request.post(`http://localhost:8080/api/team/add-team-user`, newTeamUser, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((response) => {
+        console.log('New Team User created successfully', response.data);
+        //  New team in the UI state or trigger a re-fetch
+        getTeamList();
+      })
+    }
+    catch (error) {
+      console.error('Failed to create team user', error);
+      // Handle error, e.g. display a message to the user
+    };
+    handleCloseAddUserDialog();
+  };
+
+  const handleUserNameChange = (event: SelectChangeEvent) => {
+    const userId = event.target.value;
+    setSelectedUserId(userId);
+    console.log("handleChange UserId: " + userId);
+  };
+
+  const handleTeamRoleChange = (event: SelectChangeEvent) => {
+    const teamRole = event.target.value as Role;
+    setSelectedTeamRole(teamRole);
+    console.log("handleChange TeamRole: " + teamRole);
   };
 
   return (
     <>
       <div>
         <p></p>
-        <Button variant="contained" color="primary" onClick={handleOpenDialog}>
-        Create Team
-      </Button>
-      <p></p>
+        <Button variant="contained" color="primary" onClick={handleOpenNewDialog}>
+          Create Team
+        </Button>
+        <p></p>
       </div>
-      <div style={{ height: 300, width: '100%' }}>
+      <div style={{ height: 400, width: '100%' }}>
         <DataGrid rows={team} columns={columns} onRowClick={handleRowSelection} />
-        <div style={{ height: 500, width: '100%' }}>
+        <div style={{ height: 600, width: '100%' }}>
           <DataGrid rows={teamMembers} columns={teamMemberColumns} />
         </div>
       </div>
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Edit team name</DialogTitle>
+      <Dialog open={dialogEditOpen} onClose={handleCloseEditDialog}>
+        <DialogTitle>Edit Team</DialogTitle>
         <DialogContent>
           <input type="text" defaultValue={selectedTeam?.name} ref={nameInputRef} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleSaveName}>Save</Button>
+          <Button onClick={handleCloseEditDialog}>Cancel</Button>
+          <Button onClick={handleEditTeam}>Save</Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Create new team</DialogTitle>
+      <Dialog open={dialogNewOpen} onClose={handleCloseNewDialog}>
+        <DialogTitle>Create New Team</DialogTitle>
         <DialogContent>
-          <input type="text" defaultValue={selectedTeam?.name} ref={nameInputRef} />
+          <input type="text" ref={newTeamInputRef} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleCloseNewDialog}>Cancel</Button>
           <Button onClick={handleNewTeam}>Save</Button>
         </DialogActions>
       </Dialog>
+      <Dialog open={dialogAddUserOpen} onClose={handleCloseAddUserDialog}>
+        <DialogTitle>Add User To Team</DialogTitle>
+        <DialogContent>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+
+            <FormControl sx={{ m: 1, minWidth: 250 }} size="small">
+              <InputLabel id="select-user-label">User Name</InputLabel>
+              <Select
+                labelId="select-user-label"
+                id="select-user"
+                value={selectedUserId}
+                label="User Name"
+                onChange={handleUserNameChange}
+              >
+                {users.map((user) => (
+                  <MenuItem key={user.id} value={user.id}>
+                    {user.firstName + " " + user.lastName}
+                  </MenuItem>
+                ))}
+              </Select>
+              <FormHelperText>Select a user</FormHelperText>
+            </FormControl>
+
+          </div>
+          <div>
+            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+              <InputLabel id="select-teamrole-label">Team Role</InputLabel>
+              <Select
+                labelId="select-teamrole-label"
+                id="select-teamrole"
+                value={selectedTeamRole}
+                label="Team Role"
+                onChange={handleTeamRoleChange}
+              >
+                <MenuItem value={Role.LEADER}>{Role.LEADER}</MenuItem>
+                <MenuItem value={Role.TEMPORARY_LEADER}>{Role.TEMPORARY_LEADER}</MenuItem>
+                <MenuItem value={Role.MEMBER}>{Role.MEMBER}</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAddUserDialog}>Cancel</Button>
+          <Button onClick={handleAddTeamUser}>Add</Button>
+        </DialogActions>
+      </Dialog >
     </>
   );
 }
-
-
-
-

@@ -66,7 +66,7 @@ function VoteGroup({
             {!hasVoted ? (
               <Box
                 onClick={() => vote(id, retroId)}
-                className={stageStyles.vote__button}
+                className={stageStyles.vote__button__after}
               >
                 <Box
                   component="img"
@@ -78,7 +78,7 @@ function VoteGroup({
             ) : (
               <Box
                 onClick={() => unvote(id)}
-                className={stageStyles.vote__button__after}
+                className={stageStyles.vote__button}
               >
                 <Box
                   component="img"

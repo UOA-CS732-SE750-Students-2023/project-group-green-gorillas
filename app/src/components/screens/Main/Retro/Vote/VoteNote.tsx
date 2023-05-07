@@ -41,7 +41,7 @@ function VoteNote({ note, vote, unvote, isSingleRetroHistory }: Props) {
             {!hasVoted ? (
               <div
                 onClick={() => vote(note.id, note.boardId)}
-                className={stageStyles.vote__button}
+                className={stageStyles.vote__button__after}
               >
                 <Box
                   component="img"
@@ -53,7 +53,7 @@ function VoteNote({ note, vote, unvote, isSingleRetroHistory }: Props) {
             ) : (
               <Box
                 onClick={() => unvote(note.id)}
-                className={stageStyles.vote__button__after}
+                className={stageStyles.vote__button}
               >
                 <Box
                   component="img"

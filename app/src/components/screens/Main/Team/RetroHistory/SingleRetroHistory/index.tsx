@@ -22,7 +22,6 @@ import { ActionListItem } from "../../Dashboard/ActionListItem";
 import { ActionItemStatus } from "../../../../../../types/actionItems";
 import Vote from "../../../Retro/Vote";
 import retroStyles from "../../../Retro/styles/retro.module.css";
-import { jsPDF } from "jspdf";
 import { useTeam } from "../../../../../../hooks/useTeam";
 
 //64bc116d-0f81-4f27-8324-b9b172142b73
@@ -75,20 +74,6 @@ export const SingleRetroHistory = () => {
 
   const ref = useRef<any>();
 
-  const generatePdf = async () => {
-    const reportElement = ref?.current;
-
-    if (!reportElement) return;
-
-    const report = new jsPDF("p", "pt", [1200, 1400], true);
-
-    await report.html(reportElement, {
-      margin: 20,
-    });
-
-    report.save(`${team?.name ?? ""}-${retro?.name ?? ""}.pdf`);
-  };
-
   useEffect(() => {
     (async () => {
       await getRetro();
@@ -103,18 +88,6 @@ export const SingleRetroHistory = () => {
   }
   return (
     <Container>
-      <Container
-        sx={{
-          paddingTop: 10,
-          justifyContent: "center",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Link style={{ cursor: "pointer" }} onClick={generatePdf}>
-          Export to PDF
-        </Link>
-      </Container>
       <div ref={ref}>
         <Container
           sx={{
@@ -122,6 +95,7 @@ export const SingleRetroHistory = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            paddingTop: 10,
           }}
         >
           <Typography

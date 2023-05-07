@@ -19,6 +19,8 @@ import {
 import { BoardNoteVoteService } from '../../domain/board-note-vote/board-note-vote.service';
 import * as Bluebird from 'bluebird';
 import { UserService } from '../../domain/user/user.service';
+import { BoardTimeInvestService } from '../../domain/board-time-invest/board-time-invest.service';
+import { BoardTimeInvestRate } from '../../domain/board-time-invest/board-time-invest';
 
 @Injectable()
 export class RetrospectiveService {
@@ -32,7 +34,22 @@ export class RetrospectiveService {
     private readonly utilsService: UtilsService,
     private readonly boardNoteVoteService: BoardNoteVoteService,
     private readonly userService: UserService,
+    private readonly boardTimeInvestService: BoardTimeInvestService,
   ) {}
+
+  public addBoardTimeInvest(
+    retroId: UUID,
+    userId: UUID,
+    organisationId: UUID,
+    rate: BoardTimeInvestRate,
+  ) {
+    return this.boardTimeInvestService.create(
+      retroId,
+      userId,
+      organisationId,
+      rate,
+    );
+  }
 
   public async getRetrospectiveTemplates(
     organisationId: UUID,
@@ -111,14 +128,21 @@ export class RetrospectiveService {
   }
 
   public async getRetrospective(boardId: UUID, teamId: UUID) {
-    const [board, boardSections, boardNotes, actionItems, boardNoteVotes] =
-      await Promise.all([
-        this.boardService.getByIdOrThrow(boardId, teamId),
-        this.boardSectionService.listByBoardId(boardId),
-        this.boardNoteService.listByBoardId(boardId),
-        this.actionItemService.listByBoardId(boardId, teamId),
-        this.boardNoteVoteService.listByBoardId(boardId),
-      ]);
+    const [
+      board,
+      boardSections,
+      boardNotes,
+      actionItems,
+      boardNoteVotes,
+      boardTimeInvests,
+    ] = await Promise.all([
+      this.boardService.getByIdOrThrow(boardId, teamId),
+      this.boardSectionService.listByBoardId(boardId),
+      this.boardNoteService.listByBoardId(boardId),
+      this.actionItemService.listByBoardId(boardId, teamId),
+      this.boardNoteVoteService.listByBoardId(boardId),
+      this.boardTimeInvestService.listByBoardId(boardId),
+    ]);
 
     const participantIds = uniq(
       [board.createdBy].concat(
@@ -161,6 +185,7 @@ export class RetrospectiveService {
       actionItems: mappedActionItems,
       participants: participants.filter((user) => !!user),
       createdByUser: createdByUser ?? null,
+      boardTimeInvests,
     };
   }
 
@@ -192,6 +217,9 @@ export class RetrospectiveService {
         stage = BoardStage.DISCUSS;
         break;
       case BoardStage.DISCUSS:
+        stage = BoardStage.REVIEW;
+        break;
+      case BoardStage.REVIEW:
         stage = BoardStage.FINALIZE;
         break;
     }

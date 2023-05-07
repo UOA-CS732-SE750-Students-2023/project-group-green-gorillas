@@ -97,5 +97,9 @@
     "FAILED_TO_SAVE": "Failed to get board note vote",
     "FAILED_TO_DELETE": "Failed to delete board note vote",
     "NOT_FOUND": "Board note vote is not found"
+  },
+  "BOARD_TIME_INVEST": {
+    "FAILED_TO_SAVE": "Failed to save board time invest",
+    "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list board time invest by board id"
   }
 }

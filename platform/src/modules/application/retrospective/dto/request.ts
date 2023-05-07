@@ -10,6 +10,7 @@ import {
   BoardNoteColor,
   BoardNoteType,
 } from '../../../domain/board-note/board-note';
+import { BoardTimeInvestRate } from '../../../domain/board-time-invest/board-time-invest';
 
 export class CreateRetroRequestRequest {
   @IsUUID()
@@ -173,4 +174,12 @@ export class SetRetroSessionPayload {
 
   @IsString()
   sessionPayload: string;
+}
+
+export class AddBoardTimeInvestRateRequest {
+  @IsUUID()
+  retroId: UUID;
+
+  @IsEnum(BoardTimeInvestRate)
+  rate!: BoardTimeInvestRate;
 }

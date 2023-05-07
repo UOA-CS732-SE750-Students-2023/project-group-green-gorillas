@@ -53,6 +53,9 @@ export class DatabaseConfig {
 
   @IsString()
   boardNoteVoteTableName: string;
+
+  @IsString()
+  boardTimeInvestTableName: string;
 }
 
 export default registerAs(Config.DATABASE, () =>
@@ -74,5 +77,6 @@ export default registerAs(Config.DATABASE, () =>
     boardTemplateTableName: process.env.DATABASE_BOARD_TEMPLATE_TABLE_NAME,
     teamDashboardTableName: process.env.DATABASE_TEAM_DASHBOARD_TABLE_NAME,
     boardNoteVoteTableName: process.env.DATABASE_BOARD_NOTE_VOTE_TABLE_NAME,
+    boardTimeInvestTableName: process.env.DATABASE_BOARD_TIME_INVEST_TABLE_NAME,
   }),
 );

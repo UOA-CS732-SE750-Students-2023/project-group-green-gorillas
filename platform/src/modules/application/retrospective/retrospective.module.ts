@@ -13,6 +13,7 @@ import { SocketModule } from '../../gateway/socket/socket.module';
 import { ActionItemModule } from '../../domain/action-item/action-item.module';
 import { UtilsModule } from '../utils/utils.module';
 import { BoardNoteVoteModule } from '../../domain/board-note-vote/board-note-vote.module';
+import { BoardTimeInvestModule } from '../../domain/board-time-invest/board-time-invest.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { BoardNoteVoteModule } from '../../domain/board-note-vote/board-note-vot
     ActionItemModule,
     UtilsModule,
     BoardNoteVoteModule,
+    BoardTimeInvestModule,
   ],
   controllers: [RetrospectiveController],
   providers: [RetrospectiveService],

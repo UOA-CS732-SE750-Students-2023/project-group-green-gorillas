@@ -179,7 +179,7 @@ export class AuthService {
     if (!user.active) {
       throw new InternalException(
         'TOKEN.FAILED_TO_REFRESH_TOKEN',
-        'user is in active',
+        'user is inactive',
         HttpStatus.UNAUTHORIZED,
       );
     }

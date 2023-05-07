@@ -9,6 +9,7 @@ export enum BoardStage {
   GROUP = 'Group',
   VOTE = 'Vote',
   DISCUSS = 'Discuss',
+  REVIEW = 'Review',
   FINALIZE = 'Finalized',
 }
 

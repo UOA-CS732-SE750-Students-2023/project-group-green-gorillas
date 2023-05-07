@@ -10,6 +10,7 @@ import Toolbar from "./Toolbar";
 import Vote from "./Vote";
 import { Finalized } from "./Finalized";
 import { DateTime } from "luxon";
+import { Review } from "./Review";
 
 const stageDigits = ["One", "Two", "Three", "Four", "Five", "Six"];
 
@@ -32,6 +33,7 @@ function Stage({ retro }: Props) {
     [RetroStage.GROUP]: <Group retro={retro} />,
     [RetroStage.VOTE]: <Vote retro={retro} />,
     [RetroStage.DISCUSS]: <Discuss retro={retro} />,
+    [RetroStage.REVIEW]: <Review retro={retro} />,
     [RetroStage.FINALIZE]: <Finalized retro={retro} />,
   };
 

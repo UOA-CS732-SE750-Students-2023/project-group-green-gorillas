@@ -14,6 +14,7 @@ import {
   RequestUserType,
 } from '../../../utils/decorators/request-user';
 import {
+  AddBoardTimeInvestRateRequest,
   AddNoteRequest,
   AddSectionRequest,
   AssignNoteGroup,
@@ -100,6 +101,27 @@ export class RetrospectiveController {
     );
 
     return vote;
+  }
+
+  @Post('add-board-time-invest-rate')
+  public async addBoardTimeInvestRate(
+    @RequestUser() user: RequestUserType,
+    @Body() { retroId, rate }: AddBoardTimeInvestRateRequest,
+  ) {
+    const boardTimeInvest = await this.retrospectiveService.addBoardTimeInvest(
+      retroId,
+      user.id,
+      user.organisationId,
+      rate,
+    );
+
+    this.socketEventService.broadcastRoom(
+      boardTimeInvest.boardId,
+      ClientSocketMessageEvent.BOARD_TIME_INVEST,
+      buildSocketEvent(SocketEventOperation.CREATE, boardTimeInvest),
+    );
+
+    return boardTimeInvest;
   }
 
   @Post('create')

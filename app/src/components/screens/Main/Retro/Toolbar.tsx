@@ -21,7 +21,7 @@ import { MainScreenPath } from "../index";
 import { DateTime } from "luxon";
 
 function Toolbar({ retro, timer }: any) {
-  const isFinalStage = retro.stage === RetroStage.DISCUSS;
+  const isFinalStage = retro.stage === RetroStage.REVIEW;
 
   const nextStage = async () => {
     const result = await Swal.fire({

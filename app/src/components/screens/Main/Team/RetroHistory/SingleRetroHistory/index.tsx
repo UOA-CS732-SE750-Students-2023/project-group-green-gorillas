@@ -24,7 +24,6 @@ import Vote from "../../../Retro/Vote";
 import retroStyles from "../../../Retro/styles/retro.module.css";
 import { useTeam } from "../../../../../../hooks/useTeam";
 
-//64bc116d-0f81-4f27-8324-b9b172142b73
 export const SingleRetroHistory = () => {
   const [retro, setRetro] = useState<any>(null);
   const [isLoadingRetroData, setIsLoadingRetroData] = useState<boolean>(true);

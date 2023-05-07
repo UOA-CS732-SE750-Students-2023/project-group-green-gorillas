@@ -8,10 +8,20 @@ import { Box } from "@mui/material";
 
 function GroupColumn({ id, column }: any) {
   return (
-    <Box className={stageStyles.column}>
+    <Box
+      className={stageStyles.column}
+      sx={{
+        width: "33% !important",
+      }}
+    >
       <Box className={stageStyles.column__header}>
         <div>
-          <Box className={styles.select__heading}>{column.description}</Box>
+          <Box
+            className={styles.select__heading}
+            sx={{ height: 70, overflow: "scroll" }}
+          >
+            {column.description}
+          </Box>
           <Box className={styles.heading}>{column.name}</Box>
         </div>
       </Box>
@@ -24,7 +34,6 @@ function GroupColumn({ id, column }: any) {
               index={index}
               items={group.items}
               key={group.id}
-              // setGroupName={setGroupName}
               name={group.note}
             />
           )

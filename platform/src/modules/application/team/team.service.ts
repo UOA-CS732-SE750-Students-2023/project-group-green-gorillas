@@ -24,20 +24,25 @@ export class TeamService {
     private readonly boardService: BoardService,
   ) {}
 
-  private async getTeamRemembers(
-    teamId: UUID,
-    organisationId: UUID,
-  ): Promise<User[]> {
+  private async getTeamRemembers(teamId: UUID, organisationId: UUID) {
     const userTeams = await this.userTeamService.listByTeamId(
       teamId,
       organisationId,
     );
 
-    const users = await Promise.all(
-      userTeams.map((userTeam) =>
-        this.userService.getById(userTeam.userId, userTeam.organisationId),
-      ),
-    );
+    const users = await Bluebird.map(userTeams, async (userTeam) => {
+      const user = await this.userService.getById(
+        userTeam.userId,
+        userTeam.organisationId,
+      );
+
+      if (!user) return null;
+
+      return {
+        ...user,
+        role: userTeam.role,
+      };
+    });
 
     return users.filter((user) => !!user);
   }

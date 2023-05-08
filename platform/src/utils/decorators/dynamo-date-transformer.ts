@@ -14,13 +14,13 @@ export const DynamoTimestampTransformer = (): PropertyDecorator => {
   };
 };
 
-const transformIncomingValue =
+export const transformIncomingValue =
   () =>
   ({ value }: { value: number }) => {
     return DateTime.fromMillis(value);
   };
 
-const transformOutgoingValue =
+export const transformOutgoingValue =
   () =>
   ({ value }: { value: DateTime }) => {
     return (value as DateTime).toMillis();

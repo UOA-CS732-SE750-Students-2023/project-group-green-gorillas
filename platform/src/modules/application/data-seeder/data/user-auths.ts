@@ -42,7 +42,15 @@ export const userAuths = [
     createdAt: DateTime.now().toMillis(),
   },
   {
-    userId: 'ed1a3647-536c-4aeb-842d-00cdbce5e509',
+    userId: 'd9530a7c-08dd-4d58-9bdd-a7de4ee2df16',
+    organisationId: '53eec30c-db79-474a-83cd-5c0ae42cca2b',
+    password: '123456',
+    passwordSalt: 'qowdhqowdhqw',
+    updatedAt: DateTime.now().toMillis(),
+    createdAt: DateTime.now().toMillis(),
+  },
+  {
+    userId: 'a59111ae-2fac-49f3-a16d-217f2ff2ac75',
     organisationId: '53eec30c-db79-474a-83cd-5c0ae42cca2b',
     password: '123456',
     passwordSalt: 'qowdhqowdhqw',

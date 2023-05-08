@@ -35,6 +35,17 @@ export class BoardTimeInvestRepository extends DatabaseRepository<BoardTimeInves
     }
   }
 
+  public async delete(boardId: UUID, userId: UUID): Promise<void> {
+    try {
+      return this.deleteItem({ boardId, userId });
+    } catch (error) {
+      throw new InternalException(
+        'BOARD_TIME_INVEST.FAILED_TO_DELETE',
+        error.message,
+      );
+    }
+  }
+
   public async listByTeamId(teamId: UUID): Promise<BoardTimeInvest[]> {
     const command = new QueryCommand({
       TableName: this.tableName,

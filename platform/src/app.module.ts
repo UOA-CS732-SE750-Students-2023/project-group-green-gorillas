@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { GlobalModule } from './modules/global/global.module';
 import { AuthModule } from './modules/application/auth/auth.module';
 import { DataSeederModule } from './modules/application/data-seeder/data-seeder.module';
@@ -28,6 +27,5 @@ if (process.env.NODE_ENV === Environment.LOCAL) {
 
 @Module({
   imports: modules,
-  controllers: [AppController],
 })
 export class AppModule {}

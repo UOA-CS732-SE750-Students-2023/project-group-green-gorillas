@@ -35,4 +35,8 @@ export class BoardTimeInvestService {
   public listByTeamId(teamId: UUID): Promise<BoardTimeInvest[]> {
     return this.boardTimeInvestRepository.listByTeamId(teamId);
   }
+
+  public delete(boardId: UUID, userId: UUID): Promise<void> {
+    return this.boardTimeInvestRepository.delete(boardId, userId);
+  }
 }

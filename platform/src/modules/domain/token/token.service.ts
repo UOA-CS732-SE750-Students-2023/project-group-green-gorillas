@@ -130,7 +130,8 @@ export class TokenService {
     }
   }
 
-  public delete(userId: UUID, tokenValue: string): Promise<void> {
+  public async delete(userId: UUID, tokenValue: string): Promise<void> {
+    await this.cacheManager.del(TokenService.buildTokenKey(userId, tokenValue));
     return this.tokenRepository.delete(userId, tokenValue);
   }
 }

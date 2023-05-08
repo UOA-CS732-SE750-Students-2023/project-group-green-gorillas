@@ -10,13 +10,20 @@ import {
   RequestUserType,
 } from '../../../utils/decorators/request-user';
 import { UpdateOrganisationName } from './dto/request';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { OrganisationResponse } from './dto/response';
 
+@ApiTags('Organisation')
 @Controller({
   path: ['api/organisation'],
 })
 export class OrganisationController {
   constructor(private readonly organisationService: OrganisationService) {}
 
+  @ApiOkResponse({
+    description: 'Update the organisation name',
+    type: OrganisationResponse,
+  })
   @Patch('update-name')
   @UseAuthGuard()
   @AllowedRoles([UserRole.ADMIN])

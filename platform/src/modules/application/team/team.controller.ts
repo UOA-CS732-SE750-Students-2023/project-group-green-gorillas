@@ -33,7 +33,9 @@ import {
   RequestUserType,
 } from '../../../utils/decorators/request-user';
 import { UserRole } from '../../domain/user/user';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Team')
 @Controller({
   path: ['api/team'],
 })
@@ -41,6 +43,9 @@ import { UserRole } from '../../domain/user/user';
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 
+  @ApiOkResponse({
+    description: 'Get team board time invest',
+  })
   @Get('board-time-invest/:teamId')
   public getTeamBoardTimeInvest(
     @Param() { teamId }: GetBoardTimeInvestRequestParams,
@@ -48,6 +53,9 @@ export class TeamController {
     return this.teamService.getTeamBoardTimeInvest(teamId);
   }
 
+  @ApiOkResponse({
+    description: 'Get team retro history list',
+  })
   @Get('retro-history/:teamId')
   public getTeamRetroHistory(
     @Param() { teamId }: GetTeamRetroHistoryRequestParam,
@@ -55,6 +63,9 @@ export class TeamController {
     return this.teamService.getTeamRetroHistory(teamId);
   }
 
+  @ApiOkResponse({
+    description: 'get team in-progress retro',
+  })
   @Get('in-progress-retro/:teamId')
   public async getInProgressRetro(@Param() { teamId }: GetHasInProgressRetro) {
     const retro = await this.teamService.getInProgressRetro(teamId);
@@ -64,6 +75,9 @@ export class TeamController {
     };
   }
 
+  @ApiOkResponse({
+    description: 'Check whether team has progress retro',
+  })
   @Get('has-in-progress-retro/:teamId')
   public getHasInProgressRetro(
     @Param() { teamId }: GetHasInProgressRetro,
@@ -71,6 +85,9 @@ export class TeamController {
     return this.teamService.hasInProgressRetro(teamId);
   }
 
+  @ApiOkResponse({
+    description: 'Get team insight for dashboard',
+  })
   @Get('insight/:teamId')
   public getTeamInsight(
     @RequestUser() user: RequestUserType,
@@ -79,6 +96,9 @@ export class TeamController {
     return this.teamService.getTeamInsight(teamId, user.organisationId);
   }
 
+  @ApiOkResponse({
+    description: 'Get current user role',
+  })
   @Get('team-role/:teamId')
   public getCurrentUserTeamRole(
     @RequestUser() user: RequestUserType,
@@ -87,12 +107,18 @@ export class TeamController {
     return this.teamService.getTeamRole(user.id, teamId);
   }
 
+  @ApiOkResponse({
+    description: 'List all organisation teams',
+  })
   @Get('list')
   @AllowedRoles([UserRole.ADMIN])
   public getOrganisationTeams(@RequestUser() user: RequestUserType) {
     return this.teamService.getOrganisationTeams(user.organisationId);
   }
 
+  @ApiOkResponse({
+    description: 'get users team',
+  })
   @Get('/:teamId')
   public getUserTeamById(
     @Param() { teamId }: GetTeamByIdRequestParams,
@@ -101,6 +127,9 @@ export class TeamController {
     return this.teamService.getUserTeamById(teamId, user.organisationId, user);
   }
 
+  @ApiOkResponse({
+    description: 'Update team user',
+  })
   @Put('update-team-user')
   @AllowedRoles([UserRole.ADMIN])
   public async updateTeamUser(
@@ -115,6 +144,9 @@ export class TeamController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'Update Team Info',
+  })
   @Put('/:teamId')
   @AllowedRoles([UserRole.ADMIN])
   public updateTeam(
@@ -130,6 +162,9 @@ export class TeamController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'Activate/Disable the team',
+  })
   @Patch('update-active/:teamId')
   @AllowedRoles([UserRole.ADMIN])
   public async updateTeamActive(
@@ -144,6 +179,9 @@ export class TeamController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'Add team',
+  })
   @Post('/')
   @AllowedRoles([UserRole.ADMIN])
   public async addTeam(
@@ -153,6 +191,9 @@ export class TeamController {
     return this.teamService.addTeam(name, user.organisationId);
   }
 
+  @ApiOkResponse({
+    description: 'Add team user',
+  })
   @Post('add-team-user')
   @AllowedRoles([UserRole.ADMIN])
   public async addTeamUser(
@@ -167,6 +208,9 @@ export class TeamController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'remove team user',
+  })
   @Delete('remove-team-user')
   @AllowedRoles([UserRole.ADMIN])
   public async removeTeamUser(

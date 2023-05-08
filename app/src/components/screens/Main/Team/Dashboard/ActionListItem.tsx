@@ -6,6 +6,7 @@ import {
   CardContent,
   Chip,
   Link,
+  Stack,
   Typography,
 } from "@mui/material";
 import { Avatar } from "../../../../common/Avatar";
@@ -31,6 +32,9 @@ export const ActionListItem = ({
 }: Props) => {
   const { updateActionItems, deleteActionItems } = useActionItems(teamId || "");
 
+  // console.log(completed);
+  
+
   const history = useHistory();
 
   const onNavigateToRetroHistory = (retro: any): void => {
@@ -54,17 +58,14 @@ export const ActionListItem = ({
         <Typography variant="h6" component="div">
           {actionItem.note}
         </Typography>
-        <Chip label={actionItem.status} color="success" size="small" />
-
-        <Link
-          onClick={() => onNavigateToRetroHistory(actionItem.retro)}
-          sx={{ cursor: "pointer" }}
-        >
-          <Typography color="text.secondary" component="div">
-            {actionItem?.retro?.name}
-          </Typography>
-        </Link>
-
+        <Stack direction="row" spacing={1}>
+          <Chip label={actionItem.status} color="success" size="small" />
+          <Chip
+            label={actionItem?.retro?.name}
+            size="small"
+            onClick={() => onNavigateToRetroHistory(actionItem.retro)}
+          />
+        </Stack>
         <Typography color="text.secondary" component="div">
           {actionItem.createdAt.slice(0, 10)}
         </Typography>
@@ -104,7 +105,7 @@ export const ActionListItem = ({
           >
             Complete
           </Button>
-        )}
+        )} 
       </CardActions>
     </Card>
   );

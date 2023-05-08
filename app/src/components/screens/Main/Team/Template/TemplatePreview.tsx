@@ -24,6 +24,8 @@ import Swal from "sweetalert2";
 export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
   previewTemp,
   tID,
+  teamRole
+
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [retroName, setRetroName] = useState<string>("");
@@ -156,7 +158,8 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
           placement={"left"}
         >
           <Box>
-            <Button
+          {teamRole?.role !== "MEMBER" ?
+            (<Button
               variant="contained"
               sx={{
                 bgcolor: "orange",
@@ -172,7 +175,8 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
               disabled={isRetroActiveIdentifier}
             >
               Start Retro
-            </Button>
+            </Button>)
+            : null }
           </Box>
         </Tooltip>
       </CardContent>

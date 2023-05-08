@@ -155,10 +155,6 @@ export const ProfileScreen = () => {
 
 
 
-
-
-  // TODO route
-
     const [open, setOpen] = useState(false);
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -202,10 +198,13 @@ export const ProfileScreen = () => {
 
             String(newPassword)
             String(oldPassword)
+
             const req = {
-                "newPassword": {newPassword},
-                "oldPassword": {oldPassword}
+                newPassword,
+                oldPassword
             }
+
+
 
             request.put<UserData>(CHANGE_PASSWORD, req)
                 .then(r => {

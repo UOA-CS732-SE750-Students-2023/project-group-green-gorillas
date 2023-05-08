@@ -41,12 +41,14 @@ export class RetrospectiveService {
     retroId: UUID,
     userId: UUID,
     organisationId: UUID,
+    teamId: UUID,
     rate: BoardTimeInvestRate,
   ) {
     return this.boardTimeInvestService.create(
       retroId,
       userId,
       organisationId,
+      teamId,
       rate,
     );
   }
@@ -235,7 +237,22 @@ export class RetrospectiveService {
 
     await this.boardService.delete(retroId, teamId);
 
-    // TODO: delete all relevant data
+    const actionItems = await this.actionItemService.listByBoardId(
+      retroId,
+      teamId,
+    );
+
+    await Bluebird.map(actionItems, (actionItem) =>
+      this.actionItemService.delete(actionItem.id),
+    );
+
+    const timeInvests = await this.boardTimeInvestService.listByBoardId(
+      retroId,
+    );
+
+    await Bluebird.map(timeInvests, (timeInvest) =>
+      this.boardTimeInvestService.delete(timeInvest.boardId, timeInvest.userId),
+    );
 
     await this.teamDashboardService.decrease(
       teamId,

@@ -158,8 +158,10 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
           placement={"left"}
         >
           <Box>
+
           {/* {teamRole?.role !== "MEMBER" ? */}
             <Button
+
               variant="contained"
               sx={{
                 bgcolor: "orange",
@@ -175,8 +177,10 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
               disabled={isRetroActiveIdentifier}
             >
               Start Retro
+
             </Button>
             {/* : null } */}
+
           </Box>
         </Tooltip>
       </CardContent>

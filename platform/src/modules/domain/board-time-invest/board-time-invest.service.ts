@@ -14,14 +14,25 @@ export class BoardTimeInvestService {
     boardId: UUID,
     userId: UUID,
     organisationId: UUID,
+    teamId: UUID,
     rate: BoardTimeInvestRate,
   ): Promise<BoardTimeInvest> {
     return this.boardTimeInvestRepository.save(
-      BoardTimeInvestFactory.create(boardId, userId, organisationId, rate),
+      BoardTimeInvestFactory.create(
+        boardId,
+        userId,
+        organisationId,
+        teamId,
+        rate,
+      ),
     );
   }
 
   public listByBoardId(boardId: UUID): Promise<BoardTimeInvest[]> {
     return this.boardTimeInvestRepository.listByBoardId(boardId);
+  }
+
+  public listByTeamId(teamId: UUID): Promise<BoardTimeInvest[]> {
+    return this.boardTimeInvestRepository.listByTeamId(teamId);
   }
 }

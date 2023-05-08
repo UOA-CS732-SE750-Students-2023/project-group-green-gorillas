@@ -106,12 +106,13 @@ export class RetrospectiveController {
   @Post('add-board-time-invest-rate')
   public async addBoardTimeInvestRate(
     @RequestUser() user: RequestUserType,
-    @Body() { retroId, rate }: AddBoardTimeInvestRateRequest,
+    @Body() { retroId, rate, teamId }: AddBoardTimeInvestRateRequest,
   ) {
     const boardTimeInvest = await this.retrospectiveService.addBoardTimeInvest(
       retroId,
       user.id,
       user.organisationId,
+      teamId,
       rate,
     );
 

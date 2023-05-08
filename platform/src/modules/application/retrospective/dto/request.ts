@@ -182,4 +182,7 @@ export class AddBoardTimeInvestRateRequest {
 
   @IsEnum(BoardTimeInvestRate)
   rate!: BoardTimeInvestRate;
+
+  @IsUUID()
+  teamId: UUID;
 }

@@ -13,6 +13,7 @@ import { TeamDashboard } from '../../domain/team-dashboard/team-dashboard';
 import { BoardService } from '../../domain/board/board.service';
 import { BoardStage } from '../../domain/board/board';
 import * as _ from 'lodash';
+import { BoardTimeInvestService } from '../../domain/board-time-invest/board-time-invest.service';
 
 @Injectable()
 export class TeamService {
@@ -22,6 +23,7 @@ export class TeamService {
     private readonly userService: UserService,
     private readonly teamDashboardService: TeamDashboardService,
     private readonly boardService: BoardService,
+    private readonly boardTimeInvestService: BoardTimeInvestService,
   ) {}
 
   private async getTeamRemembers(teamId: UUID, organisationId: UUID) {
@@ -45,6 +47,10 @@ export class TeamService {
     });
 
     return users.filter((user) => !!user);
+  }
+
+  public getTeamBoardTimeInvest(teamId: UUID) {
+    return this.boardTimeInvestService.listByTeamId(teamId);
   }
 
   public async getUserTeamById(

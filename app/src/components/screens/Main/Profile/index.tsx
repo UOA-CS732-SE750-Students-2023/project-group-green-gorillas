@@ -128,7 +128,6 @@ export const ProfileScreen = () => {
         userData!.address = currentAddress;
         userData!.gender = currentGender;
 
-        console.log(userData);
 
         try {
             request.put<UserData>(CURRENT_USER, userData)
@@ -139,17 +138,6 @@ export const ProfileScreen = () => {
         } catch (error){
             console.log(error);
         }
-
-        const testData = {
-            displayName: "E",
-            firstName: "Et",
-            lastName: "W",
-            address: "ac",
-            phone: "1121",
-            gender: true
-        }
-        //
-        // console.log(testData)
 
     }
 
@@ -637,11 +625,10 @@ export const ProfileScreen = () => {
                   </Paper>
 
 
-                  {/*<Link to="/">Back to Home</Link>*/}
-
                   <Button variant="contained" color="primary"
                           sx={{marginTop:'1%',
-                              marginRight: '-85%'
+                              marginRight: '-85%',
+                              marginBottom: '1%'
                           }}
                           onClick={handleButtonClick}>
                       Back to home

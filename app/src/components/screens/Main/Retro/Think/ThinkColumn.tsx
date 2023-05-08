@@ -115,7 +115,7 @@ const ThinkColumn = ({
             onClick={deleteColumn}
             variant="text"
             color="error"
-            sx={{ marginTop: 0, marginBottom: 1 }}
+            sx={{ marginTop: -1, marginBottom: -1 }}
           >
             Delete
           </Button>

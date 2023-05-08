@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Grid, Card, CardContent, Typography } from "@mui/material";
 import { useRetroHistory } from "../../../../../../hooks/useRetroHistory";
 import { Avatar } from "../../../../../common/Avatar";
 import { MainScreenPath } from "../../../index";
@@ -19,12 +19,13 @@ export const RetroHistoryList = ({ selectedTeam }: Props) => {
   };
 
   return (
-    <Box>
+    <Grid container spacing={2}>
       {retroList?.map((retro) => (
+        <Grid item xs={3}>
         <Card
           onClick={() => navigateToRetroHistoryOverview(retro)}
           key={retro.id}
-          sx={{ maxWidth: 250, cursor: "pointer" }}
+          sx={{ cursor: "pointer" }}
         >
           <CardContent>
             <Typography variant="h5" noWrap sx={{ marginBottom: 2 }}>
@@ -35,7 +36,8 @@ export const RetroHistoryList = ({ selectedTeam }: Props) => {
             </Typography>
           </CardContent>
         </Card>
+        </Grid>
       ))}
-    </Box>
+    </Grid>
   );
 };

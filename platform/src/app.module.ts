@@ -9,6 +9,7 @@ import { TeamModule } from './modules/application/team/team.module';
 import { RetrospectiveModule } from './modules/application/retrospective/retrospective.module';
 import { ActionItemModule } from './modules/application/action-item/action-item.module';
 import { GatewayModule } from './modules/gateway/gateway.module';
+import { OrganisationModule } from './modules/application/organisation/organisation.module';
 
 const modules = [
   GlobalModule,
@@ -18,6 +19,7 @@ const modules = [
   RetrospectiveModule,
   ActionItemModule,
   GatewayModule,
+  OrganisationModule,
 ];
 
 if (process.env.NODE_ENV === Environment.LOCAL) {

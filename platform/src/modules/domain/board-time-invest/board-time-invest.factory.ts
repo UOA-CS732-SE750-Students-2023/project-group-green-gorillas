@@ -6,8 +6,9 @@ export class BoardTimeInvestFactory {
     boardId: UUID,
     userId: UUID,
     organisationId: UUID,
+    teamId: UUID,
     rate: BoardTimeInvestRate,
   ) {
-    return new BoardTimeInvest(boardId, userId, organisationId, rate);
+    return new BoardTimeInvest(boardId, userId, organisationId, teamId, rate);
   }
 }

@@ -8,6 +8,7 @@ import { TokenModule } from '../../domain/token/token.module';
 import { OrganisationModule } from '../../domain/organisation/organisation.module';
 import { TeamDashboardModule } from '../../domain/team-dashboard/team-dashboard.module';
 import { BoardModule } from '../../domain/board/board.module';
+import { BoardTimeInvestModule } from '../../domain/board-time-invest/board-time-invest.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { BoardModule } from '../../domain/board/board.module';
     OrganisationModule,
     TeamDashboardModule,
     BoardModule,
+    BoardTimeInvestModule,
   ],
   controllers: [TeamController],
   providers: [TeamService],

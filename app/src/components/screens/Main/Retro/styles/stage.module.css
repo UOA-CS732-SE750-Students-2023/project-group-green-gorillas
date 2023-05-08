@@ -134,6 +134,19 @@
   -moz-user-select: none;
 }
 
+.singleRetro__columns__wrapper {
+  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+  padding: 8px 32px;
+  height: calc(100% - 124px);
+  max-height: calc(100% - 124px);
+  overflow: auto;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  flex-wrap: wrap;
+}
+
 .column {
   width: 440px;
   height: 100%;
@@ -144,6 +157,17 @@
   border-radius: 8px;
   transition: 0.2s ease;
   margin-right: 32px;
+}
+
+.singleRetro__columns {
+  width: 440px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  transition: 0.2s ease;
 }
 
 .column--over {
@@ -173,6 +197,7 @@
   color: #999999;
   font-weight: bold;
   height: 70px !important;
+  justify-content: flex-start;
 }
 
 .add__note__button {
@@ -254,6 +279,10 @@
   font-size: 16px;
 }
 
+.column__header {
+  justify-content: flex-start;
+}
+
 .section_name {
   resize: none;
   outline: none;
@@ -266,6 +295,7 @@
   color: #333333;
   font-size: 24px;
   font-weight: bold;
+  justify-content: flex-start;
 }
 
 .note__textarea::placeholder {
@@ -331,7 +361,7 @@
   flex-direction: row-reverse;
   box-sizing: border-box;
   padding-right: 8px;
-  color: #333333;
+  color: #e02e2e;
   margin-top: 2px;
   cursor: pointer;
 }
@@ -519,7 +549,7 @@
   background-color: rgb(0, 191, 113);
 }
 
-.rate__submit_button{
+.rate__submit_button {
   margin-top: 10px;
   margin-right: 10px;
   background-color: orange;

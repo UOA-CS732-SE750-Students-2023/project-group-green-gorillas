@@ -20,6 +20,7 @@ export enum ClientSocketMessageEvent {
   BOARD_NOTE = 'board-note',
   BOARD_ACTION_ITEM = 'board-action-item',
   BOARD_VOTE_NOTE = 'board-vote-note',
+  BOARD_TIME_INVEST = 'board-time-invest',
 }
 
 export enum ServerSocketMessageEvent {

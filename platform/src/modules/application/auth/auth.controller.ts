@@ -23,13 +23,18 @@ import {
   RequestUser,
   RequestUserType,
 } from '../../../utils/decorators/request-user';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Authentication')
 @Controller({
   path: ['api/auth'],
 })
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOkResponse({
+    description: 'API to request to reset the user password',
+  })
   @Post('request-reset-password')
   public async requestResetPassword(
     @Body() { email }: RequestResetPasswordRequest,
@@ -37,6 +42,9 @@ export class AuthController {
     return this.authService.requestResetPassword(email);
   }
 
+  @ApiOkResponse({
+    description: 'API to verify the reset password token',
+  })
   @Get('verify-reset-password-token/:token')
   public async verifyResetPasswordToken(
     @Param() { token }: VerifyResetPasswordTokenParams,
@@ -44,6 +52,9 @@ export class AuthController {
     await this.authService.verifyResetPasswordToken(token);
   }
 
+  @ApiOkResponse({
+    description: 'API to reset the user password',
+  })
   @Post('reset-password')
   public async resetPassword(
     @Body() { token, newPassword }: ResetPasswordRequest,
@@ -51,6 +62,10 @@ export class AuthController {
     return this.authService.resetPassword(token, newPassword);
   }
 
+  @ApiOkResponse({
+    description: 'API to reset the user password',
+    type: SignInResponse,
+  })
   @Post('sign-in')
   public async signIn(
     @Body() { email, password, isRememberMe }: SignInRequest,
@@ -58,6 +73,10 @@ export class AuthController {
     return this.authService.signIn(email, password, isRememberMe);
   }
 
+  @ApiOkResponse({
+    description: 'API to refresh the token',
+    type: RefreshTokenResponse,
+  })
   @Post('refresh-token')
   public async refreshToken(
     @Body() { refreshToken }: RefreshTokenRequest,
@@ -65,6 +84,9 @@ export class AuthController {
     return this.authService.refreshToken(refreshToken);
   }
 
+  @ApiOkResponse({
+    description: 'API to revoke the token',
+  })
   @Delete('revoke-token')
   @UseAuthGuard()
   public async revokeToken(
@@ -74,6 +96,9 @@ export class AuthController {
     return this.authService.revokeToken(user.id, token);
   }
 
+  @ApiOkResponse({
+    description: 'API to change the user password',
+  })
   @Put('current/change-password')
   @UseAuthGuard()
   public async changeCurrentUserPassword(

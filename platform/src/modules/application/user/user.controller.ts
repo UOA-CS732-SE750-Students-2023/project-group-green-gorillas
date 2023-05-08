@@ -17,13 +17,18 @@ import {
   UpdateUserRequestParams,
 } from './dto/request';
 import { UserRole } from '../../domain/user/user';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User')
 @Controller({
   path: ['api/user'],
 })
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiOkResponse({
+    description: 'Get current user info',
+  })
   @Get('current')
   @UseAuthGuard()
   public async getCurrentUser(@RequestUser() user: RequestUserType) {
@@ -35,6 +40,9 @@ export class UserController {
     };
   }
 
+  @ApiOkResponse({
+    description: 'Update current user info',
+  })
   @Put('current')
   @UseAuthGuard()
   public async updateCurrentUser(
@@ -62,6 +70,9 @@ export class UserController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'Update user by user id',
+  })
   @Put('/:userId')
   @UseAuthGuard()
   @AllowedRoles([UserRole.ADMIN])
@@ -94,6 +105,9 @@ export class UserController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'Create user',
+  })
   @Post()
   @UseAuthGuard()
   @AllowedRoles([UserRole.ADMIN])
@@ -126,6 +140,9 @@ export class UserController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'Disable/Activate user',
+  })
   @Patch('update-active/:userId')
   @UseAuthGuard()
   @AllowedRoles([UserRole.ADMIN])
@@ -141,6 +158,9 @@ export class UserController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'list all users within the current user organisation',
+  })
   @Get('list')
   @UseAuthGuard()
   public async getOrganisationUsers(@RequestUser() user: RequestUserType) {

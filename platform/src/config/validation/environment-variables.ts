@@ -70,6 +70,9 @@ export class EnvironmentVariables {
   @IsString()
   DATABASE_BOARD_NOTE_VOTE_TABLE_NAME!: string;
 
+  @IsString()
+  DATABASE_BOARD_TIME_INVEST_TABLE_NAME!: string;
+
   // TOKEN
   @IsString()
   TOKEN_SECRET!: string;

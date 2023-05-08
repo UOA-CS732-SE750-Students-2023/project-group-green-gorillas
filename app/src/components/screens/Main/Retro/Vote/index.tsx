@@ -13,7 +13,13 @@ function Vote({ retro, isSingleRetroHistory }: Props) {
   const aggregateRetro = useAggregateRetro(retro);
 
   return (
-    <Box className={stageStyles.columns__wrapper}>
+    <Box
+      className={
+        isSingleRetroHistory
+          ? stageStyles.singleRetro__columns__wrapper
+          : stageStyles.columns__wrapper
+      }
+    >
       {aggregateRetro.boardSections
         .sort((a: any, b: any) => a.order - b.order)
         .map((column: any) => (

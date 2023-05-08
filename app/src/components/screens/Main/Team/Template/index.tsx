@@ -15,6 +15,8 @@ import { TemplatePreview } from "./TemplatePreview";
 import { TeamDrawer } from "../../../../common/TeamDrawer";
 import { useTeam } from "../../../../../hooks/useTeam";
 import { useParams } from "react-router-dom";
+import { useTeamRole } from "../../../../../hooks/useTeamRole";
+import { TeamRole } from "../../../../../types/teamRole";
 
 export type Template = {
   boardTemplateSections: TemplateSection[];
@@ -40,6 +42,7 @@ export type TemplateListProps = {
 export type TemplatePreviewProps = {
   previewTemp: Template;
   tID: string;
+  teamRole: TeamRole | null;
 };
 
 export const TemplateScreen = () => {
@@ -58,6 +61,9 @@ export const TemplateScreen = () => {
   const { teamId } = useParams<{ teamId: string }>();
 
   const { team } = useTeam(teamId);
+
+  const { teamRole } = useTeamRole(teamId);
+
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -97,7 +103,7 @@ export const TemplateScreen = () => {
                   "&:hover": { border: "1px solid blue" },
                 }}
               >
-                <ListItem button onClick={() => buttonOnClickhandler(i.id)}>
+                <ListItem onClick={() => buttonOnClickhandler(i.id)}>
                   <ListItemText
                     primaryTypographyProps={{
                       variant: "subtitle1",
@@ -117,7 +123,7 @@ export const TemplateScreen = () => {
         <Grid container justifyContent="flex-end">
           <Grid item xs={12} md={10} lg={10}>
             <Box sx={{ border: "none" }}>
-              <TemplatePreview previewTemp={previewTemp} tID={teamId} />
+              <TemplatePreview previewTemp={previewTemp} tID={teamId} teamRole={teamRole}/>
             </Box>
           </Grid>
         </Grid>

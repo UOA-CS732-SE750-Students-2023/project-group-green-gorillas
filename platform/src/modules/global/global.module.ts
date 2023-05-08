@@ -10,12 +10,6 @@ import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
-    CacheModule.register({
-      isGlobal: true,
-      store: redisStore,
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
-    }),
     ConfigModule.forRoot(config),
     InternalConfigModule,
     I18nModule.forRoot({
@@ -25,6 +19,12 @@ import { CacheModule } from '@nestjs/cache-manager';
         path: path.join(__dirname, '..', '..', 'i18n'),
         watch: process.env.NODE_ENV === Environment.LOCAL,
       },
+    }),
+    CacheModule.register({
+      isGlobal: true,
+      store: redisStore,
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
     }),
   ],
 })

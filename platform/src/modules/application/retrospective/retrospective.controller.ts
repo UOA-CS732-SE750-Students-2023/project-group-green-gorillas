@@ -14,6 +14,7 @@ import {
   RequestUserType,
 } from '../../../utils/decorators/request-user';
 import {
+  AddBoardTimeInvestRateRequest,
   AddNoteRequest,
   AddSectionRequest,
   AssignNoteGroup,
@@ -38,7 +39,9 @@ import {
   buildSocketEvent,
   SocketEventOperation,
 } from '../../../utils/builders/buildSocketEvent';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Retrospective')
 @Controller({
   path: ['api/retrospective'],
 })
@@ -49,6 +52,9 @@ export class RetrospectiveController {
     private readonly socketEventService: SocketEventService,
   ) {}
 
+  @ApiOkResponse({
+    description: 'List all retrospective templates',
+  })
   @Get('template/list')
   public async getRetrospectiveTemplates(@RequestUser() user: RequestUserType) {
     return this.retrospectiveService.getRetrospectiveTemplates(
@@ -56,6 +62,9 @@ export class RetrospectiveController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'get retrospective',
+  })
   @Get(':id/team/:teamId')
   public getRetrospective(
     @Param() { id, teamId }: GetRetrospectiveRequestParam,
@@ -63,6 +72,9 @@ export class RetrospectiveController {
     return this.retrospectiveService.getRetrospective(id, teamId);
   }
 
+  @ApiOkResponse({
+    description: 'Vote retrospective note',
+  })
   @Post('vote-note')
   public async voteNote(
     @RequestUser() user: RequestUserType,
@@ -83,6 +95,9 @@ export class RetrospectiveController {
     return vote;
   }
 
+  @ApiOkResponse({
+    description: 'Un-vote retrospective note',
+  })
   @Delete('un-vote-note/:boardNoteId')
   public async unVoteNote(
     @RequestUser() user: RequestUserType,
@@ -102,6 +117,34 @@ export class RetrospectiveController {
     return vote;
   }
 
+  @ApiOkResponse({
+    description: 'rate the retro',
+  })
+  @Post('add-board-time-invest-rate')
+  public async addBoardTimeInvestRate(
+    @RequestUser() user: RequestUserType,
+    @Body() { retroId, rate, teamId }: AddBoardTimeInvestRateRequest,
+  ) {
+    const boardTimeInvest = await this.retrospectiveService.addBoardTimeInvest(
+      retroId,
+      user.id,
+      user.organisationId,
+      teamId,
+      rate,
+    );
+
+    this.socketEventService.broadcastRoom(
+      boardTimeInvest.boardId,
+      ClientSocketMessageEvent.BOARD_TIME_INVEST,
+      buildSocketEvent(SocketEventOperation.CREATE, boardTimeInvest),
+    );
+
+    return boardTimeInvest;
+  }
+
+  @ApiOkResponse({
+    description: 'Create Retrospective',
+  })
   @Post('create')
   public async createRetrospective(
     @Body() { teamId, name, templateId }: CreateRetroRequestRequest,
@@ -117,6 +160,9 @@ export class RetrospectiveController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'Add note to retrospective',
+  })
   @Post('add-note')
   public async addNote(
     @Body()
@@ -151,6 +197,9 @@ export class RetrospectiveController {
     return noteEntity;
   }
 
+  @ApiOkResponse({
+    description: 'Add column to retrospective',
+  })
   @Post('add-section')
   public async addSection(
     @Body() { boardId, teamId, order }: AddSectionRequest,
@@ -173,6 +222,9 @@ export class RetrospectiveController {
     return section;
   }
 
+  @ApiOkResponse({
+    description: 'Move to next retrospective stage',
+  })
   @Patch('move-next-stage')
   public async moveNextStage(
     @Body() { retroId, teamId }: MoveNextStageRequest,
@@ -191,6 +243,9 @@ export class RetrospectiveController {
     return retro;
   }
 
+  @ApiOkResponse({
+    description: 'Set Retrospective session payload',
+  })
   @Patch('set-retro-session-payload')
   public async setRetroSessionPayload(
     @Body() { retroId, teamId, sessionPayload }: SetRetroSessionPayload,
@@ -210,6 +265,9 @@ export class RetrospectiveController {
     return retro;
   }
 
+  @ApiOkResponse({
+    description: 'Update Retrospective Name',
+  })
   @Patch('update-name')
   public async updateRetroName(
     @Body() { id, teamId, name }: UpdateRetroNameRequest,
@@ -229,6 +287,9 @@ export class RetrospectiveController {
     return retro;
   }
 
+  @ApiOkResponse({
+    description: 'un assign note group',
+  })
   @Patch('un-assign-note-group')
   public async unAssignNoteGroup(
     @Body()
@@ -248,6 +309,9 @@ export class RetrospectiveController {
     return boardNote;
   }
 
+  @ApiOkResponse({
+    description: 'Assign note group',
+  })
   @Patch('assign-note-group')
   public async assignNoteGroup(
     @Body()
@@ -268,6 +332,9 @@ export class RetrospectiveController {
     return boardNote;
   }
 
+  @ApiOkResponse({
+    description: 'Update retro note',
+  })
   @Patch('update-note')
   public async updateNote(@Body() { boardNoteId, note }: UpdateNoteRequest) {
     const boardNote = await this.retrospectiveService.updateNote(
@@ -284,6 +351,9 @@ export class RetrospectiveController {
     return boardNote;
   }
 
+  @ApiOkResponse({
+    description: 'Update Retrospective column Name',
+  })
   @Patch('update-section-name')
   public async updateSectionName(
     @Body() { boardSectionId, boardId, name }: UpdateSectionNameRequest,
@@ -303,6 +373,9 @@ export class RetrospectiveController {
     return boardSection;
   }
 
+  @ApiOkResponse({
+    description: 'Update Retrospective column description',
+  })
   @Patch('update-section-description')
   public async updateSectionDescription(
     @Body()
@@ -324,6 +397,9 @@ export class RetrospectiveController {
     return boardSection;
   }
 
+  @ApiOkResponse({
+    description: 'Delete retrospective',
+  })
   @Delete(':id/team/:teamId')
   public async deleteRetrospective(
     @Param() { id, teamId }: DeleteRetrospectiveRequestParams,
@@ -341,6 +417,9 @@ export class RetrospectiveController {
     return retro;
   }
 
+  @ApiOkResponse({
+    description: 'Delete retro note',
+  })
   @Delete('delete-note/:boardNoteId')
   public async deleteNote(@Param() { boardNoteId }: DeleteNoteRequestParams) {
     const note = await this.retrospectiveService.getNote(boardNoteId);
@@ -354,6 +433,9 @@ export class RetrospectiveController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'Delete retro column',
+  })
   @Delete('delete-section/:boardSectionId/board/:boardId')
   public async deleteSection(
     @Param() { boardSectionId, boardId }: DeleteSectionParams,

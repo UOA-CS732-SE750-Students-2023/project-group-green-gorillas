@@ -176,6 +176,26 @@ export class AuthService {
       TokenType.REFRESH_TOKEN,
     );
 
+    if (!user.active) {
+      throw new InternalException(
+        'TOKEN.FAILED_TO_REFRESH_TOKEN',
+        'user is inactive',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const organisation = await this.organisationService.getByIdOrThrow(
+      user.organisationId,
+    );
+
+    if (!organisation.active) {
+      throw new InternalException(
+        'TOKEN.FAILED_TO_REFRESH_TOKEN',
+        'Organisation is inactive',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
     const newAccessToken = await this.tokenService.create(
       user.id,
       user.organisationId,

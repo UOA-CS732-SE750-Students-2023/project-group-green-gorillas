@@ -17,6 +17,7 @@ enum ClientSocketMessageEvent {
   BOARD_NOTE = "board-note",
   BOARD_ACTION_ITEM = "board-action-item",
   BOARD_VOTE_NOTE = "board-vote-note",
+  BOARD_TIME_INVEST = "board-time-invest",
 }
 
 enum ServerSocketMessageEvent {
@@ -402,6 +403,32 @@ export const useRetro = (boardId: string, teamId: string) => {
     }
   };
 
+  const handleBoardTimeInvestCreateEvent = (data: any) => {
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const cloneRetro = _.cloneDeep(retro);
+
+      const exitingTimeInvestIndex = cloneRetro.boardTimeInvests.findIndex(
+        (s: any) => s.boardId === data.boardId && s.userId === data.userId
+      );
+
+      if (exitingTimeInvestIndex !== -1) return cloneRetro;
+
+      cloneRetro.boardTimeInvests.push(data);
+
+      return cloneRetro;
+    });
+  };
+
+  const handleBoardTimeInvest = (eventData: any) => {
+    switch (eventData.type) {
+      case "CREATE":
+        handleBoardTimeInvestCreateEvent(eventData.data);
+        return;
+    }
+  };
+
   //end ------------------------------------------
 
   useEffect(() => {
@@ -455,6 +482,12 @@ export const useRetro = (boardId: string, teamId: string) => {
       const data = JSON.parse(payload);
 
       handleActionItem(data);
+    });
+
+    socket.on(ClientSocketMessageEvent.BOARD_TIME_INVEST, (payload: string) => {
+      const data = JSON.parse(payload);
+
+      handleBoardTimeInvest(data);
     });
 
     socket.on("disconnect", () => {

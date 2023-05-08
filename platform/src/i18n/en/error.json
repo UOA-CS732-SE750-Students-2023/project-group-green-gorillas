@@ -27,7 +27,8 @@
     "FAILED_TO_SAVE": "Failed to save token",
     "FAILED_TO_DELETE": "Failed to delete token",
     "NOT_FOUND": "Token is not found",
-    "INVALID": "Token is invalid"
+    "INVALID": "Token is invalid",
+    "FAILED_TO_REFRESH_TOKEN": "Failed to refresh token"
   },
   "TEAM": {
     "FAILED_TO_GET": "Failed to get team",
@@ -96,5 +97,11 @@
     "FAILED_TO_SAVE": "Failed to get board note vote",
     "FAILED_TO_DELETE": "Failed to delete board note vote",
     "NOT_FOUND": "Board note vote is not found"
+  },
+  "BOARD_TIME_INVEST": {
+    "FAILED_TO_SAVE": "Failed to save board time invest",
+    "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list board time invest by board id",
+    "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list board time invest by team id",
+    "FAILED_TO_DELETE": "Failed to delete board time invest"
   }
 }

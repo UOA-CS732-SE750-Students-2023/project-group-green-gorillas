@@ -2,7 +2,6 @@ import { Box, Divider, Grid, Toolbar, Typography } from "@mui/material";
 import { useTeam } from "../../../../../hooks/useTeam";
 import { useInsight } from "../../../../../hooks/useInsight";
 import { useParams } from "react-router-dom";
-import { LoadingIndicator } from "../../../../common/LoadingIndicator";
 
 import { useCurrentUser } from "../../../../../hooks/useCurrentUser";
 import { useTeamRole } from "../../../../../hooks/useTeamRole";

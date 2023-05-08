@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ACTIONITEMS_LIST_BY_ID, UPDATE_ACTIONITEMS_BY_ID, DELETE_ACTIONITEMS_BY_ID } from "../api/api";
 import { request } from "../api/request";
-// import { ActionItem, Status } from "../types/actionItems";
 import {User} from '../types/user';
 import { typeOf } from "react-is";
 
@@ -21,7 +20,7 @@ export type ActionItem = {
 
 
 export const useActionItems = (id: string) => {
-    const[isLoading, setLoading] = useState<Boolean>(false);
+    const[isLoading, setLoading] = useState<boolean>(false);
     const [actionItems, setActionItems] = useState<ActionItem[] | null>(null);
 
     // get action items from backend
@@ -49,8 +48,15 @@ export const useActionItems = (id: string) => {
         }) ?? null);
         try{
             await request.patch(UPDATE_ACTIONITEMS_BY_ID, {actionItemId: updatedActionItem.id, status: updatedActionItem.status} );
-            const updatedActionItems = actionItems?.filter(a => a.id !== actionItem.id) ?? null;
-            setActionItems(updatedActionItems);
+            // console.log('succes patch');
+
+            await getActionItems();
+   
+            // const updatedActionItems = actionItems?.filter(a => a.id !== actionItem.id) ?? null;
+            // console.log(updatedActionItems);
+            
+            // setActionItems(updatedActionItems);
+            
         }catch(err){
             console.log(err);
         }finally{
@@ -63,8 +69,8 @@ export const useActionItems = (id: string) => {
         setLoading(true);
         try{
             await request.delete(DELETE_ACTIONITEMS_BY_ID(actionItem.id) );
-            const updatedActionItems = actionItems?.filter(a => a.id !== actionItem.id) ?? null;
-            setActionItems(updatedActionItems);
+            await getActionItems();
+
         }catch(err){
             console.log(err);
             

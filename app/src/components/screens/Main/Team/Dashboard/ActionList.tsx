@@ -1,13 +1,6 @@
 import {
-  AvatarGroup,
   Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Chip,
   FormControlLabel,
-  Stack,
   Switch,
   Typography,
 } from "@mui/material";
@@ -30,7 +23,8 @@ export const ActionList = ({
   teamRole,
   isSingleRetro,
 }: Props) => {
-  const { isLoading, actionItems } = useActionItems(teamId || "");
+  
+  const { actionItems } = useActionItems(teamId || "");
 
   const currentUserActionItems = actionItems?.filter((item) =>
     item.assignees.some((assignee) => assignee.id === user?.id)

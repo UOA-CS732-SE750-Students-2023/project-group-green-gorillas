@@ -100,6 +100,7 @@
   },
   "BOARD_TIME_INVEST": {
     "FAILED_TO_SAVE": "Failed to save board time invest",
-    "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list board time invest by board id"
+    "FAILED_TO_LIST_BY_BOARD_ID": "Failed to list board time invest by board id",
+    "FAILED_TO_LIST_BY_TEAM_ID": "Failed to list board time invest by team id"
   }
 }

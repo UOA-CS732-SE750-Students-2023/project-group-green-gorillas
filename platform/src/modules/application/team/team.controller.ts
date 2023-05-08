@@ -15,6 +15,7 @@ import {
 import {
   AddOrUpdateTeamUserRequest,
   AddTeamRequest,
+  GetBoardTimeInvestRequestParams,
   GetHasInProgressRetro,
   GetTeamByIdRequestParams,
   GetTeamInsightRequestParams,
@@ -39,6 +40,13 @@ import { UserRole } from '../../domain/user/user';
 @UseAuthGuard()
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
+
+  @Get('board-time-invest/:teamId')
+  public getTeamBoardTimeInvest(
+    @Param() { teamId }: GetBoardTimeInvestRequestParams,
+  ) {
+    return this.teamService.getTeamBoardTimeInvest(teamId);
+  }
 
   @Get('retro-history/:teamId')
   public getTeamRetroHistory(

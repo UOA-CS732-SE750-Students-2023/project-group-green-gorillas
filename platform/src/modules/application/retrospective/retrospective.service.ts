@@ -41,12 +41,14 @@ export class RetrospectiveService {
     retroId: UUID,
     userId: UUID,
     organisationId: UUID,
+    teamId: UUID,
     rate: BoardTimeInvestRate,
   ) {
     return this.boardTimeInvestService.create(
       retroId,
       userId,
       organisationId,
+      teamId,
       rate,
     );
   }

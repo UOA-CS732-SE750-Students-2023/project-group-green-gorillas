@@ -59,6 +59,7 @@ export const TimeInvest = ({ retro }: any) => {
     await request.post(ADD_BOARD_TIME_INVEST_RATE, {
       retroId: retro.id,
       rate: Number(selectedRate.value),
+      teamId: retro.teamId,
     });
   };
 

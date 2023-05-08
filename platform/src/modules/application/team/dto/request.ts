@@ -73,3 +73,8 @@ export class AddTeamRequest {
   @IsString()
   name: string;
 }
+
+export class GetBoardTimeInvestRequestParams {
+  @IsUUID()
+  teamId: UUID;
+}

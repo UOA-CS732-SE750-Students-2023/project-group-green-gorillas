@@ -34,4 +34,9 @@ export class Organisation {
   public disable(): void {
     this.active = false;
   }
+
+  public updateName(name: string): void {
+    this.name = name;
+    this.updatedAt = DateTime.now();
+  }
 }

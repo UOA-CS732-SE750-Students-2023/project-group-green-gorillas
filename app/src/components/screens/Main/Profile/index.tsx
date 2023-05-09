@@ -126,8 +126,6 @@ export const ProfileScreen = () => {
     userData!.address = currentAddress;
     userData!.gender = currentGender;
 
-    console.log(userData);
-
     try {
       request.put<UserData>(CURRENT_USER, userData).then((r) => {
         history.go(0);
@@ -135,20 +133,7 @@ export const ProfileScreen = () => {
     } catch (error) {
       console.log(error);
     }
-
-    const testData = {
-      displayName: "E",
-      firstName: "Et",
-      lastName: "W",
-      address: "ac",
-      phone: "1121",
-      gender: true,
-    };
-    //
-    // console.log(testData)
   };
-
-  // TODO route
 
   const [open, setOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
@@ -194,9 +179,10 @@ export const ProfileScreen = () => {
     try {
       String(newPassword);
       String(oldPassword);
+
       const req = {
-        newPassword: { newPassword },
-        oldPassword: { oldPassword },
+        newPassword,
+        oldPassword,
       };
 
       request.put<UserData>(CHANGE_PASSWORD, req).then((r) => {
@@ -225,7 +211,6 @@ export const ProfileScreen = () => {
         sx={{
           marginTop: "10px",
           width: "1500",
-          // maxWidth:"100%"
         }}
       >
         <Box
@@ -236,53 +221,9 @@ export const ProfileScreen = () => {
             alignItems: "center",
           }}
         >
-          {/*/!*updateAvatar*!/*/}
-          {/*<Avatar*/}
-          {/*    onMouseOver={handleMouseOver}*/}
-          {/*    onMouseOut={handleMouseOut}*/}
-          {/*    sx={{*/}
-          {/*        position: 'relative',*/}
-          {/*        width: 180, height: 180,*/}
-          {/*        zIndex: 1,*/}
-          {/*        backgroundColor: 'white',*/}
-          {/*        cursor: 'pointer'*/}
-          {/*      }}*/}
-          {/*    onClick={updateAvatar}*/}
-          {/*>*/}
-          {/*    <img*/}
-          {/*        src="../../public/defaultAvatar.svg"*/}
-          {/*        alt="overlay"*/}
-          {/*        style={{*/}
-          {/*            position: 'relative',*/}
-          {/*            width: '100%', height: '100%',*/}
-          {/*            zIndex: 1*/}
-          {/*        }}*/}
-          {/*    />*/}
-
-          {/*    {isHovering && (*/}
-          {/*        <img*/}
-          {/*            src="../../public/updateAvatar.svg"*/}
-          {/*            style={{*/}
-          {/*                position: 'absolute',*/}
-          {/*                marginTop: '63%',*/}
-          {/*                marginLeft: '2%',*/}
-          {/*                width: '30%',*/}
-          {/*                height: '30%',*/}
-          {/*                zIndex: 3*/}
-          {/*            }}*/}
-          {/*        />*/}
-          {/*    )}*/}
-          {/*</Avatar>*/}
-
-          {/*/!*TODO User要改*!/*/}
-          {/*<Typography marginTop={2} component="h1" variant="h3">*/}
-          {/*    Welcome, {userData!.displayName}*/}
-          {/*</Typography>*/}
-
           <Paper
             sx={{
               width: "100%",
-              // marginTop:'2%'
             }}
             elevation={5}
           >
@@ -306,20 +247,10 @@ export const ProfileScreen = () => {
                   marginLeft: "3%",
                 }}
               >
-                {/*//TODO*/}
                 <Typography>Display Name </Typography>
               </Grid>
 
-              <Grid
-                item
-                xs={2}
-                sx={
-                  {
-                    // align:"center"
-                    //     marginLeft: '7%'
-                  }
-                }
-              >
+              <Grid item xs={2}>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -331,13 +262,6 @@ export const ProfileScreen = () => {
                   // autoFocus
                 />
               </Grid>
-
-              {/*<Button*/}
-              {/*    sx={{*/}
-              {/*    marginLeft: '5%'*/}
-              {/*}} disableElevation*/}
-              {/*        variant="contained"*/}
-              {/*        aria-label="Disabled elevation buttons">Update</Button>*/}
             </Grid>
             <Divider />
             <Grid container spacing={10} alignItems="center">
@@ -398,12 +322,6 @@ export const ProfileScreen = () => {
                   onChange={handleLastNameChange}
                 />
               </Grid>
-
-              {/*<Button sx={{*/}
-              {/*    marginLeft: '5%',*/}
-              {/*}} disableElevation*/}
-              {/*        variant="contained"*/}
-              {/*        aria-label="Disabled elevation buttons">Update</Button>*/}
             </Grid>
             <Divider />
             <Grid container spacing={10} alignItems="center">
@@ -427,16 +345,6 @@ export const ProfileScreen = () => {
                   marginTop: "1.5%",
                 }}
               >
-                {/*<TextField*/}
-                {/*    variant="outlined"*/}
-                {/*    margin="normal"*/}
-                {/*    required*/}
-                {/*    fullWidth*/}
-                {/*    id="gender"*/}
-                {/*    name="gender"*/}
-                {/*    autoComplete="gender"*/}
-                {/*/>*/}
-
                 <FormControl
                   sx={{
                     width: "100%",
@@ -446,26 +354,16 @@ export const ProfileScreen = () => {
                     value={userData!.gender}
                     onChange={handleGenderChange}
                   >
-                    {}
                     <MenuItem value={true as any}>Male</MenuItem>
                     <MenuItem value={false as any}>Female</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
-
-              {/*<Button sx={{*/}
-              {/*    marginLeft: '5%',*/}
-              {/*}} disableElevation*/}
-              {/*        variant="contained"*/}
-              {/*        aria-label="Disabled elevation buttons">Update</Button>*/}
             </Grid>
-            {/*</Paper>*/}
 
-            {/*<Paper sx={{width:'100%', marginTop:'5%'}} elevation={5}>*/}
             <Grid
               sx={{
                 marginLeft: "3%",
-                // marginTop: '3%'
               }}
             >
               <Typography component="h1" variant="h5">
@@ -665,12 +563,10 @@ export const ProfileScreen = () => {
             </Grid>
           </Paper>
 
-          {/*<Link to="/">Back to Home</Link>*/}
-
           <Button
             variant="contained"
             color="primary"
-            sx={{ marginTop: "1%", marginRight: "-85%" }}
+            sx={{ marginTop: "1%", marginRight: "-85%", marginBottom: "1%" }}
             onClick={handleButtonClick}
           >
             Back to home

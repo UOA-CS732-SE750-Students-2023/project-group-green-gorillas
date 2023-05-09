@@ -7,6 +7,9 @@ import {
   GridRowsProp,
 } from '@mui/x-data-grid';
 
+
+
+
 import Snackbar from '@mui/material/Snackbar';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -14,19 +17,30 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import Alert, { AlertProps } from '@mui/material/Alert';
+import {
+  Typography,
+  Paper, CssBaseline,
+  Container,
+  Box, Grid, TextField, Divider, FormControl, Select, MenuItem
+} from "@mui/material";
+import {useCurrentUser} from "../../../../../hooks/useCurrentUser";
+import {useState} from "react";
+import {parseDate} from "../../../../../utils/parseDate";
+import {request} from "../../../../../api/request";
+import {CURRENT_USER, UPDATE_COMPANY_NAME} from "../../../../../api/api";
 
-interface User {
-  name: string;
-  age: number;
-  id: GridRowId;
-  dateCreated: Date;
-  lastLogin: Date;
+interface OrganisationData {
+    id: string;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+    active: string;
 }
 
 const useFakeMutation = () => {
   return React.useCallback(
-    (user: Partial<User>) =>
-      new Promise<Partial<User>>((resolve, reject) => {
+    (user: Partial<OrganisationData>) =>
+      new Promise<Partial<OrganisationData>>((resolve, reject) => {
         setTimeout(() => {
           if (user.name?.trim() === '') {
             reject();
@@ -50,118 +64,176 @@ function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
 }
 
 export default function AskConfirmationBeforeSave() {
-  const mutateRow = useFakeMutation();
-  const noButtonRef = React.useRef<HTMLButtonElement>(null);
-  const [promiseArguments, setPromiseArguments] = React.useState<any>(null);
+    const {user} = useCurrentUser();
 
-  const [snackbar, setSnackbar] = React.useState<Pick<
-    AlertProps,
-    'children' | 'severity'
-  > | null>(null);
+    const [orgData, setOrgData] = useState<OrganisationData | null>({
+        name: user!.organisation!.name,
+        id: user!.organisation!.id,
+        createdAt: parseDate(user!.organisation!.createdAt),
+        updatedAt: parseDate(user!.organisation!.updatedAt),
+        active: user!.organisation!.active ? "True" : "False"
+    });
 
-  const handleCloseSnackbar = () => setSnackbar(null);
+    const[companyName, setCompanyName] = useState<string>(user!.organisation!.name);
+    const handleCompanyNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCompanyName(event.target.value);
+    }
 
-  const processRowUpdate = React.useCallback(
-    (newRow: GridRowModel, oldRow: GridRowModel) =>
-      new Promise<GridRowModel>((resolve, reject) => {
-        const mutation = computeMutation(newRow, oldRow);
-        if (mutation) {
-          // Save the arguments to resolve or reject the promise later
-          setPromiseArguments({ resolve, reject, newRow, oldRow });
-        } else {
-          resolve(oldRow); // Nothing was changed
+    const handleUpdateCompanyName = () => {
+
+        const req = {
+            "name":companyName
         }
-      }),
-    [],
-  );
 
-  const handleNo = () => {
-    const { oldRow, resolve } = promiseArguments;
-    resolve(oldRow); // Resolve with the old row to not update the internal state
-    setPromiseArguments(null);
-  };
-
-  const handleYes = async () => {
-    const { newRow, oldRow, reject, resolve } = promiseArguments;
-
-    try {
-      // Make the HTTP request to save in the backend
-      const response = await mutateRow(newRow);
-      setSnackbar({ children: 'User successfully saved', severity: 'success' });
-      resolve(response);
-      setPromiseArguments(null);
-    } catch (error) {
-      setSnackbar({ children: "Name can't be empty", severity: 'error' });
-      reject(oldRow);
-      setPromiseArguments(null);
-    }
-  };
-
-  const handleEntered = () => {
-    // The `autoFocus` is not used because, if used, the same Enter that saves
-    // the cell triggers "No". Instead, we manually focus the "No" button once
-    // the dialog is fully open.
-    // noButtonRef.current?.focus();
-  };
-
-  const renderConfirmDialog = () => {
-    if (!promiseArguments) {
-      return null;
+        try {
+            request.patch<JSON>(UPDATE_COMPANY_NAME, req)
+                .then(r => {
+                        history.go(0);
+                    }
+                );
+        } catch (error){
+            console.log(error);
+        }
     }
 
-    const { newRow, oldRow } = promiseArguments;
-    const mutation = computeMutation(newRow, oldRow);
 
-    return (
-      <Dialog
-        maxWidth="xs"
-        TransitionProps={{ onEntered: handleEntered }}
-        open={!!promiseArguments}
-      >
-        <DialogTitle>Are you sure?</DialogTitle>
-        <DialogContent dividers>
-          {`Pressing 'Yes' will change ${mutation}.`}
-        </DialogContent>
-        <DialogActions>
-          <Button ref={noButtonRef} onClick={handleNo}>
-            No
-          </Button>
-          <Button onClick={handleYes}>Yes</Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
+
+
+
+
 
   return (
     <div style={{ height: 400, width: '100%' }}>
-      {renderConfirmDialog()}
-      <DataGrid rows={rows} columns={columns} processRowUpdate={processRowUpdate} />
-      {!!snackbar && (
-        <Snackbar open onClose={handleCloseSnackbar} autoHideDuration={6000}>
-          <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>
-      )}
+
+
+      <CssBaseline />
+
+      <Container sx={{
+        marginTop:'-2%',
+        marginLeft: '1%'
+      }}
+      >
+        <Box sx={{
+
+          display:"flex",
+          flexDirection:"column",
+          justifyContent:"center",
+          alignItems:"center",
+        }}>
+
+          <Paper sx={{
+            width:'128%',
+            marginLeft:'28%',
+            marginTop:'4%',
+              display: 'flex',
+              flexWrap: 'wrap',
+          }} elevation={5}>
+
+
+
+            <Grid sx={{
+              marginLeft: '3%',
+              marginTop: '3%'
+            }}>
+              <Typography component="h1" variant="h5">Company Info</Typography>
+            </Grid>
+
+
+            <Grid container
+                  alignItems="center">
+              <Grid item xs={6} sm={4} md={3}
+                  sx={{
+                    align:"left",
+                    width:"10%",
+                    marginLeft: '3%'
+                  }} >
+                <Typography>Company Name</Typography>
+              </Grid>
+
+              <Grid item xs={6} sm={4} md={3}>
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    defaultValue={orgData!.name}
+                    onChange={handleCompanyNameChange}
+                />
+              </Grid>
+
+                <Grid item xs={6} sm={4} md={3}>
+                    <Button
+                        sx={{
+                            marginLeft: '5%'
+                        }} disableElevation
+                        variant="contained"
+                        aria-label="Disabled elevation buttons"
+                        onClick={handleUpdateCompanyName}
+                    >Update</Button>
+                </Grid>
+
+            </Grid>
+
+
+
+            <Grid container alignItems="center" sx={{height:'100px'}}>
+
+              <Grid  item xs={6} sm={4} md={3}
+                     sx={{
+                         align:"left",
+                         width:"10%",
+                         marginLeft: '3%',
+
+                     }} >
+                <Typography>Create Time</Typography>
+              </Grid>
+              <Grid item xs={6} sm={4} md={3}
+                    sx={{
+                      align:"center"
+                    }}>
+                <Typography>{orgData?.createdAt}</Typography>
+              </Grid>
+            </Grid>
+
+
+              <Grid container alignItems="center" sx={{height:'100px'}}>
+
+                  <Grid  item xs={6} sm={4} md={3}
+                         sx={{
+                             align:"left",
+                             marginLeft: '3%'
+                         }} >
+                      <Typography>Update Time</Typography>
+                  </Grid>
+                  <Grid item xs={6} sm={4} md={3}
+                        sx={{
+                            align:"center"
+                        }}>
+                      <Typography>{orgData?.updatedAt}</Typography>
+                  </Grid>
+              </Grid>
+
+
+              <Grid container  alignItems="center" sx={{height:'100px'}}>
+
+                  <Grid  item xs={6} sm={4} md={3}
+                         sx={{
+                             align:"left",
+                             marginLeft: '3%'
+                         }} >
+                      <Typography>Active State</Typography>
+                  </Grid>
+                  <Grid item xs={2}
+                        sx={{
+                            align:"center"
+                        }}>
+                      <Typography>{String(orgData?.active)}</Typography>
+                  </Grid>
+              </Grid>
+          </Paper>
+        </Box>
+      </Container>
+
     </div>
   );
 }
 
-/*
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-*/
-
-const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Name', width: 180, editable: true},
-    { field: 'createdAt', headerName: 'CREATE', width: 180 },
-    { field: 'updatedAt', headerName: 'UPDATE', width: 180 },
-    { field: 'active', headerName: 'Active', width: 130 },
-  ];
-  
-  const rows = [
-    { id: 1, name: 'Snowman Company', createdAt: '01012000' , updatedAt: '01012023', active: 'Y' },
-  
-  ];

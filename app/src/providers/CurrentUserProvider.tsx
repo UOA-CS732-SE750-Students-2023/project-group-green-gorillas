@@ -21,6 +21,8 @@ export const CurrentUserContext = React.createContext<CurrentUserContextType>({
   getCurrentUser: async () => {},
 });
 
+
+
 type Props = {
   children: JSX.Element;
 };

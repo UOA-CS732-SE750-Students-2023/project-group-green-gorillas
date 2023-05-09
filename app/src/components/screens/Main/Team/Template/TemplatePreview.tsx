@@ -159,8 +159,10 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
         >
           <Box>
 
+
           {/* {teamRole?.role !== "MEMBER" ? */}
             <Button
+
 
               variant="contained"
               sx={{
@@ -177,6 +179,7 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
               disabled={isRetroActiveIdentifier}
             >
               Start Retro
+
 
             </Button>
             {/* : null } */}

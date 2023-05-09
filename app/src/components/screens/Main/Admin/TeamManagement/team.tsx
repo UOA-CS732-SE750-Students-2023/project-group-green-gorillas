@@ -6,9 +6,9 @@ import {
   GridColDef,
   GridRowId,
   GridRowsProp,
-  GridRowParams
+  GridRowParams,
+  useGridLogger
 } from '@mui/x-data-grid';
-
 
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -35,14 +35,13 @@ interface Team {
   teamMembers: User[];
 }
 
-
-
 export default function UpdateTeam() {
 
   const [selectedRow, setSelectedRow] = useState<Team | null>(null);
   const [dialogEditOpen, setDialogEditOpen] = useState(false);
   const [dialogNewOpen, setDialogNewOpen] = useState(false);
   const [dialogAddUserOpen, setDialogAddUserOpen] = useState(false);
+  const [dialogEditRoleOpen, setDialogEditRoleOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [team, setTeam] = useState<Team[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -112,8 +111,6 @@ export default function UpdateTeam() {
     };
   }
 
-
-
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', width: 130 },
     {
@@ -182,6 +179,7 @@ export default function UpdateTeam() {
     { field: 'displayName', headerName: 'Display Name', width: 130 },
     { field: 'firstName', headerName: 'First Name', width: 130 },
     { field: 'lastName', headerName: 'Last Name', width: 130 },
+    { field: 'role', headerName: 'Team Role', width: 130 },
     {
       field: 'active', headerName: 'Active', width: 130,
       renderCell: (params) => params.value ? 'Yes' : 'No'
@@ -196,23 +194,38 @@ export default function UpdateTeam() {
           color="primary"
           size="small"
           onClick={() => {
-            //setSelectedUser(params.row as User);
-            console.log("before remove");
             handleRemove(selectedTeamId, params.row.id);
-            console.log("after remove");
           }}
         >
           Remove
         </Button>
       ),
     },
+    {
+      field: 'editRole',
+      headerName: '',
+      width: 100,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => {
+            setSelectedUserId(params.row.id);
+            handleOpenEditRoleDialog();
+          }}
+        >
+          Edit Role
+        </Button>
+      ),
+    }
   ];
 
-  const getTeamList = async () => {
+  const getTeamUsers = async () => {
     setLoading(true);
     try {
       const { data } = await request.get<Team[]>(TEAM_LIST());
-      const teamsWithMembers = data.map((team) => {
+      const teamsWithMembers = await data.map((team) => {
         const teamMembers = team.teamMembers.map((member) => ({
           ...member,
           id: member.id.toString(),
@@ -222,8 +235,33 @@ export default function UpdateTeam() {
           teamMembers: teamMembers,
         };
       });
+
+      const thisTeam = teamsWithMembers.find(member => member.id === selectedTeamId);
+      setTeamMembers(thisTeam?.teamMembers);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getTeamList = async () => {
+    setLoading(true);
+    try {
+      const { data } = await request.get<Team[]>(TEAM_LIST());
+      const teamsWithMembers = await data.map((team) => {
+        const teamMembers = team.teamMembers.map((member) => ({
+          ...member,
+          id: member.id.toString(),
+        }));
+        return {
+          ...team,
+          teamMembers: teamMembers,
+        };
+      });
+      console.log(teamMembers);
+      console.log(teamsWithMembers);
       setTeam(teamsWithMembers);
-      console.log("TeamWithMembers: "+ teamsWithMembers);
     } catch (error) {
       console.log(error);
     } finally {
@@ -261,7 +299,14 @@ export default function UpdateTeam() {
     setDialogAddUserOpen(false);
   };
 
-  //const handleRowSelection = (params: GridRowParams, event: MouseEvent) => {
+  const handleOpenEditRoleDialog = () => {
+    setDialogEditRoleOpen(true);
+  };
+
+  const handleCloseEditRoleDialog = () => {
+    setDialogEditRoleOpen(false);
+  };
+
   const handleRowSelection = (params: GridRowParams) => {
     setSelectedRow(params.row as Team);
     console.log(`Row ${params.id} clicked!`);
@@ -350,9 +395,11 @@ export default function UpdateTeam() {
           'Content-Type': 'application/json',
         },
       }).then((response) => {
-        console.log('New Team User created successfully', response.data);
+        console.log('1 New Team User created successfully', response.data);
+        //const newData = await response.json();
         //  New team in the UI state or trigger a re-fetch
-        getTeamList();
+        //
+        getTeamUsers();
       })
     }
     catch (error) {
@@ -360,6 +407,43 @@ export default function UpdateTeam() {
       // Handle error, e.g. display a message to the user
     };
     handleCloseAddUserDialog();
+  };
+
+  const handleEditTeamRole = () => {
+    const newTeamUser = {
+      userId: selectedUserId,
+      userTeamRole: selectedTeamRole,
+      teamId: selectedTeamId
+    };
+    console.log("userId: " + selectedUserId);
+    console.log("userTeamRole: " + selectedTeamRole);
+    console.log("teamId: " + selectedTeamId);
+    try {
+      request.put(`http://localhost:8080/api/team/update-team-user`, newTeamUser, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((response) => {
+        console.log('Team Role updated successfully', response.data);
+        //  New team in the UI state or trigger a re-fetch
+        getTeamList();
+        const updatedTeamMembers = teamMembers.map((member) => {
+          if (member.id === selectedUserId) {
+            return {
+              ...member,
+              role: selectedTeamRole,
+            };
+          }
+          return member;
+        });
+        setTeamMembers(updatedTeamMembers);
+      })
+    }
+    catch (error) {
+      console.error('Failed to update team role', error);
+      // Handle error, e.g. display a message to the user
+    };
+    handleCloseEditRoleDialog();
   };
 
   const handleUserNameChange = (event: SelectChangeEvent) => {
@@ -383,7 +467,7 @@ export default function UpdateTeam() {
         </Button>
         <p></p>
       </div>
-      <div style={{ height: 400, width: '100%' }}>
+      <div style={{ height: 300, width: '100%' }}>
         <DataGrid rows={team} columns={columns} onRowClick={handleRowSelection} />
         <div style={{ height: 600, width: '100%' }}>
           <DataGrid rows={teamMembers} columns={teamMemberColumns} />
@@ -442,6 +526,7 @@ export default function UpdateTeam() {
                 value={selectedTeamRole}
                 label="Team Role"
                 onChange={handleTeamRoleChange}
+                defaultValue={Role.MEMBER}
               >
                 <MenuItem value={Role.LEADER}>{Role.LEADER}</MenuItem>
                 <MenuItem value={Role.TEMPORARY_LEADER}>{Role.TEMPORARY_LEADER}</MenuItem>
@@ -455,7 +540,35 @@ export default function UpdateTeam() {
           <Button onClick={handleAddTeamUser}>Add</Button>
         </DialogActions>
       </Dialog >
+      <Dialog open={dialogEditRoleOpen} onClose={handleCloseEditRoleDialog}>
+        <DialogTitle>Edit Team Role</DialogTitle>
+        <DialogContent>
+          <div>
+            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+              <InputLabel id="edi-teamrole-label">Team Role</InputLabel>
+              <Select
+                labelId="edit-teamrole-label"
+                id="edit-teamrole"
+                value={selectedTeamRole}
+                label="Team Role"
+                onChange={handleTeamRoleChange}
+                defaultValue={Role.MEMBER}
+              >
+                <MenuItem value={Role.LEADER}>{Role.LEADER}</MenuItem>
+                <MenuItem value={Role.TEMPORARY_LEADER}>{Role.TEMPORARY_LEADER}</MenuItem>
+                <MenuItem value={Role.MEMBER}>{Role.MEMBER}</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditRoleDialog}>Cancel</Button>
+          <Button onClick={handleEditTeamRole}>Save</Button>
+        </DialogActions>
+      </Dialog >
     </>
   );
 }
+
+
 

@@ -1,4 +1,4 @@
-name: Build Platform
+name: Build App
 
 on:
   push:
@@ -21,6 +21,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: cd platform && yarn install
-      - run: cd platform && yarn build
-      - run: cd platform && yarn test
+      - run: cd app && yarn install
+      - run: cd app && yarn build
+      - run: cd app && yarn test

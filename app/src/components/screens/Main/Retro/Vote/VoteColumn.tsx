@@ -25,7 +25,11 @@ function VoteColumn({ column, isSingleRetroHistory }: Props) {
 
   return (
     <Box
-      className={stageStyles.column}
+      className={
+        isSingleRetroHistory
+          ? stageStyles.singleRetro__columns
+          : stageStyles.column
+      }
       sx={{
         width: "33% !important",
       }}

@@ -4,8 +4,6 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import { HomeScreen } from "./Home";
 import { CurrentUserContextProvider } from "../../../providers/CurrentUserProvider";
 import { TopNavBar } from "../../common/TopNavBar";
-import { RetroHistoryScreen } from "./RetroHistory";
-import { TemplateScreen } from "./Template";
 import { ProfileScreen } from "./Profile";
 import { ScreenPath } from "..";
 import { RetroScreen } from "./Retro";

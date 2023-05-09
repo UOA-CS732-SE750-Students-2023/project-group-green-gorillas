@@ -86,4 +86,12 @@ export class OrganisationService {
 
     return this.save(organisation);
   }
+
+  public async updateName(id: UUID, name: string): Promise<Organisation> {
+    const organisation = await this.getByIdOrThrow(id);
+
+    organisation.updateName(name);
+
+    return this.save(organisation);
+  }
 }

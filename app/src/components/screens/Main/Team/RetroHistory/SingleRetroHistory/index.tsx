@@ -143,13 +143,38 @@ export const SingleRetroHistory = () => {
             width: "100%",
           }}
         >
-          <Box sx={{ width: "50%" }}>
-            <ActionList
-              teamId={teamId}
-              user={author}
-              teamRole={teamRole}
-              isSingleRetro={true}
-            />
+          <Box
+            component="div"
+            sx={{
+              bgcolor: "#F5F7F9",
+              padding: 3,
+              borderRadius: 2,
+              justifyItems: "center",
+              width: "50%",
+            }}
+          >
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              noWrap
+              sx={{ marginBottom: 2 }}
+            >
+              In progress Action Items
+            </Typography>
+            {retro?.actionItems
+              ?.filter(
+                (actionItem: any) =>
+                  actionItem.status === ActionItemStatus.IN_PROGRESS
+              )
+              .map((actionItem: any) => (
+                <ActionListItem
+                  key={actionItem.id}
+                  actionItem={actionItem}
+                  teamId={teamId}
+                  teamRole={teamRole}
+                  completed={true}
+                />
+              ))}
           </Box>
           <Box
             component="div"

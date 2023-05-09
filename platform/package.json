@@ -18,8 +18,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.17.0",
@@ -30,6 +29,7 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/platform-socket.io": "^9.2.1",
+    "@nestjs/swagger": "^6.3.0",
     "@nestjs/websockets": "^9.2.1",
     "@sendgrid/mail": "^7.7.0",
     "@socket.io/redis-adapter": "^8.0.0",
@@ -49,6 +49,7 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
+    "@golevelup/ts-jest": "^0.3.7",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
@@ -83,6 +84,9 @@
       "json",
       "ts"
     ],
+    "setupFiles": [
+      "./jest-config/setUpJestMock.ts"
+    ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
@@ -91,6 +95,7 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
+    "coveragePathIgnorePatterns": ["app.config.ts", "main.ts", "app.module.ts", "jest-config/*", "^.*\\.module\\.[jt]sx?$"],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }

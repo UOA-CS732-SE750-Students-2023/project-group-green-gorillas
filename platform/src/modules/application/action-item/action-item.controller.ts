@@ -28,7 +28,11 @@ import {
   buildSocketEvent,
   SocketEventOperation,
 } from '../../../utils/builders/buildSocketEvent';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ActionItem } from '../../domain/action-item/action-item';
+import { ActionItemResponse } from './dto/response';
 
+@ApiTags('Action Item')
 @Controller({
   path: ['api/action-item'],
 })
@@ -39,6 +43,11 @@ export class ActionItemController {
     private readonly socketEventService: SocketEventService,
   ) {}
 
+  @ApiOkResponse({
+    description: 'list all outstanding action items by team id',
+    isArray: true,
+    type: ActionItemResponse,
+  })
   @Get('/list-outstanding/:teamId')
   public async listOutstandingActionItems(
     @Param() { teamId }: ListOutstandingActionItemsParams,
@@ -46,6 +55,11 @@ export class ActionItemController {
     return this.actionItemService.listOutstandingActionItems(teamId);
   }
 
+  @ApiOkResponse({
+    description: 'list all action items by retro id and team id',
+    isArray: true,
+    type: ActionItemResponse,
+  })
   @Get('/list/:teamId/retro/:retroId')
   public async listRetroActionItems(
     @Param() { teamId, retroId }: ListRetroActionItemsParams,
@@ -53,6 +67,9 @@ export class ActionItemController {
     return this.actionItemService.listRetroActionItems(teamId, retroId);
   }
 
+  @ApiOkResponse({
+    description: 'assign user to action item',
+  })
   @Post('/assign-user')
   public async assignUserToActionItem(
     @Body() { userId, actionItemId }: AssignUserToActionItemRequest,
@@ -73,6 +90,9 @@ export class ActionItemController {
     return actionItemAssignee;
   }
 
+  @ApiOkResponse({
+    description: 'unassign user to action item',
+  })
   @Delete('/un-assign-user')
   public async unAssignUserToActionItem(
     @Body() { userId, actionItemId }: AssignUserToActionItemRequest,
@@ -90,6 +110,10 @@ export class ActionItemController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'create action item',
+    type: ActionItemResponse,
+  })
   @Post('/')
   public async createActionItem(
     @RequestUser() user: RequestUserType,
@@ -112,6 +136,9 @@ export class ActionItemController {
   }
 
   @Delete('/:actionItemId')
+  @ApiOkResponse({
+    description: 'delete action action item',
+  })
   public async deleteActionItem(
     @Param() { actionItemId }: DeleteActionItemRequestParams,
   ) {
@@ -128,6 +155,10 @@ export class ActionItemController {
     );
   }
 
+  @ApiOkResponse({
+    description: 'update action item note',
+    type: ActionItemResponse,
+  })
   @Patch('update-note')
   public async updateActionItemNote(
     @RequestUser() user: RequestUserType,
@@ -148,6 +179,10 @@ export class ActionItemController {
     return actionItem;
   }
 
+  @ApiOkResponse({
+    description: 'update action item status',
+    type: ActionItemResponse,
+  })
   @Patch('update-status')
   public async updateActionStatus(
     @RequestUser() user: RequestUserType,

@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { GlobalModule } from './modules/global/global.module';
 import { AuthModule } from './modules/application/auth/auth.module';
 import { DataSeederModule } from './modules/application/data-seeder/data-seeder.module';
@@ -9,6 +8,7 @@ import { TeamModule } from './modules/application/team/team.module';
 import { RetrospectiveModule } from './modules/application/retrospective/retrospective.module';
 import { ActionItemModule } from './modules/application/action-item/action-item.module';
 import { GatewayModule } from './modules/gateway/gateway.module';
+import { OrganisationModule } from './modules/application/organisation/organisation.module';
 
 const modules = [
   GlobalModule,
@@ -18,6 +18,7 @@ const modules = [
   RetrospectiveModule,
   ActionItemModule,
   GatewayModule,
+  OrganisationModule,
 ];
 
 if (process.env.NODE_ENV === Environment.LOCAL) {
@@ -26,6 +27,5 @@ if (process.env.NODE_ENV === Environment.LOCAL) {
 
 @Module({
   imports: modules,
-  controllers: [AppController],
 })
 export class AppModule {}

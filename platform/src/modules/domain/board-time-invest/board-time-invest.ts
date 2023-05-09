@@ -18,6 +18,8 @@ export class BoardTimeInvest {
 
   public readonly organisationId: UUID;
 
+  public readonly teamId: UUID;
+
   public readonly rate: BoardTimeInvestRate;
 
   @Type(() => Number)
@@ -28,12 +30,14 @@ export class BoardTimeInvest {
     boardId: UUID,
     userId: UUID,
     organisationId: UUID,
+    teamId: UUID,
     rate: BoardTimeInvestRate,
   ) {
     this.boardId = boardId;
     this.userId = userId;
     this.organisationId = organisationId;
     this.rate = rate;
+    this.teamId = teamId;
     this.createdAt = DateTime.now();
   }
 }

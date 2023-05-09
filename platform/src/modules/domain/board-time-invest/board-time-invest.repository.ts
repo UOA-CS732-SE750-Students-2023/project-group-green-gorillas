@@ -35,6 +35,42 @@ export class BoardTimeInvestRepository extends DatabaseRepository<BoardTimeInves
     }
   }
 
+  public async delete(boardId: UUID, userId: UUID): Promise<void> {
+    try {
+      return this.deleteItem({ boardId, userId });
+    } catch (error) {
+      throw new InternalException(
+        'BOARD_TIME_INVEST.FAILED_TO_DELETE',
+        error.message,
+      );
+    }
+  }
+
+  public async listByTeamId(teamId: UUID): Promise<BoardTimeInvest[]> {
+    const command = new QueryCommand({
+      TableName: this.tableName,
+      IndexName: 'teamIdIndex',
+      ExpressionAttributeValues: marshall({
+        ':teamId': teamId,
+      }),
+      KeyConditionExpression: 'teamId = :teamId',
+    });
+
+    try {
+      const { Items } = await this.client.send(command);
+
+      return (
+        Items?.map((item) => plainToClass(BoardTimeInvest, unmarshall(item))) ??
+        []
+      );
+    } catch (error) {
+      throw new InternalException(
+        'BOARD_TIME_INVEST.FAILED_TO_LIST_BY_TEAM_ID',
+        error.message,
+      );
+    }
+  }
+
   public async listByBoardId(boardId: UUID): Promise<BoardTimeInvest[]> {
     const command = new QueryCommand({
       TableName: this.tableName,
@@ -71,6 +107,10 @@ export class BoardTimeInvestRepository extends DatabaseRepository<BoardTimeInves
           AttributeName: 'userId',
           AttributeType: 'S',
         },
+        {
+          AttributeName: 'teamId',
+          AttributeType: 'S',
+        },
       ],
       KeySchema: [
         {
@@ -80,6 +120,18 @@ export class BoardTimeInvestRepository extends DatabaseRepository<BoardTimeInves
         {
           AttributeName: 'userId',
           KeyType: 'RANGE',
+        },
+      ],
+      GlobalSecondaryIndexes: [
+        {
+          IndexName: 'teamIdIndex',
+          KeySchema: [
+            {
+              AttributeName: 'teamId',
+              KeyType: 'HASH',
+            },
+          ],
+          Projection: { ProjectionType: 'ALL' },
         },
       ],
       BillingMode: 'PAY_PER_REQUEST',

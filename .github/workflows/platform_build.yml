@@ -1,4 +1,4 @@
-name: Build And Test
+name: Build
 
 #on:
 #  push:
@@ -9,6 +9,7 @@ on: pull_request
 
 jobs:
   build:
+    name: "build and test"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -19,5 +20,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - run: cd platform
       - run: yarn install
+      - run: yarn build
       - run: yarn test

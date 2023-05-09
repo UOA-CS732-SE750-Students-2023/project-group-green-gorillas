@@ -231,7 +231,7 @@ export default function UpdateUser() {
       address: addressInputRef.current?.value ? addressInputRef.current.value : "",
     }
     try {
-      await request.post(CREATE_USER(), newUser, {
+      await request.post(CREATE_USER(), newUser,  {
         headers: {
           'Content-Type': 'application/json',
         },

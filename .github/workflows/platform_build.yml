@@ -1,0 +1,21 @@
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: 16.14.2
+    steps:
+      - uses: actions/checkout@v3
+      - name: Node LTS versions
+        uses: msimerson/node-lts-versions@v1.1.1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        env:
+          FORCE_COLOR: 0
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - run: cd platform
+      - run: yarn
+      - run: yarn build
+      - run: yarn test

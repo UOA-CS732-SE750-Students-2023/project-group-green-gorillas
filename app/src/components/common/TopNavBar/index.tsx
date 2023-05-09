@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import { MainScreenPath } from "../../screens/Main";
 import { useHistory } from "react-router-dom";
 
+
 export const TopNavBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
@@ -67,6 +68,18 @@ export const TopNavBar = () => {
           >
             Retrospective Monster
           </Typography>
+
+
+          <Typography
+              sx={{ flexGrow: 1 }}
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+          >
+            {user!.organisation!.name}
+          </Typography>
+
 
           <Box sx={{ flexGrow: 0 }}>
             {isAdmin && (

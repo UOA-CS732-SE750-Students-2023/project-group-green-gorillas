@@ -47,7 +47,7 @@ function Group({ colId, id, items, index, name }: any) {
         {(provided, snapshot) => {
           return (
             <div ref={provided.innerRef} {...provided.droppableProps}>
-              {items.map((item, index) => (
+              {items.map((item: any, index: any) => (
                 <GroupNote
                   id={item.id}
                   index={index}

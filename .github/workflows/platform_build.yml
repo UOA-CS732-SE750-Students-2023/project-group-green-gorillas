@@ -20,7 +20,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: cd platform
-      - run: yarn install
-      - run: yarn build
-      - run: yarn test
+      - run: cd platform && yarn install
+      - run: cd platform && yarn build
+      - run: cd platform && yarn test

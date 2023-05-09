@@ -15,8 +15,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { request } from '../../../../../api/request';
-import { USER_LIST } from '../../../../../api/api';
+import { CREATE_USER, DISABLE_USER, UPDATE_USER, USER_LIST } from '../../../../../api/api';
 import { UseRole } from '../../../../../types/user';
+import Box from '@mui/material/Box';
 
 interface User {
   id: string;
@@ -52,9 +53,9 @@ export default function UpdateUser() {
 
 
   const handleDisableEnableUser = (userId: string, active: boolean) => {
-    const updatedUser = { active };
+    const updatedUser = { active: !active };
     try {
-      request.patch(`http://localhost:8080/api/user/update-active/${userId}`, updatedUser, {
+      request.patch(DISABLE_USER(userId), updatedUser, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -126,6 +127,7 @@ export default function UpdateUser() {
           onClick={() => {
             const selectedUser = params.row as User;
             const isActive = selectedUser.active;
+            console.log('current active flag: ' + isActive)
             handleDisableEnableUser(selectedUser.id, isActive);
           }}
         >
@@ -172,7 +174,7 @@ export default function UpdateUser() {
     setDialogNewOpen(false);
   };
 
-  const handleSaveName = () => {
+  const handleSaveName = async () => {
     const userId = selectedUser?.id;
     console.log(userId);
     const updatedDisplayName = displayNameInputRef.current?.value;
@@ -180,7 +182,7 @@ export default function UpdateUser() {
     const updatedLastName = lastNameInputRef.current?.value;
     const updatedRole = roleSelectRef.current?.value;
     const updatedGender = genderSelectRef.current?.value === "Male" ? true : false;
-    const updatedPhone  = phoneInputRef.current?.value;
+    const updatedPhone = phoneInputRef.current?.value;
     const updatedAddress = addressInputRef.current?.value;
     if (selectedUser && firstNameInputRef.current && lastNameInputRef.current && displayNameInputRef.current) {
       // Make API request to update the user name here...
@@ -195,7 +197,7 @@ export default function UpdateUser() {
         gender: updatedGender
       }
       try {
-        request.put(`http://localhost:8080/api/user/${userId}`, updatedUser, {
+        await request.put(UPDATE_USER(userId), updatedUser, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -216,7 +218,7 @@ export default function UpdateUser() {
     }
   };
 
-  const handleNewUser = () => {
+  const handleNewUser = async () => {
     const newUser = {
       email: emailInputRef.current?.value,
       displayName: displayNameInputRef.current?.value,
@@ -229,7 +231,7 @@ export default function UpdateUser() {
       address: addressInputRef.current?.value ? addressInputRef.current.value : "",
     }
     try {
-      request.post(`http://localhost:8080/api/user`, newUser, {
+      await request.post(CREATE_USER(), newUser, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -255,9 +257,9 @@ export default function UpdateUser() {
         </Button>
         <p></p>
       </div>
-      <div style={{ height: 600, width: '100%' }}>
+      <Box sx={{ height: 600, width: '100%', overflow: 'auto' }}>
         <DataGrid rows={user} columns={columns} />
-      </div>
+      </Box>
       <Dialog open={dialogEditOpen} onClose={handleCloseEditDialog}>
         <DialogTitle>Edit User</DialogTitle>
         <DialogContent>

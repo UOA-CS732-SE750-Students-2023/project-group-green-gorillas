@@ -16,7 +16,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { request } from '../../../../../api/request';
-import { TEAM_LIST, USER_LIST } from '../../../../../api/api';
+import { ADD_TEAM_USER, CREATE_TEAM, DELETE_TEAM_USER, DISABLE_TEAM, TEAM_LIST, UPDATE_TEAM_USER, USER_LIST } from '../../../../../api/api';
 import { UseRole, User } from '../../../../../types/user';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -24,6 +24,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import { Role } from '../../../../../types/teamRole';
+import Box from '@mui/material/Box';
 
 interface Team {
   id: string;
@@ -54,10 +55,10 @@ export default function UpdateTeam() {
   const [selectedTeamId, setSelectedTeamId] = useState('');
   const [selectedTeamRole, setSelectedTeamRole] = useState(Role.MEMBER);
 
-  const handleDisableEnableTeam = (teamId: string, active: boolean) => {
-    const updatedTeam = { active };
+  const handleDisableEnableTeam = async (teamId: string, active: boolean) => {
+    const updatedTeam = { active: !active };
     try {
-      request.patch(`http://localhost:8080/api/team/update-active/${teamId}`, updatedTeam, {
+      await request.patch(DISABLE_TEAM(teamId), updatedTeam, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -82,16 +83,16 @@ export default function UpdateTeam() {
     };
   };
 
-  const handleRemove = (removedTeamId: string, removedUserId: string) => {
+  const handleRemove = async (removedTeamId: string, removedUserId: string) => {
     console.log("teamId: " + removedTeamId);
     console.log("userId: " + removedUserId);
-    // Make API request to update the user name here...
+    // Make API request to remove user from team
     const removedTeamUser = {
       teamId: removedTeamId,
       userId: removedUserId
     }
     try {
-      request.delete(`http://localhost:8080/api/team/remove-team-user`, {
+      await request.delete(DELETE_TEAM_USER(), {
         data: removedTeamUser,
         headers: {
           'Content-Type': 'application/json',
@@ -326,7 +327,7 @@ export default function UpdateTeam() {
       // Make API request to update the team name here...
       const updatedTeam = { name: updatedName, active: true };
       try {
-        request.put(`http://localhost:8080/api/team/${teamId}`, updatedTeam, {
+        request.put(UPDATE_TEAM(teamId), updatedTeam, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -348,7 +349,7 @@ export default function UpdateTeam() {
   const handleNewTeam = () => {
     const newTeamName = { name: newTeamInputRef.current?.value };
     try {
-      request.post(`http://localhost:8080/api/team`, newTeamName, {
+      request.post(CREATE_TEAM(), newTeamName, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -380,7 +381,7 @@ export default function UpdateTeam() {
     }
   };
 
-  const handleAddTeamUser = () => {
+  const handleAddTeamUser = async ()  => {
     const newTeamUser = {
       userId: selectedUserId,
       userTeamRole: selectedTeamRole,
@@ -390,7 +391,7 @@ export default function UpdateTeam() {
     console.log("userTeamRole: " + selectedTeamRole);
     console.log("teamId: " + selectedTeamId);
     try {
-      request.post(`http://localhost:8080/api/team/add-team-user`, newTeamUser, {
+      await request.post(ADD_TEAM_USER(), newTeamUser, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -409,7 +410,7 @@ export default function UpdateTeam() {
     handleCloseAddUserDialog();
   };
 
-  const handleEditTeamRole = () => {
+  const handleEditTeamRole = async ()  => {
     const newTeamUser = {
       userId: selectedUserId,
       userTeamRole: selectedTeamRole,
@@ -419,7 +420,7 @@ export default function UpdateTeam() {
     console.log("userTeamRole: " + selectedTeamRole);
     console.log("teamId: " + selectedTeamId);
     try {
-      request.put(`http://localhost:8080/api/team/update-team-user`, newTeamUser, {
+      await request.put(UPDATE_TEAM_USER(), newTeamUser, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -467,12 +468,15 @@ export default function UpdateTeam() {
         </Button>
         <p></p>
       </div>
-      <div style={{ height: 300, width: '100%' }}>
+      <Box sx={{ height: 300, width: '100%' }}>
         <DataGrid rows={team} columns={columns} onRowClick={handleRowSelection} />
-        <div style={{ height: 600, width: '100%' }}>
-          <DataGrid rows={teamMembers} columns={teamMemberColumns} />
-        </div>
-      </div>
+        <Box sx={{ height: 400, width: '100%', overflow: 'auto' }}>
+          <DataGrid rows={teamMembers} columns={teamMemberColumns}
+            pagination
+            pageSizeOptions={[5, 10]}
+          />
+        </Box>
+      </Box>
       <Dialog open={dialogEditOpen} onClose={handleCloseEditDialog}>
         <DialogTitle>Edit Team</DialogTitle>
         <DialogContent>

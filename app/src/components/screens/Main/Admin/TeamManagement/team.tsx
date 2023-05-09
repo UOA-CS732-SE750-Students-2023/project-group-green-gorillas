@@ -72,19 +72,10 @@ export default function UpdateTeam() {
             "Content-Type": "application/json",
           },
         })
-        .then((response) => {
+        .then((response: any) => {
           console.log("Team updated successfully", response.data);
           // Update the team in the UI state or trigger a re-fetch
-          const updatedTeams = team.map((t) => {
-            if (t.id === teamId) {
-              return {
-                ...t,
-                active: !active,
-              };
-            }
-            return t;
-          });
-          setTeam(updatedTeams);
+          getTeamList();
         });
     } catch (error) {
       console.error("Failed to update team", error);

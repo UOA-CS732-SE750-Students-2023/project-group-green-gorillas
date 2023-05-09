@@ -47,6 +47,7 @@ export default function UpdateUser() {
   const genderSelectRef = useRef<HTMLSelectElement>(null);
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const addressInputRef = useRef<HTMLInputElement>(null);
+  const tempPwdInputRef = useRef<HTMLInputElement>(null);
   const roleSelectRef = useRef<HTMLSelectElement>(null);
 
 
@@ -222,7 +223,7 @@ export default function UpdateUser() {
       firstName: firstNameInputRef.current?.value,
       lastName: lastNameInputRef.current?.value,
       role: roleSelectRef.current?.value,
-      temporaryPassword: "12345678",
+      temporaryPassword: tempPwdInputRef.current?.value ?? "12345678",
       phone: phoneInputRef.current?.value ? phoneInputRef.current.value : "",
       gender: genderSelectRef.current?.value === "Male" ? true : false,
       address: addressInputRef.current?.value ? addressInputRef.current.value : "",
@@ -357,6 +358,11 @@ export default function UpdateUser() {
               <option value="USER">USER</option>
               <option value="ADMIN">ADMIN</option>
             </select>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label htmlFor="tempPwd">Temp Password: </label>
+            <input type="text" id="tempPwd" ref={tempPwdInputRef} style={{ width: "55%" }} />
           </div>
         </DialogContent>
         <DialogActions>

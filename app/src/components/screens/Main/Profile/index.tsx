@@ -227,7 +227,6 @@ export const ProfileScreen = () => {
           <Container sx={{
               marginTop: '10px',
               width:"1500"
-              // maxWidth:"100%"
           }}
               >
               <Box sx={{
@@ -238,52 +237,9 @@ export const ProfileScreen = () => {
                   alignItems:"center",
               }}>
 
-                  {/*/!*updateAvatar*!/*/}
-                  {/*<Avatar*/}
-                  {/*    onMouseOver={handleMouseOver}*/}
-                  {/*    onMouseOut={handleMouseOut}*/}
-                  {/*    sx={{*/}
-                  {/*        position: 'relative',*/}
-                  {/*        width: 180, height: 180,*/}
-                  {/*        zIndex: 1,*/}
-                  {/*        backgroundColor: 'white',*/}
-                  {/*        cursor: 'pointer'*/}
-                  {/*      }}*/}
-                  {/*    onClick={updateAvatar}*/}
-                  {/*>*/}
-                  {/*    <img*/}
-                  {/*        src="../../public/defaultAvatar.svg"*/}
-                  {/*        alt="overlay"*/}
-                  {/*        style={{*/}
-                  {/*            position: 'relative',*/}
-                  {/*            width: '100%', height: '100%',*/}
-                  {/*            zIndex: 1*/}
-                  {/*        }}*/}
-                  {/*    />*/}
-
-                  {/*    {isHovering && (*/}
-                  {/*        <img*/}
-                  {/*            src="../../public/updateAvatar.svg"*/}
-                  {/*            style={{*/}
-                  {/*                position: 'absolute',*/}
-                  {/*                marginTop: '63%',*/}
-                  {/*                marginLeft: '2%',*/}
-                  {/*                width: '30%',*/}
-                  {/*                height: '30%',*/}
-                  {/*                zIndex: 3*/}
-                  {/*            }}*/}
-                  {/*        />*/}
-                  {/*    )}*/}
-                  {/*</Avatar>*/}
-
-                  {/*/!*TODO User要改*!/*/}
-                  {/*<Typography marginTop={2} component="h1" variant="h3">*/}
-                  {/*    Welcome, {userData!.displayName}*/}
-                  {/*</Typography>*/}
 
                   <Paper sx={{
                       width:'100%'
-                      // marginTop:'2%'
                   }} elevation={5}>
                           <Grid sx={{
                               marginLeft: '3%',
@@ -301,16 +257,10 @@ export const ProfileScreen = () => {
                                       align:"left",
                                       marginLeft: '3%'
                               }} >
-                                  {/*//TODO*/}
                                   <Typography>Display Name </Typography>
                               </Grid>
 
-                              <Grid
-                                  item xs={2}
-                                  sx={{
-                                  // align:"center"
-                                  //     marginLeft: '7%'
-                              }}>
+                              <Grid item xs={2}>
                                   <TextField
                                       variant="outlined"
                                       margin="normal"
@@ -323,12 +273,6 @@ export const ProfileScreen = () => {
                                   />
                               </Grid>
 
-                              {/*<Button*/}
-                              {/*    sx={{*/}
-                              {/*    marginLeft: '5%'*/}
-                              {/*}} disableElevation*/}
-                              {/*        variant="contained"*/}
-                              {/*        aria-label="Disabled elevation buttons">Update</Button>*/}
 
                           </Grid>
                           <Divider />
@@ -385,11 +329,6 @@ export const ProfileScreen = () => {
 
                           </Grid>
 
-                              {/*<Button sx={{*/}
-                              {/*    marginLeft: '5%',*/}
-                              {/*}} disableElevation*/}
-                              {/*        variant="contained"*/}
-                              {/*        aria-label="Disabled elevation buttons">Update</Button>*/}
 
                           </Grid>
                           <Divider />
@@ -408,15 +347,7 @@ export const ProfileScreen = () => {
                                          marginBottom:'0.8%',
                                          marginTop: '1.5%'
                                      }}>
-                                  {/*<TextField*/}
-                                  {/*    variant="outlined"*/}
-                                  {/*    margin="normal"*/}
-                                  {/*    required*/}
-                                  {/*    fullWidth*/}
-                                  {/*    id="gender"*/}
-                                  {/*    name="gender"*/}
-                                  {/*    autoComplete="gender"*/}
-                                  {/*/>*/}
+
 
                                   <FormControl
                                         sx={{
@@ -431,20 +362,12 @@ export const ProfileScreen = () => {
                                   </FormControl>
                               </Grid>
 
-                              {/*<Button sx={{*/}
-                              {/*    marginLeft: '5%',*/}
-                              {/*}} disableElevation*/}
-                              {/*        variant="contained"*/}
-                              {/*        aria-label="Disabled elevation buttons">Update</Button>*/}
 
        </Grid>
-                      {/*</Paper>*/}
 
 
-                  {/*<Paper sx={{width:'100%', marginTop:'5%'}} elevation={5}>*/}
                       <Grid sx={{
                           marginLeft: '3%',
-                          // marginTop: '3%'
                       }}>
                           <Typography component="h1" variant="h5">Contact info</Typography>
                       </Grid>

@@ -1,14 +1,10 @@
-import {
-  Box,
-  FormControlLabel,
-  Switch,
-  Typography,
-} from "@mui/material";
+import { Box, FormControlLabel, Switch, Typography } from "@mui/material";
 import { useActionItems } from "../../../../../hooks/useActionItems";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "../../../../../types/user";
 import { ActionListItem } from "./ActionListItem";
 import { TeamRole } from "../../../../../types/teamRole";
+import { ActionItem } from "../../../../../types/actionItems";
 
 type Props = {
   teamId: string | null;
@@ -23,8 +19,13 @@ export const ActionList = ({
   teamRole,
   isSingleRetro,
 }: Props) => {
-  
   const { actionItems } = useActionItems(teamId || "");
+
+  const [newActionItems, setNewActionItems] = useState<ActionItem[] | null>();
+
+  useEffect(() => {
+    setNewActionItems(actionItems);
+  }, [actionItems]);
 
   const currentUserActionItems = actionItems?.filter((item) =>
     item.assignees.some((assignee) => assignee.id === user?.id)
@@ -90,7 +91,7 @@ export const ActionList = ({
           >
             Team Action Items
           </Typography>
-          {actionItems?.map((actionItem) => (
+          {newActionItems?.map((actionItem) => (
             <ActionListItem
               key={actionItem.id}
               actionItem={actionItem}

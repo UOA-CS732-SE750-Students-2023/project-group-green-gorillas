@@ -33,7 +33,6 @@ export const ActionListItem = ({
   const { updateActionItems, deleteActionItems } = useActionItems(teamId || "");
 
   // console.log(completed);
-  
 
   const history = useHistory();
 
@@ -98,14 +97,12 @@ export const ActionListItem = ({
           <Button
             variant="contained"
             size="small"
-            onClick={() => {
-              return updateActionItems(actionItem);
-            }}
+            onClick={() => updateActionItems(actionItem)}
             sx={{ marginLeft: "auto" }}
           >
             Complete
           </Button>
-        )} 
+        )}
       </CardActions>
     </Card>
   );

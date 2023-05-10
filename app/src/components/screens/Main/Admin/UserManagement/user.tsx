@@ -231,7 +231,7 @@ export default function UpdateUser() {
       address: addressInputRef.current?.value ? addressInputRef.current.value : "",
     }
     try {
-      await request.post(CREATE_USER(), newUser,  {
+      await request.post(CREATE_USER(), newUser, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -258,7 +258,9 @@ export default function UpdateUser() {
         <p></p>
       </div>
       <Box sx={{ height: 600, width: '100%', overflow: 'auto' }}>
-        <DataGrid rows={user} columns={columns} />
+        <DataGrid rows={user} columns={columns}
+          pagination
+          pageSizeOptions={[5, 10, 25, 50, 100]} />
       </Box>
       <Dialog open={dialogEditOpen} onClose={handleCloseEditDialog}>
         <DialogTitle>Edit User</DialogTitle>

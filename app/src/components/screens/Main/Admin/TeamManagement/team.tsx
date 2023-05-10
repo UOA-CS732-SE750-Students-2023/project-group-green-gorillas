@@ -487,13 +487,13 @@ export default function UpdateTeam() {
       <Box sx={{ height: 300, width: '100%' }}>
         <DataGrid rows={team} columns={columns}
         pagination
-        pageSizeOptions={[5, 10]}
+        pageSizeOptions={[5, 10, 25, 50, 100]}
         onRowClick={handleRowSelection} />
         
         <Box sx={{ height: 400, width: '100%', overflow: 'auto' }}>
           <DataGrid rows={teamMembers} columns={teamMemberColumns}
             pagination
-            pageSizeOptions={[5, 10]}
+            pageSizeOptions={[5, 10, 25, 50, 100]}
           />
         </Box>
       </Box>

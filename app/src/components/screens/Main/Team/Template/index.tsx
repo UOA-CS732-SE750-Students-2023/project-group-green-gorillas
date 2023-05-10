@@ -70,6 +70,9 @@ export const TemplateScreen = () => {
       try {
         const { data } = await request.get<Template[]>(TEMPLATE());
         setTemps(data);
+        if (data.length > 0) {
+          setPreviewTemp(data[0]); // Set the first template as the default previewTemp
+        }
       } catch (error) {
         console.error(error);
       }
@@ -82,7 +85,7 @@ export const TemplateScreen = () => {
     <Grid sx={{ marginTop: 1 }} container spacing={2}>
       <Grid item xs={12} md={8}>
         <Box
-          p={2}
+          marginY={2}
           sx={{ width: "100%", display: "flex", alignItems: "flex-end" }}
         >
           <Box sx={{ flex: "1" }}>

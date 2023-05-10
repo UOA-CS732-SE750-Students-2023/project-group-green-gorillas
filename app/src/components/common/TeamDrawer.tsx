@@ -95,16 +95,10 @@ export const TeamDrawer: React.FC<Props> = ({ teamId }) => {
             </ListItemIcon>
             <ListItemText primary="Retro History" />
           </ListItemButton>
-          {/*<ListItemButton>*/}
-          {/*  <ListItemIcon>*/}
-          {/*    <SettingsIcon />*/}
-          {/*  </ListItemIcon>*/}
-          {/*  <ListItemText primary="Team Settings" />*/}
-          {/*</ListItemButton>*/}
         </List>
       </Box>
-      <div>
-        <FormControl sx={{ m: 1, minWidth: 80 }}>
+      <Box sx={{display: 'flex', justifyContent:'center', marginBottom: 1 }}>
+        <FormControl sx={{ m: 1, width: 200}}>
           <Select value={teamId} onChange={onSwitchTeam} autoWidth>
             {user?.teams.map((team) => (
               <MenuItem key={team.id} value={team.id}>
@@ -113,7 +107,7 @@ export const TeamDrawer: React.FC<Props> = ({ teamId }) => {
             ))}
           </Select>
         </FormControl>
-      </div>
+      </Box>
       <Divider />
     </Drawer>
   );

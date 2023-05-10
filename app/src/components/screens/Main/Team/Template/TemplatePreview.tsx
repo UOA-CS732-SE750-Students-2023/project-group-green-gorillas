@@ -154,7 +154,7 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
                   <Button
                       variant="contained"
                       sx={{
-                        bgcolor: "orange",
+                        bgcolor: "#1976d2",
                         color: "white",
                         borderRadius: "8px",
                         "&:hover": { bgcolor: "darkorange" },

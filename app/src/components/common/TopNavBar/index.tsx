@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Badge,
   Box,
   CssBaseline,
   IconButton,
@@ -11,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Settings } from "@mui/icons-material";
-import React, { useMemo } from "react";
+import { useMemo, useState, MouseEvent } from "react";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { Avatar } from "../Avatar";
 import { useSignOut } from "../../../hooks/useSignOut";
@@ -19,13 +18,10 @@ import { Link } from "react-router-dom";
 import { MainScreenPath } from "../../screens/Main";
 import { useHistory } from "react-router-dom";
 
-
 export const TopNavBar = () => {
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
 
@@ -43,7 +39,7 @@ export const TopNavBar = () => {
 
   const { onSignOut } = useSignOut();
 
-  const { location, push, replace } = useHistory();
+  const { location, push } = useHistory();
 
   const shouldShowMenu = useMemo(() => {
     return location.pathname.startsWith(MainScreenPath.TEAM);
@@ -69,17 +65,15 @@ export const TopNavBar = () => {
             Retrospective Monster
           </Typography>
 
-
           <Typography
-              sx={{ flexGrow: 1 }}
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
+            sx={{ flexGrow: 1 }}
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
           >
             {user!.organisation!.name}
           </Typography>
-
 
           <Box sx={{ flexGrow: 0 }}>
             {isAdmin && (

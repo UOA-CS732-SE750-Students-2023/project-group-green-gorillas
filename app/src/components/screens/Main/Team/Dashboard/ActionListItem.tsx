@@ -5,13 +5,11 @@ import {
   CardActions,
   CardContent,
   Chip,
-  Link,
   Stack,
   Typography,
 } from "@mui/material";
 import { Avatar } from "../../../../common/Avatar";
-import { useActionItems } from "../../../../../hooks/useActionItems";
-import { ActionItem } from "../../../../../types/actionItems";
+import { ActionItem, ActionItemStatus } from "../../../../../types/actionItems";
 import { TeamRole } from "../../../../../types/teamRole";
 import { useHistory } from "react-router-dom";
 import { RetroStage } from "../../Retro/Stage";
@@ -21,20 +19,19 @@ type Props = {
   actionItem: ActionItem;
   teamId: string | null;
   teamRole: TeamRole | null;
-  completed?: boolean;
+  updateActionItems: any;
+  deleteActionItems: any;
+  showSprintLabel?: boolean;
 };
 
 export const ActionListItem = ({
   actionItem,
   teamId,
   teamRole,
-  completed,
+  updateActionItems,
+  deleteActionItems,
+  showSprintLabel = true,
 }: Props) => {
-  const { updateActionItems, deleteActionItems } = useActionItems(teamId || "");
-
-  // console.log(completed);
-  
-
   const history = useHistory();
 
   const onNavigateToRetroHistory = (retro: any): void => {
@@ -60,11 +57,13 @@ export const ActionListItem = ({
         </Typography>
         <Stack direction="row" spacing={1}>
           <Chip label={actionItem.status} color="success" size="small" />
-          <Chip
-            label={actionItem?.retro?.name}
-            size="small"
-            onClick={() => onNavigateToRetroHistory(actionItem.retro)}
-          />
+          {showSprintLabel && (
+            <Chip
+              label={actionItem?.retro?.name}
+              size="small"
+              onClick={() => onNavigateToRetroHistory(actionItem.retro)}
+            />
+          )}
         </Stack>
         <Typography color="text.secondary" component="div">
           {actionItem.createdAt.slice(0, 10)}
@@ -86,26 +85,24 @@ export const ActionListItem = ({
             size="small"
             sx={{ marginLeft: "auto" }}
             // disabled={true}
-            onClick={() => {
-              return deleteActionItems(actionItem);
-            }}
+            onClick={deleteActionItems}
           >
             DELETE
           </Button>
         ) : null}
 
-        {!completed && (
+        {teamRole?.role !== "MEMBER" && (
           <Button
             variant="contained"
             size="small"
-            onClick={() => {
-              return updateActionItems(actionItem);
-            }}
+            onClick={updateActionItems}
             sx={{ marginLeft: "auto" }}
           >
-            Complete
+            {actionItem.status === ActionItemStatus.IN_PROGRESS
+              ? "Complete"
+              : "Un-complete"}
           </Button>
-        )} 
+        )}
       </CardActions>
     </Card>
   );

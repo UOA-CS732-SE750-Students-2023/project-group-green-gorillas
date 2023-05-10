@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CopyRight should be render correctly 1`] = `
+<div>
+  <p
+    class="MuiTypography-root MuiTypography-body2 MuiTypography-alignCenter css-ijul54-MuiTypography-root"
+  >
+    Copyright © 
+    <a
+      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-duj00d-MuiTypography-root-MuiLink-root"
+      href="#"
+    >
+      Retrospective Monster
+    </a>
+     
+    2000
+    .
+  </p>
+</div>
+`;

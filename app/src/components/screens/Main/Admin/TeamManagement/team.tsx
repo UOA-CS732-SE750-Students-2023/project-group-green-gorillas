@@ -22,11 +22,10 @@ import {
   DELETE_TEAM_USER,
   DISABLE_TEAM,
   TEAM_LIST,
+  UPDATE_TEAM,
   UPDATE_TEAM_USER,
   USER_LIST,
-  UPDATE_TEAM,
 } from "../../../../../api/api";
-import { UseRole, User } from "../../../../../types/user";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
@@ -35,6 +34,22 @@ import FormHelperText from "@mui/material/FormHelperText";
 import { Role } from "../../../../../types/teamRole";
 import Box from "@mui/material/Box";
 
+interface TeamUser {
+  id: string;
+  email: string;
+  organisationId: string;
+  displayName: string;
+  firstName: string;
+  lastName: string;
+  role: Role;
+  phone: string;
+  address: string;
+  gender: boolean;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface Team {
   id: string;
   name: string;
@@ -42,7 +57,7 @@ interface Team {
   active: boolean;
   updatedAt: string;
   createdAt: string;
-  teamMembers: User[];
+  teamMembers: TeamUser[];
 }
 
 export default function UpdateTeam() {
@@ -53,11 +68,11 @@ export default function UpdateTeam() {
   const [dialogEditRoleOpen, setDialogEditRoleOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [team, setTeam] = useState<Team[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<TeamUser[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
   const newTeamInputRef = useRef<HTMLInputElement>(null);
-  const [teamMembers, setTeamMembers] = useState<User[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<Team | null>(null);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedTeamId, setSelectedTeamId] = useState("");
@@ -72,10 +87,19 @@ export default function UpdateTeam() {
             "Content-Type": "application/json",
           },
         })
-        .then((response: any) => {
+        .then((response) => {
           console.log("Team updated successfully", response.data);
           // Update the team in the UI state or trigger a re-fetch
-          getTeamList();
+          const updatedTeams = team.map((t) => {
+            if (t.id === teamId) {
+              return {
+                ...t,
+                active: !active,
+              };
+            }
+            return t;
+          });
+          setTeam(updatedTeams);
         });
     } catch (error) {
       console.error("Failed to update team", error);
@@ -247,7 +271,7 @@ export default function UpdateTeam() {
       const thisTeam = teamsWithMembers.find(
         (member) => member.id === selectedTeamId
       );
-      setTeamMembers(thisTeam?.teamMembers as any);
+      setTeamMembers(thisTeam?.teamMembers!);
     } catch (error) {
       console.log(error);
     } finally {
@@ -337,7 +361,7 @@ export default function UpdateTeam() {
       const updatedTeam = { name: updatedName, active: true };
       try {
         request
-          .put(UPDATE_TEAM(teamId as string), updatedTeam, {
+          .put(UPDATE_TEAM(teamId!), updatedTeam, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -382,7 +406,7 @@ export default function UpdateTeam() {
   const populateUsers = async () => {
     setLoading(true);
     try {
-      const { data } = await request.get<User[]>(USER_LIST());
+      const { data } = await request.get<TeamUser[]>(USER_LIST());
       setUsers(data);
       console.log("All users data: " + data.toString());
       setDialogAddUserOpen(true);
@@ -453,7 +477,7 @@ export default function UpdateTeam() {
             }
             return member;
           });
-          setTeamMembers(updatedTeamMembers as any);
+          setTeamMembers(updatedTeamMembers!);
         });
     } catch (error) {
       console.error("Failed to update team role", error);
@@ -491,14 +515,17 @@ export default function UpdateTeam() {
         <DataGrid
           rows={team}
           columns={columns}
+          pagination
+          pageSizeOptions={[5, 10, 25, 50, 100]}
           onRowClick={handleRowSelection}
         />
+
         <Box sx={{ height: 400, width: "100%", overflow: "auto" }}>
           <DataGrid
             rows={teamMembers}
             columns={teamMemberColumns}
             pagination
-            pageSizeOptions={[5, 10]}
+            pageSizeOptions={[5, 10, 25, 50, 100]}
           />
         </Box>
       </Box>

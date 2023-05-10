@@ -26,6 +26,7 @@ export const GET_RETRO = (retroId: string, teamId: string) =>
   `${apiBaseUrl}/retrospective/${retroId}/team/${teamId}`;
 export const INPROGRESS_RETRO = (teamId: string) =>
   `${apiBaseUrl}/team/in-progress-retro/${teamId}`;
+export const RATE_BY_ID = (teamId: string) => `${apiBaseUrl}/team/board-time-invest/${teamId}`;
 
 export const ACTIONITEMS_LIST_BY_ID = (teamId: string) =>
   `${apiBaseUrl}/action-item/list-outstanding/${teamId}`;

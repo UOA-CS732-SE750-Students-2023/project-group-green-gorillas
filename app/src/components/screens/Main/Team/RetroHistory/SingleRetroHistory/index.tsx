@@ -13,7 +13,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MainScreenPath } from "../../../../../screens/Main";
 import { request } from "../../../../../../api/request";
-import { GET_RETRO } from "../../../../../../api/api";
+import {
+  DELETE_ACTIONITEMS_BY_ID,
+  GET_RETRO,
+  UPDATE_ACTIONITEMS_BY_ID,
+} from "../../../../../../api/api";
 import Styles from "../../../Retro/styles/styles.module.css";
 import { Avatar } from "../../../../../common/Avatar";
 import { ActionList } from "../../Dashboard/ActionList";
@@ -23,6 +27,7 @@ import { ActionItemStatus } from "../../../../../../types/actionItems";
 import Vote from "../../../Retro/Vote";
 import retroStyles from "../../../Retro/styles/retro.module.css";
 import { useTeam } from "../../../../../../hooks/useTeam";
+import { cloneDeep } from "lodash";
 
 export const SingleRetroHistory = () => {
   const [retro, setRetro] = useState<any>(null);
@@ -40,6 +45,7 @@ export const SingleRetroHistory = () => {
     setIsLoadingRetroData(true);
     try {
       const { data } = await request.get(GET_RETRO(retroId, teamId));
+
       setRetro(data);
     } catch (error) {
       redirectToTeamDashboard();
@@ -78,6 +84,48 @@ export const SingleRetroHistory = () => {
       await getRetro();
     })();
   }, [retroId, teamId]);
+
+  const onUpdateActionItemStatus = async (
+    actionItemId: string,
+    status: string
+  ) => {
+    const { data } = await request.patch(UPDATE_ACTIONITEMS_BY_ID, {
+      actionItemId: actionItemId,
+      status: status,
+    });
+
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const clonedRetro = cloneDeep(retro);
+
+      const updatedActionItemIndex = retro.actionItems.findIndex(
+        ({ id }: any) => actionItemId === id
+      );
+
+      if (updatedActionItemIndex !== -1) {
+        clonedRetro.actionItems[updatedActionItemIndex] = data;
+      }
+
+      return clonedRetro;
+    });
+  };
+
+  const onDeleteActionItem = async (actionItemId: string) => {
+    await request.delete(DELETE_ACTIONITEMS_BY_ID(actionItemId));
+
+    setRetro((retro: any) => {
+      if (!retro) return retro;
+
+      const clonedRetro = cloneDeep(retro);
+
+      clonedRetro.actionItems = clonedRetro.actionItems.filter(
+        (actionItem: any) => actionItem.id !== actionItemId
+      );
+
+      return clonedRetro;
+    });
+  };
 
   console.log("🚀 ~ file: index.tsx:12 ~ SingleRetroHistory ~ retro:", retro);
   if (!retro || !team) return null;
@@ -172,7 +220,13 @@ export const SingleRetroHistory = () => {
                   actionItem={actionItem}
                   teamId={teamId}
                   teamRole={teamRole}
-                  completed={true}
+                  updateActionItems={() =>
+                    onUpdateActionItemStatus(
+                      actionItem.id,
+                      ActionItemStatus.COMPLETED
+                    )
+                  }
+                  deleteActionItems={() => onDeleteActionItem(actionItem.id)}
                 />
               ))}
           </Box>
@@ -205,7 +259,13 @@ export const SingleRetroHistory = () => {
                   actionItem={actionItem}
                   teamId={teamId}
                   teamRole={teamRole}
-                  completed={true}
+                  updateActionItems={() =>
+                    onUpdateActionItemStatus(
+                      actionItem.id,
+                      ActionItemStatus.IN_PROGRESS
+                    )
+                  }
+                  deleteActionItems={() => onDeleteActionItem(actionItem.id)}
                 />
               ))}
           </Box>

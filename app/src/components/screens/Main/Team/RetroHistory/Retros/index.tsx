@@ -10,16 +10,18 @@ export const RetrosScreen = () => {
   const { team, loading } = useTeam(teamId);
 
   return (
-    <Container sx={{ marginTop: 5 }}>
+    <>
       {loading ? (
-        <RetroHistorySkeleton />
+        <Box sx={{ flexGrow: 1, marginTop: 5, width: "100%" }}>
+          <RetroHistorySkeleton />
+        </Box>
       ) : (
-        <Box>
+        <Box sx={{ flexGrow: 1, marginTop: 5, width: "100%" }}>
           <h1>Retrospective History-{team?.name}</h1>
           <Divider sx={{ marginY: 2 }} />
           <RetroHistoryList selectedTeam={team?.id} />
         </Box>
       )}
-    </Container>
+    </>
   );
 };

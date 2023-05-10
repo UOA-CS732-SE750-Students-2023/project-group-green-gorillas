@@ -16,7 +16,7 @@ import {
   SET_RETRO_SESSION_PAYLOAD,
 } from "../../../../../api/api";
 
-function Discuss({ retro }: any) {
+function Discuss({ retro, teamRole }: any) {
   const aggregateRetro = useAggregateRetro(retro);
 
   const notes = useMemo(() => {
@@ -66,6 +66,8 @@ function Discuss({ retro }: any) {
   }, [selectedDiscussNoteId]);
 
   const onNext = async () => {
+    if (shouldPaginationDisabled) return;
+
     if (noteIndex === notes.length - 1) return;
 
     await request.patch(SET_RETRO_SESSION_PAYLOAD, {
@@ -78,7 +80,11 @@ function Discuss({ retro }: any) {
     });
   };
 
+  const shouldPaginationDisabled = teamRole === "MEMBER";
+
   const onPrev = async () => {
+    if (shouldPaginationDisabled) return;
+
     if (noteIndex === 0) return;
 
     await request.patch(SET_RETRO_SESSION_PAYLOAD, {
@@ -92,9 +98,12 @@ function Discuss({ retro }: any) {
   };
 
   return (
-    <Box className={stageStyles.discuss__container}>
-      <Box className={stageStyles.discuss__wrapper}>
-        <Box className={stageStyles.discussion__item}>
+    <Box sx={{ height: "100%" }} className={stageStyles.discuss__container}>
+      <Box sx={{ height: "80%" }} className={stageStyles.discuss__wrapper}>
+        <Box
+          sx={{ height: "50%", overflow: "auto" }}
+          className={stageStyles.discussion__item}
+        >
           <Box className={styles.heading}>{notes[noteIndex].sectionName}</Box>
           {notes[noteIndex]?.items ? (
             <DiscussGroup group={notes[noteIndex]} />
@@ -104,7 +113,11 @@ function Discuss({ retro }: any) {
           (Vote: {notes[noteIndex].boardNoteVotes.length})
         </Box>
         <Box className={stageStyles.discussion__buttons}>
-          <Box className={stageStyles.vote__button} onClick={onNext}>
+          <Box
+            style={shouldPaginationDisabled ? { cursor: "not-allowed" } : {}}
+            className={stageStyles.vote__button}
+            onClick={onNext}
+          >
             <Box
               component="img"
               src={nextItem}
@@ -124,7 +137,11 @@ function Discuss({ retro }: any) {
               {noteIndex + 1} / {notes.length}
             </Box>
           </Box>
-          <Box className={stageStyles.vote__button} onClick={onPrev}>
+          <Box
+            style={shouldPaginationDisabled ? { cursor: "not-allowed" } : {}}
+            className={stageStyles.vote__button}
+            onClick={onPrev}
+          >
             <Box
               component="img"
               src={lastItem}

@@ -8,9 +8,10 @@ import { ADD_SECTION } from "../../../../../api/api";
 
 type Props = {
   retro: any;
+  teamRole: any;
 };
 
-const Think = ({ retro }: Props) => {
+const Think = ({ retro, teamRole }: Props) => {
   const thinkContainerRef: any = useRef();
   const [boardSections, setBoardSections] = useState([]);
 
@@ -65,15 +66,18 @@ const Think = ({ retro }: Props) => {
             focusedNoteRef={focusedNoteRef}
             key={boardSection.id}
             boardSection={boardSection}
+            teamRole={teamRole}
           />
         ))}
-      <Box
-        className={stageStyles.add__column__button}
-        onClick={() => createColumn()}
-      >
-        Add Column
-        <img src={addIcon} alt="" className={stageStyles.add__button__img} />
-      </Box>
+      {teamRole !== "MEMBER" && (
+        <Box
+          className={stageStyles.add__column__button}
+          onClick={() => createColumn()}
+        >
+          Add Column
+          <img src={addIcon} alt="" className={stageStyles.add__button__img} />
+        </Box>
+      )}
     </Container>
   );
 };

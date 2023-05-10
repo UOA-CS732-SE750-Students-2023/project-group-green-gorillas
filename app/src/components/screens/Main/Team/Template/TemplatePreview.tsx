@@ -19,7 +19,6 @@ import { request } from "../../../../../api/request";
 import { CREATERETRO, ISRETROACTIVE } from "../../../../../api/api";
 import { MainScreenPath } from "../../index";
 import Swal from "sweetalert2";
-import { useTeamRole } from "../../../../../hooks/useTeamRole";
 
 export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
   previewTemp,
@@ -115,6 +114,7 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
         </Typography>
         <div>{previewTemp.descriptionLong}</div>
         <br />
+
         {!isBlankRetrospective && (
           <>
             <Typography variant="body2" color="textSecondary">
@@ -153,40 +153,72 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
                     </Typography>
                   </div>
                 ))}
-              <Tooltip
-                title={
-                  isRetroActiveIdentifier ? "There is in progress retro" : ""
-                }
-                placement={"left"}
-              >
-                <Box>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      bgcolor: "orange",
-                      color: "white",
-                      borderRadius: "8px",
-                      "&:hover": { bgcolor: "darkorange" },
-                      width: "15%",
-                      mt: isBlankRetrospective ? 2 : 4,
-                      position: "fixed",
-                      bottom: "10px",
-                      left: "88.1%",
-                      transform: "translateX(-50%)", // add some margin if it's the only button
-                    }}
-                    onClick={() => {
-                      startRetroHandler();
-                    }}
-                    disabled={
-                      isRetroActiveIdentifier || teamRole?.role === "MEMBER"
-                    }
-                  >
-                    Start Retro
-                  </Button>
-                </Box>
-              </Tooltip>
             </Box>
           </>
+        )}
+        {!isBlankRetrospective && (
+          <Tooltip
+            title={isRetroActiveIdentifier ? "There is in progress retro" : ""}
+            placement={"left"}
+          >
+            <Box>
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "orange",
+                  color: "white",
+                  borderRadius: "8px",
+                  "&:hover": { bgcolor: "darkorange" },
+                  width: "15%",
+                  mt: isBlankRetrospective ? 2 : 4,
+                  position: "fixed",
+                  bottom: "10px",
+                  left: "88.1%",
+                  transform: "translateX(-50%)", // add some margin if it's the only button
+                }}
+                onClick={() => {
+                  startRetroHandler();
+                }}
+                disabled={
+                  isRetroActiveIdentifier || teamRole?.role === "MEMBER"
+                }
+              >
+                Start Retro
+              </Button>
+            </Box>
+          </Tooltip>
+        )}
+        {isBlankRetrospective && (
+          <Tooltip
+            title={isRetroActiveIdentifier ? "There is in progress retro" : ""}
+            placement={"left"}
+          >
+            <Box>
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "orange",
+                  color: "white",
+                  borderRadius: "8px",
+                  "&:hover": { bgcolor: "darkorange" },
+                  width: "15%",
+                  mt: isBlankRetrospective ? 2 : 4,
+                  position: "fixed",
+                  bottom: "45%",
+                  left: "88.1%",
+                  transform: "translateX(-50%)", // add some margin if it's the only button
+                }}
+                onClick={() => {
+                  startRetroHandler();
+                }}
+                disabled={
+                  isRetroActiveIdentifier || teamRole?.role === "MEMBER"
+                }
+              >
+                Start Retro
+              </Button>
+            </Box>
+          </Tooltip>
         )}
       </CardContent>
 

@@ -19,7 +19,9 @@ export const ActionList = ({
   teamRole,
   isSingleRetro,
 }: Props) => {
-  const { actionItems } = useActionItems(teamId || "");
+  const { actionItems, updateActionItems, deleteActionItems } = useActionItems(
+    teamId || ""
+  );
 
   const [newActionItems, setNewActionItems] = useState<ActionItem[] | null>();
 
@@ -74,6 +76,8 @@ export const ActionList = ({
           </Typography>
           {currentUserActionItems?.map((actionItem) => (
             <ActionListItem
+              updateActionItems={() => updateActionItems(actionItem)}
+              deleteActionItems={() => deleteActionItems(actionItem)}
               key={actionItem.id}
               actionItem={actionItem}
               teamId={teamId}
@@ -97,6 +101,8 @@ export const ActionList = ({
               actionItem={actionItem}
               teamId={teamId}
               teamRole={teamRole}
+              updateActionItems={() => updateActionItems(actionItem)}
+              deleteActionItems={() => deleteActionItems(actionItem)}
             />
           ))}
         </Box>

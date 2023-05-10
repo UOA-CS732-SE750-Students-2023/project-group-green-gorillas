@@ -30,7 +30,7 @@ export const TeamDashboardScreen = () => {
           <TeamSkeleton />
         </Box>
       ) : (
-        <Box sx={{ flexGrow: 1, marginTop: 5, width: "100%" }}>
+        <Box sx={{ flexGrow: 1, marginTop: 2, width: "100%" }}>
           {" "}
           <Toolbar />
           <Grid container>

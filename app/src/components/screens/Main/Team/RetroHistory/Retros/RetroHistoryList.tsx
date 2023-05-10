@@ -21,10 +21,10 @@ export const RetroHistoryList = ({ selectedTeam }: Props) => {
   return (
     <Grid container spacing={2}>
       {retroList?.map((retro) => (
-        <Grid item xs={3}>
+        <Grid item xs={3} key={retro.id}>
         <Card
           onClick={() => navigateToRetroHistoryOverview(retro)}
-          key={retro.id}
+          // key={retro.id}
           sx={{ cursor: "pointer" }}
         >
           <CardContent>

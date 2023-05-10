@@ -40,6 +40,8 @@ export const SingleRetroHistory = () => {
     setIsLoadingRetroData(true);
     try {
       const { data } = await request.get(GET_RETRO(retroId, teamId));
+      console.log('retro ', data);
+      
       setRetro(data);
     } catch (error) {
       redirectToTeamDashboard();

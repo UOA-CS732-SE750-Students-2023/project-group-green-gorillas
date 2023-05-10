@@ -15,8 +15,8 @@ import React, { useMemo } from "react";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { Avatar } from "../Avatar";
 import { useSignOut } from "../../../hooks/useSignOut";
-import {Link} from "react-router-dom";
-import {MainScreenPath} from "../../screens/Main";
+import { Link } from "react-router-dom";
+import { MainScreenPath } from "../../screens/Main";
 import { useHistory } from "react-router-dom";
 
 export const TopNavBar = () => {
@@ -63,7 +63,7 @@ export const TopNavBar = () => {
             color="inherit"
             noWrap
             style={{ cursor: "pointer" }}
-            onClick={() => replace(MainScreenPath.HOME)}
+            onClick={() => (window.location.href = MainScreenPath.HOME)}
           >
             Retrospective Monster
           </Typography>
@@ -104,7 +104,7 @@ export const TopNavBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <Link to={MainScreenPath.Profile} >
+              <Link to={MainScreenPath.Profile}>
                 <Typography textAlign="center">Profile</Typography>
               </Link>
               <MenuItem onClick={onSignOut}>

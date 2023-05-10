@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { ACTIONITEMS_LIST_BY_ID, UPDATE_ACTIONITEMS_BY_ID, DELETE_ACTIONITEMS_BY_ID } from "../api/api";
 import { request } from "../api/request";
 import {User} from '../types/user';
-import { typeOf } from "react-is";
 
 
 export enum ActionItemStatus {

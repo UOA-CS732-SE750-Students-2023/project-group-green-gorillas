@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Avatar should be render correctly 1`] = `
+<div>
+  <div
+    class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-orach2-MuiAvatar-root"
+  >
+    OD
+  </div>
+</div>
+`;

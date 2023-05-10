@@ -95,7 +95,16 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coveragePathIgnorePatterns": ["app.config.ts", "main.ts", "app.module.ts", "jest-config/*", "^.*\\.module\\.[jt]sx?$"],
+    "coveragePathIgnorePatterns": [
+      "app.config.ts",
+      "main.ts",
+      "app.module.ts",
+      "jest-config/*",
+      "^.*\\.module\\.[jt]sx?$",
+      "request.ts",
+      "response.ts",
+      "^.*\\.repository\\.[jt]sx?$"
+    ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }

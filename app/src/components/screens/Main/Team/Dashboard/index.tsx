@@ -56,7 +56,7 @@ export const TeamDashboardScreen = () => {
               <ActionList teamId={teamId} user={user} teamRole={teamRole} />
             </Grid>
             <Grid item xs={8}>
-              <InsightChart insight={insight} />
+              <InsightChart insight={insight} teamId={teamId}/>
             </Grid>
           </Grid>
         </Box>

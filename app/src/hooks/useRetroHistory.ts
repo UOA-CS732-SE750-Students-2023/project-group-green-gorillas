@@ -17,7 +17,9 @@ export const useRetroHistory = (id: string) => {
     const getRetroList = async () => {
         setLoadingg(true);
         try{
-            const {data} = await request.get<RetroList[] | null >(RETROLIST_BY_ID(id));           
+            const {data} = await request.get<RetroList[] | null >(RETROLIST_BY_ID(id));  
+            // console.log('retro history', data);
+                     
             setRetroList(data);
         }catch(error){
             console.log(error);

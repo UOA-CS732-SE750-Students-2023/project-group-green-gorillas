@@ -593,6 +593,3 @@ export default function UpdateTeam() {
     </>
   );
 }
-
-
-

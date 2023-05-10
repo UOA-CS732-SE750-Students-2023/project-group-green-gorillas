@@ -11,9 +11,12 @@ export const VERIFY_RESET_PASSWORD_TOKEN = (token: string) =>
 export const RESET_PASSWORD = `${apiBaseUrl}/auth/reset-password`;
 
 // APIs called by axios
-export const CURRENT_USER = `${apiBaseUrl}/user/current`;
+export const CURRENT_USER =  `${apiBaseUrl}/user/current`;
 
 export const CHANGE_PASSWORD = `${apiBaseUrl}/auth/current/change-password`;
+
+export const UPDATE_COMPANY_NAME = `${apiBaseUrl}/organisation/update-name`;
+
 export const TEAM_BY_ID = (teamId: string) => `${apiBaseUrl}/team/${teamId}`;
 export const INSIGHT_BY_ID = (teamId: string) =>
   `${apiBaseUrl}/team/insight/${teamId}`;
@@ -23,6 +26,7 @@ export const GET_RETRO = (retroId: string, teamId: string) =>
   `${apiBaseUrl}/retrospective/${retroId}/team/${teamId}`;
 export const INPROGRESS_RETRO = (teamId: string) =>
   `${apiBaseUrl}/team/in-progress-retro/${teamId}`;
+export const RATE_BY_ID = (teamId: string) => `${apiBaseUrl}/team/board-time-invest/${teamId}`;
 
 export const ACTIONITEMS_LIST_BY_ID = (teamId: string) =>
   `${apiBaseUrl}/action-item/list-outstanding/${teamId}`;

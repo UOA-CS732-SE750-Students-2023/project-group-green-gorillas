@@ -1,24 +1,21 @@
 import { Box, Grid, Paper, Typography, styled } from "@mui/material";
 import { Insight } from "../../../../../types/insights";
 import { PieChart } from "./PieChart";
+import { useRate } from "../../../../../hooks/useRate";
 
 type Props = {
   insight: Insight | null;
+  teamId: string,
 };
 
-export const InsightChart = ({ insight }: Props) => {
+export const InsightChart = ({ insight, teamId }: Props) => {
   const totalCounts: number | null =
     insight?.outstandingActionItemCount || null;
   const completedCounts: number | null =
     insight?.completedActionItemCount || null;
 
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
+  const {rate} = useRate(teamId);
+  
 
   return (
     <Box

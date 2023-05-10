@@ -197,7 +197,7 @@ export default function UpdateUser() {
         gender: updatedGender
       }
       try {
-        await request.put(UPDATE_USER(userId), updatedUser, {
+        await request.put(UPDATE_USER(userId!), updatedUser, {
           headers: {
             'Content-Type': 'application/json',
           },

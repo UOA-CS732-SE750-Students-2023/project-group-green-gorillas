@@ -242,8 +242,17 @@ export class RetrospectiveService {
       teamId,
     );
 
-    await Bluebird.map(actionItems, (actionItem) =>
-      this.actionItemService.delete(actionItem.id),
+    await Bluebird.mapSeries(
+      actionItems,
+      async (actionItem) =>
+        await Promise.all([
+          this.actionItemService.delete(actionItem.id),
+          this.teamDashboardService.decrease(
+            teamId,
+            organisationId,
+            TeamDashboardCountKey.OutstandingActionItemCount,
+          ),
+        ]),
     );
 
     const timeInvests = await this.boardTimeInvestService.listByBoardId(

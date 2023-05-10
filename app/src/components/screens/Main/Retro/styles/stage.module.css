@@ -450,7 +450,6 @@
 .discuss__container {
   display: flex;
   width: 100%;
-  height: calc(100% - 80px);
 }
 
 .discuss__wrapper {

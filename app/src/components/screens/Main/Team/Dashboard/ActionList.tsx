@@ -93,7 +93,7 @@ export const ActionList = ({
             noWrap
             sx={{ marginBottom: 2 }}
           >
-            Team Action Items
+            Outstanding Action Items
           </Typography>
           {newActionItems?.map((actionItem) => (
             <ActionListItem

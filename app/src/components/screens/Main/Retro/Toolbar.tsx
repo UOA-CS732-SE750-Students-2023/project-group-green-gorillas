@@ -20,7 +20,7 @@ import Swal from "sweetalert2";
 import { MainScreenPath } from "../index";
 import { DateTime } from "luxon";
 
-function Toolbar({ retro, timer }: any) {
+function Toolbar({ retro, timer, teamRole }: any) {
   const isFinalStage = retro.stage === RetroStage.REVIEW;
 
   const boardNoteLength = useMemo(() => {
@@ -30,6 +30,11 @@ function Toolbar({ retro, timer }: any) {
   }, [retro.boardSections]);
 
   const nextStage = async () => {
+    if (teamRole === "MEMBER") {
+      await showNoPermissionAlert();
+      return;
+    }
+
     if (retro.stage === RetroStage.THINK && boardNoteLength === 0) {
       await Swal.fire({
         title: "You can not move to next stage",
@@ -61,6 +66,11 @@ function Toolbar({ retro, timer }: any) {
   };
 
   const onTerminateRetro = async () => {
+    if (teamRole === "MEMBER") {
+      await showNoPermissionAlert();
+      return;
+    }
+
     const result = await Swal.fire({
       title: "Are you sure to terminate retro?",
       text: "Terminating retro will delete the retro",
@@ -102,6 +112,11 @@ function Toolbar({ retro, timer }: any) {
   };
 
   const onSetTimer = async () => {
+    if (teamRole === "MEMBER") {
+      await showNoPermissionAlert();
+      return;
+    }
+
     if (timer) {
       const result = await Swal.fire({
         title: "Are you sure to reset timer?",
@@ -180,7 +195,21 @@ function Toolbar({ retro, timer }: any) {
     }
   };
 
+  const showNoPermissionAlert = async () => {
+    await Swal.fire({
+      title: "You have no permission to do this action",
+      text: "Please ask your team lead for help",
+      icon: "error",
+      confirmButtonColor: "#3085d6",
+    });
+  };
+
   const updateRetroName = async () => {
+    if (teamRole === "MEMBER") {
+      await showNoPermissionAlert();
+      return;
+    }
+
     const result = await Swal.fire({
       title: "Submit your new retro name",
       input: "text",

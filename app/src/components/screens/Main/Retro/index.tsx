@@ -15,10 +15,12 @@ import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import retroStyles from "./styles/retro.module.css";
 import Stage from "./Stage";
 import { useRetro } from "../../../../hooks/useRetro";
+import { useTeamRole } from "../../../../hooks/useTeamRole";
 
 export const RetroScreen = () => {
   const { teamId, retroId } = useParams<{ teamId: string; retroId: string }>();
   const { isLoading, retroUsers, retro } = useRetro(retroId, teamId);
+  const { teamRole }: any = useTeamRole(teamId);
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -59,7 +61,7 @@ export const RetroScreen = () => {
           </Box>
         </Box>
       </Container>
-      <Stage retro={retro} />
+      <Stage teamRole={teamRole?.role} retro={retro} />
     </React.Fragment>
   );
 };

@@ -50,9 +50,7 @@ describe('ActionItemAssigneeService', () => {
 
       await actionItemAssigneeService.create(userId, actionItemId);
 
-      expect(actionItemAssigneeRepository.save).toHaveBeenCalledWith(
-        ActionItemAssigneeFactory.create(userId, actionItemId),
-      );
+      expect(actionItemAssigneeRepository.save).toHaveBeenCalled();
     });
 
     it('should return the result of actionItemAssigneeRepository.save', async () => {

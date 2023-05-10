@@ -12,6 +12,10 @@ describe('ActionItemService', () => {
     actionItemService = new ActionItemService(actionItemRepository);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should be able to list by status', async () => {
     actionItemRepository.listByStatus.mockResolvedValue([]);
 

@@ -36,6 +36,16 @@ export const UPDATE_ACTIONITEMS_BY_ID = `${apiBaseUrl}/action-item/update-status
 export const TEMPLATE = () => `${apiBaseUrl}/retrospective/template/list`;
 export const TEAM_LIST = () => `${apiBaseUrl}/team/list`;
 export const USER_LIST = () => `${apiBaseUrl}/user/list`;
+export const DISABLE_USER = (userId: string) => `${apiBaseUrl}/user/update-active/${userId}`;
+export const UPDATE_USER = (userId: string) => `${apiBaseUrl}/user/${userId}`;
+export const CREATE_USER = () => `${apiBaseUrl}/user`;
+export const UPDATE_TEAM = (teamId: string) => `${apiBaseUrl}/team/${teamId}`;
+export const CREATE_TEAM = () => `${apiBaseUrl}/team`;
+export const ADD_TEAM_USER = () => `${apiBaseUrl}/team/add-team-user`;
+export const UPDATE_TEAM_USER = () => `${apiBaseUrl}/team/update-team-user`;
+export const DISABLE_TEAM = (teamId: string) => `${apiBaseUrl}/team/update-active/${teamId}`;
+export const DELETE_TEAM_USER = () => `${apiBaseUrl}/team/remove-team-user`;
+
 
 export const TEAM_ROLE_BY_ID = (teamId: string) =>
   `${apiBaseUrl}/team/team-role/${teamId}`;

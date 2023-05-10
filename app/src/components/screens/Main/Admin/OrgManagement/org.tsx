@@ -1,33 +1,18 @@
 import * as React from 'react';
-import {
-  DataGrid,
-  GridRowModel,
-  GridColDef,
-  GridRowId,
-  GridRowsProp,
-} from '@mui/x-data-grid';
 
-
-
-
-import Snackbar from '@mui/material/Snackbar';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import Alert, { AlertProps } from '@mui/material/Alert';
+
 import {
   Typography,
   Paper, CssBaseline,
   Container,
-  Box, Grid, TextField, Divider, FormControl, Select, MenuItem
+  Box, Grid, TextField
 } from "@mui/material";
 import {useCurrentUser} from "../../../../../hooks/useCurrentUser";
 import {useState} from "react";
 import {parseDate} from "../../../../../utils/parseDate";
 import {request} from "../../../../../api/request";
-import {CURRENT_USER, UPDATE_COMPANY_NAME} from "../../../../../api/api";
+import {UPDATE_COMPANY_NAME} from "../../../../../api/api";
 
 interface OrganisationData {
     id: string;
@@ -35,32 +20,6 @@ interface OrganisationData {
     createdAt: string;
     updatedAt: string;
     active: string;
-}
-
-const useFakeMutation = () => {
-  return React.useCallback(
-    (user: Partial<OrganisationData>) =>
-      new Promise<Partial<OrganisationData>>((resolve, reject) => {
-        setTimeout(() => {
-          if (user.name?.trim() === '') {
-            reject();
-          } else {
-            resolve(user);
-          }
-        }, 200);
-      }),
-    [],
-  );
-};
-
-function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
-  if (newRow.name !== oldRow.name) {
-    return `Name from '${oldRow.name}' to '${newRow.name}'`;
-  }
-  if (newRow.age !== oldRow.age) {
-    return `Age from '${oldRow.age || ''}' to '${newRow.age || ''}'`;
-  }
-  return null;
 }
 
 export default function AskConfirmationBeforeSave() {

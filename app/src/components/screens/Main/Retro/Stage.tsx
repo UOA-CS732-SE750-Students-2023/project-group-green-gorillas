@@ -25,14 +25,15 @@ export enum RetroStage {
 
 type Props = {
   retro: any;
+  teamRole: any;
 };
 
-function Stage({ retro }: Props) {
+function Stage({ retro, teamRole }: Props) {
   const stageDisplay: any = {
-    [RetroStage.THINK]: <Think retro={retro} />,
+    [RetroStage.THINK]: <Think retro={retro} teamRole={teamRole} />,
     [RetroStage.GROUP]: <Group retro={retro} />,
     [RetroStage.VOTE]: <Vote retro={retro} />,
-    [RetroStage.DISCUSS]: <Discuss retro={retro} />,
+    [RetroStage.DISCUSS]: <Discuss retro={retro} teamRole={teamRole} />,
     [RetroStage.REVIEW]: <Review retro={retro} />,
     [RetroStage.FINALIZE]: <Finalized retro={retro} />,
   };
@@ -118,7 +119,7 @@ function Stage({ retro }: Props) {
       </Box>
       {stageDisplay[retro.stage]}
       {retro.stage !== RetroStage.FINALIZE && (
-        <Toolbar retro={retro} timer={timer} />
+        <Toolbar teamRole={teamRole} retro={retro} timer={timer} />
       )}
     </Container>
   );

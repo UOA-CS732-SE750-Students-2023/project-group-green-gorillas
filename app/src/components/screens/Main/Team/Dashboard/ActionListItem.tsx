@@ -91,16 +91,18 @@ export const ActionListItem = ({
           </Button>
         ) : null}
 
-        <Button
-          variant="contained"
-          size="small"
-          onClick={updateActionItems}
-          sx={{ marginLeft: "auto" }}
-        >
-          {actionItem.status === ActionItemStatus.IN_PROGRESS
-            ? "Complete"
-            : "Un-complete"}
-        </Button>
+        {teamRole?.role !== "MEMBER" && (
+          <Button
+            variant="contained"
+            size="small"
+            onClick={updateActionItems}
+            sx={{ marginLeft: "auto" }}
+          >
+            {actionItem.status === ActionItemStatus.IN_PROGRESS
+              ? "Complete"
+              : "Un-complete"}
+          </Button>
+        )}
       </CardActions>
     </Card>
   );

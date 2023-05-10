@@ -20,16 +20,14 @@ import { CREATERETRO, ISRETROACTIVE } from "../../../../../api/api";
 import { MainScreenPath } from "../../index";
 import Swal from "sweetalert2";
 
-
 export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
   previewTemp,
   tID,
-  teamRole
-
+  teamRole,
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [retroName, setRetroName] = useState<string>("");
-  const [isRetroActiveIdentifier, setIsRetroActiveIdentifier] = useState(false);
+  const [isRetroActiveIdentifier, setIsRetroActiveIdentifier] = useState(true);
 
   useEffect(() => {
     isRetroActive();
@@ -105,9 +103,9 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
   }
 
   return (
-    <Card >
+    <Card>
       <CardContent>
-        <Typography variant="body1" color="textSecondary" sx={{mt:2}}>
+        <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
           Retro Details
         </Typography>
         <br />
@@ -116,13 +114,13 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
         </Typography>
         <div>{previewTemp.descriptionLong}</div>
         <br />
-        {!isBlankRetrospective && (
-          <>
-            <Typography variant="body2" color="textSecondary">
-              How to Run
-            </Typography>
-
-            <Box
+        <>
+          {!isBlankRetrospective && (
+            <>
+              <Typography variant="body2" color="textSecondary">
+                How to Run
+              </Typography>
+              <Box
                 sx={{
                   bgcolor: "grey.100",
                   borderRadius: "8px",
@@ -134,52 +132,61 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
                   flexDirection: "column",
                   position: "relative",
                 }}
-            >
-              {previewTemp &&
-                  previewTemp.boardTemplateSections.map((section: any) => (
-                      <div key={uuidv4()}>
-                        <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
-                          {section.name}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                          {section.description}
-                        </Typography>
-                      </div>
-                  ))}
-              <Tooltip
-                  title={isRetroActiveIdentifier ? "There is in progress retro" : ""}
-                  placement={"left"}
               >
-                <Box >
-                  <Button
-                      variant="contained"
-                      sx={{
-                        bgcolor: "#1976d2",
-                        color: "white",
-                        borderRadius: "8px",
-                        "&:hover": { bgcolor: "darkorange" },
-                        width: "15%",
-                        mt: isBlankRetrospective ? 2 : 4,
-                        position: "fixed",
-                        bottom: "10px",
-                        left: "88.1%",
-                        transform: "translateX(-50%)",// add some margin if it's the only button
-                      }}
-                      onClick={() => {
-                        startRetroHandler();
-                      }}
-                      disabled={isRetroActiveIdentifier}
-                  >
-                    Start Retro
-                  </Button>
-                </Box>
-
-              </Tooltip>
+                {previewTemp &&
+                  previewTemp.boardTemplateSections.map((section: any) => (
+                    <div key={uuidv4()}>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        sx={{ mb: 1 }}
+                      >
+                        {section.name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{ mb: 2 }}
+                      >
+                        {section.description}
+                      </Typography>
+                    </div>
+                  ))}
+              </Box>
+            </>
+          )}
+          <Tooltip
+            title={isRetroActiveIdentifier ? "There is in progress retro" : ""}
+            placement={"left"}
+          >
+            <Box>
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "#1976d2",
+                  color: "white",
+                  borderRadius: "8px",
+                  "&:hover": { bgcolor: "darkorange" },
+                  width: "15%",
+                  mt: isBlankRetrospective ? 2 : 4,
+                  position: "fixed",
+                  bottom: "10px",
+                  left: "88.1%",
+                  transform: "translateX(-50%)", // add some margin if it's the only button
+                }}
+                onClick={() => {
+                  startRetroHandler();
+                }}
+                disabled={
+                  isRetroActiveIdentifier ||
+                  (!!teamRole && teamRole?.role === "MEMBER")
+                }
+              >
+                Start Retro
+              </Button>
             </Box>
-
-          </>
-        )}
-
+          </Tooltip>
+        </>
       </CardContent>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>

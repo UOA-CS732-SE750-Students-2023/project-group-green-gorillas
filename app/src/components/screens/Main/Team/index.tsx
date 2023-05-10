@@ -8,6 +8,8 @@ import { TemplateScreen } from "./Template";
 import { RetrosScreen } from "./RetroHistory/Retros";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { RetroHistoryScreens } from "./RetroHistory";
+import { useTeamRole } from "../../../../hooks/useTeamRole";
+import { TeamSetting } from "./TeamSetting";
 
 export const TeamScreen = () => {
   const history = useHistory();
@@ -19,6 +21,8 @@ export const TeamScreen = () => {
       history.replace(`${MainScreenPath.HOME}`);
     }
   }, [user, history]);
+
+  const { teamRole } = useTeamRole(teamId);
 
   return (
     <Container maxWidth="xl" sx={{ marginTop: 2, display: "flex" }}>
@@ -36,6 +40,12 @@ export const TeamScreen = () => {
           path={`${MainScreenPath.TEAM}/:teamId/retro-history`}
           component={RetroHistoryScreens}
         />
+        {teamRole && teamRole.role === "LEADER" && (
+          <Route
+            path={`${MainScreenPath.TEAM}/:teamId/team-settings`}
+            component={TeamSetting}
+          />
+        )}
       </Switch>
     </Container>
   );

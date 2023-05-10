@@ -19,6 +19,7 @@ import React, { useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { MainScreenPath } from "../screens/Main";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useTeamRole } from "../../hooks/useTeamRole";
 
 type Props = {
   teamId: string;
@@ -28,6 +29,8 @@ export const TeamDrawer: React.FC<Props> = ({ teamId }) => {
   const history = useHistory();
 
   const { user } = useCurrentUser();
+
+  const { teamRole } = useTeamRole(teamId);
 
   const onSwitchTeam = (e: any) => {
     const teamId = e.target.value;
@@ -95,6 +98,19 @@ export const TeamDrawer: React.FC<Props> = ({ teamId }) => {
             </ListItemIcon>
             <ListItemText primary="Retro History" />
           </ListItemButton>
+          {teamRole && teamRole.role === "LEADER" && (
+            <ListItemButton
+              selected={history.location.pathname.includes("/team-settings")}
+              onClick={() => {
+                history.push(`${MainScreenPath.TEAM}/${teamId}/team-settings`);
+              }}
+            >
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Team Settings" />
+            </ListItemButton>
+          )}
         </List>
       </Box>
       <Box sx={{display: 'flex', justifyContent:'center', marginBottom: 1 }}>

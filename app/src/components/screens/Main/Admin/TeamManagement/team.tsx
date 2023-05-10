@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import * as React from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   DataGrid,
   GridRowModel,
@@ -7,23 +7,32 @@ import {
   GridRowId,
   GridRowsProp,
   GridRowParams,
-  useGridLogger
-} from '@mui/x-data-grid';
+  useGridLogger,
+} from "@mui/x-data-grid";
 
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
-import { request } from '../../../../../api/request';
-import { ADD_TEAM_USER, CREATE_TEAM, DELETE_TEAM_USER, DISABLE_TEAM, TEAM_LIST, UPDATE_TEAM, UPDATE_TEAM_USER, USER_LIST } from '../../../../../api/api';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import { Role } from '../../../../../types/teamRole';
-import Box from '@mui/material/Box';
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import { request } from "../../../../../api/request";
+import {
+  ADD_TEAM_USER,
+  CREATE_TEAM,
+  DELETE_TEAM_USER,
+  DISABLE_TEAM,
+  TEAM_LIST,
+  UPDATE_TEAM,
+  UPDATE_TEAM_USER,
+  USER_LIST,
+} from "../../../../../api/api";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormHelperText from "@mui/material/FormHelperText";
+import { Role } from "../../../../../types/teamRole";
+import Box from "@mui/material/Box";
 
 interface TeamUser {
   id: string;
@@ -51,9 +60,7 @@ interface Team {
   teamMembers: TeamUser[];
 }
 
-
 export default function UpdateTeam() {
-
   const [selectedRow, setSelectedRow] = useState<Team | null>(null);
   const [dialogEditOpen, setDialogEditOpen] = useState(false);
   const [dialogNewOpen, setDialogNewOpen] = useState(false);
@@ -67,36 +74,37 @@ export default function UpdateTeam() {
   const newTeamInputRef = useRef<HTMLInputElement>(null);
   const [teamMembers, setTeamMembers] = useState<TeamUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<Team | null>(null);
-  const [selectedUserId, setSelectedUserId] = useState('');
-  const [selectedTeamId, setSelectedTeamId] = useState('');
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedTeamId, setSelectedTeamId] = useState("");
   const [selectedTeamRole, setSelectedTeamRole] = useState(Role.MEMBER);
 
   const handleDisableEnableTeam = async (teamId: string, active: boolean) => {
     const updatedTeam = { active: !active };
     try {
-      await request.patch(DISABLE_TEAM(teamId), updatedTeam, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then((response) => {
-        console.log('Team updated successfully', response.data);
-        // Update the team in the UI state or trigger a re-fetch
-        const updatedTeams = team.map((t) => {
-          if (t.id === teamId) {
-            return {
-              ...t,
-              active: !active,
-            };
-          }
-          return t;
+      await request
+        .patch(DISABLE_TEAM(teamId), updatedTeam, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log("Team updated successfully", response.data);
+          // Update the team in the UI state or trigger a re-fetch
+          const updatedTeams = team.map((t) => {
+            if (t.id === teamId) {
+              return {
+                ...t,
+                active: !active,
+              };
+            }
+            return t;
+          });
+          setTeam(updatedTeams);
         });
-        setTeam(updatedTeams);
-      })
-    }
-    catch (error) {
-      console.error('Failed to update team', error);
+    } catch (error) {
+      console.error("Failed to update team", error);
       // Handle error, e.g. display a message to the user
-    };
+    }
   };
 
   const handleRemove = async (removedTeamId: string, removedUserId: string) => {
@@ -105,38 +113,43 @@ export default function UpdateTeam() {
     // Make API request to remove user from team
     const removedTeamUser = {
       teamId: removedTeamId,
-      userId: removedUserId
-    }
-    try {
-      await request.delete(DELETE_TEAM_USER(), {
-        data: removedTeamUser,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then((response) => {
-        console.log('Team User removed successfully', response.data);
-        // Update the Team user in the UI state or trigger a re-fetch
-        // Update the team in the UI state or trigger a re-fetch
-        const updatedTeamMembers = teamMembers.filter((m) => m.id !== removedUserId);
-        setTeamMembers(updatedTeamMembers);
-        getTeamList();
-      })
-    }
-    catch (error) {
-      console.error('Failed to remove Team user', error);
-      // Handle error, e.g. display a message to the user
+      userId: removedUserId,
     };
-  }
+    try {
+      await request
+        .delete(DELETE_TEAM_USER(), {
+          data: removedTeamUser,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log("Team User removed successfully", response.data);
+          // Update the Team user in the UI state or trigger a re-fetch
+          // Update the team in the UI state or trigger a re-fetch
+          const updatedTeamMembers = teamMembers.filter(
+            (m) => m.id !== removedUserId
+          );
+          setTeamMembers(updatedTeamMembers);
+          getTeamList();
+        });
+    } catch (error) {
+      console.error("Failed to remove Team user", error);
+      // Handle error, e.g. display a message to the user
+    }
+  };
 
   const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Name', width: 130 },
+    { field: "name", headerName: "Name", width: 130 },
     {
-      field: 'active', headerName: 'Active', width: 130,
-      renderCell: (params) => params.value ? 'Yes' : 'No',
+      field: "active",
+      headerName: "Active",
+      width: 130,
+      renderCell: (params) => (params.value ? "Yes" : "No"),
     },
     {
-      field: 'edit',
-      headerName: '',
+      field: "edit",
+      headerName: "",
       width: 100,
       renderCell: (params) => (
         <Button
@@ -153,8 +166,8 @@ export default function UpdateTeam() {
       ),
     },
     {
-      field: 'addUser',
-      headerName: '',
+      field: "addUser",
+      headerName: "",
       width: 120,
       renderCell: (params) => (
         <Button
@@ -171,8 +184,8 @@ export default function UpdateTeam() {
       ),
     },
     {
-      field: 'disable',
-      headerName: '',
+      field: "disable",
+      headerName: "",
       width: 100,
       renderCell: (params) => (
         <Button
@@ -185,25 +198,27 @@ export default function UpdateTeam() {
             handleDisableEnableTeam(selectedTeam.id, isActive);
           }}
         >
-          {params.row.active ? 'Disable' : 'Enable'}
+          {params.row.active ? "Disable" : "Enable"}
         </Button>
       ),
-    }
+    },
   ];
 
   const teamMemberColumns: GridColDef[] = [
-    { field: 'email', headerName: 'Email', width: 250 },
-    { field: 'displayName', headerName: 'Display Name', width: 130 },
-    { field: 'firstName', headerName: 'First Name', width: 130 },
-    { field: 'lastName', headerName: 'Last Name', width: 130 },
-    { field: 'role', headerName: 'Team Role', width: 130 },
+    { field: "email", headerName: "Email", width: 250 },
+    { field: "displayName", headerName: "Display Name", width: 130 },
+    { field: "firstName", headerName: "First Name", width: 130 },
+    { field: "lastName", headerName: "Last Name", width: 130 },
+    { field: "role", headerName: "Team Role", width: 130 },
     {
-      field: 'active', headerName: 'Active', width: 130,
-      renderCell: (params) => params.value ? 'Yes' : 'No'
+      field: "active",
+      headerName: "Active",
+      width: 130,
+      renderCell: (params) => (params.value ? "Yes" : "No"),
     },
     {
-      field: 'remove',
-      headerName: '',
+      field: "remove",
+      headerName: "",
       width: 100,
       renderCell: (params) => (
         <Button
@@ -219,8 +234,8 @@ export default function UpdateTeam() {
       ),
     },
     {
-      field: 'editRole',
-      headerName: '',
+      field: "editRole",
+      headerName: "",
       width: 100,
       renderCell: (params) => (
         <Button
@@ -235,7 +250,7 @@ export default function UpdateTeam() {
           Edit Role
         </Button>
       ),
-    }
+    },
   ];
 
   const getTeamUsers = async () => {
@@ -253,7 +268,9 @@ export default function UpdateTeam() {
         };
       });
 
-      const thisTeam = teamsWithMembers.find(member => member.id === selectedTeamId);
+      const thisTeam = teamsWithMembers.find(
+        (member) => member.id === selectedTeamId
+      );
       setTeamMembers(thisTeam?.teamMembers!);
     } catch (error) {
       console.log(error);
@@ -343,21 +360,24 @@ export default function UpdateTeam() {
       // Make API request to update the team name here...
       const updatedTeam = { name: updatedName, active: true };
       try {
-        request.put(UPDATE_TEAM(teamId!), updatedTeam, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }).then((response) => {
-          console.log('Team updated successfully', response.data);
-          // Update the team in the UI state or trigger a re-fetch
-          getTeamList();
-        })
-      }
-      catch (error) {
-        console.error('Failed to update team', error);
+        request
+          .put(UPDATE_TEAM(teamId!), updatedTeam, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            console.log("Team updated successfully", response.data);
+            // Update the team in the UI state or trigger a re-fetch
+            getTeamList();
+          });
+      } catch (error) {
+        console.error("Failed to update team", error);
         // Handle error, e.g. display a message to the user
-      };
-      console.log(`Updating team ${selectedTeam.id} name to "${nameInputRef.current.value}"`);
+      }
+      console.log(
+        `Updating team ${selectedTeam.id} name to "${nameInputRef.current.value}"`
+      );
       handleCloseEditDialog();
     }
   };
@@ -365,20 +385,21 @@ export default function UpdateTeam() {
   const handleNewTeam = () => {
     const newTeamName = { name: newTeamInputRef.current?.value };
     try {
-      request.post(CREATE_TEAM(), newTeamName, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then((response) => {
-        console.log('New Team created successfully', response.data);
-        //  New team in the UI state or trigger a re-fetch
-        getTeamList();
-      })
-    }
-    catch (error) {
-      console.error('Failed to create team', error);
+      request
+        .post(CREATE_TEAM(), newTeamName, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log("New Team created successfully", response.data);
+          //  New team in the UI state or trigger a re-fetch
+          getTeamList();
+        });
+    } catch (error) {
+      console.error("Failed to create team", error);
       // Handle error, e.g. display a message to the user
-    };
+    }
     handleCloseNewDialog();
   };
 
@@ -390,7 +411,7 @@ export default function UpdateTeam() {
       console.log("All users data: " + data.toString());
       setDialogAddUserOpen(true);
     } catch (error) {
-      console.error('Failed to fetch users', error);
+      console.error("Failed to fetch users", error);
       // Handle error, e.g. display a message to the user
     } finally {
       setLoading(false);
@@ -401,28 +422,29 @@ export default function UpdateTeam() {
     const newTeamUser = {
       userId: selectedUserId,
       userTeamRole: selectedTeamRole,
-      teamId: selectedTeamId
+      teamId: selectedTeamId,
     };
     console.log("userId: " + selectedUserId);
     console.log("userTeamRole: " + selectedTeamRole);
     console.log("teamId: " + selectedTeamId);
     try {
-      await request.post(ADD_TEAM_USER(), newTeamUser, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then((response) => {
-        console.log('1 New Team User created successfully', response.data);
-        //const newData = await response.json();
-        //  New team in the UI state or trigger a re-fetch
-        //
-        getTeamUsers();
-      })
-    }
-    catch (error) {
-      console.error('Failed to create team user', error);
+      await request
+        .post(ADD_TEAM_USER(), newTeamUser, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log("1 New Team User created successfully", response.data);
+          //const newData = await response.json();
+          //  New team in the UI state or trigger a re-fetch
+          //
+          getTeamUsers();
+        });
+    } catch (error) {
+      console.error("Failed to create team user", error);
       // Handle error, e.g. display a message to the user
-    };
+    }
     handleCloseAddUserDialog();
   };
 
@@ -430,36 +452,37 @@ export default function UpdateTeam() {
     const newTeamUser = {
       userId: selectedUserId,
       userTeamRole: selectedTeamRole,
-      teamId: selectedTeamId
+      teamId: selectedTeamId,
     };
     console.log("userId: " + selectedUserId);
     console.log("userTeamRole: " + selectedTeamRole);
     console.log("teamId: " + selectedTeamId);
     try {
-      await request.put(UPDATE_TEAM_USER(), newTeamUser, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then((response) => {
-        console.log('Team Role updated successfully', response.data);
-        //  New team in the UI state or trigger a re-fetch
-        getTeamList();
-        const updatedTeamMembers = teamMembers.map((member) => {
-          if (member.id === selectedUserId) {
-            return {
-              ...member,
-              role: selectedTeamRole,
-            };
-          }
-          return member;
+      await request
+        .put(UPDATE_TEAM_USER(), newTeamUser, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log("Team Role updated successfully", response.data);
+          //  New team in the UI state or trigger a re-fetch
+          getTeamList();
+          const updatedTeamMembers = teamMembers.map((member) => {
+            if (member.id === selectedUserId) {
+              return {
+                ...member,
+                role: selectedTeamRole,
+              };
+            }
+            return member;
+          });
+          setTeamMembers(updatedTeamMembers!);
         });
-        setTeamMembers(updatedTeamMembers!);
-      })
-    }
-    catch (error) {
-      console.error('Failed to update team role', error);
+    } catch (error) {
+      console.error("Failed to update team role", error);
       // Handle error, e.g. display a message to the user
-    };
+    }
     handleCloseEditRoleDialog();
   };
 
@@ -479,19 +502,28 @@ export default function UpdateTeam() {
     <>
       <div>
         <p></p>
-        <Button variant="contained" color="primary" onClick={handleOpenNewDialog}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpenNewDialog}
+        >
           Create Team
         </Button>
         <p></p>
       </div>
-      <Box sx={{ height: 300, width: '100%' }}>
-        <DataGrid rows={team} columns={columns}
-        pagination
-        pageSizeOptions={[5, 10, 25, 50, 100]}
-        onRowClick={handleRowSelection} />
-        
-        <Box sx={{ height: 400, width: '100%', overflow: 'auto' }}>
-          <DataGrid rows={teamMembers} columns={teamMemberColumns}
+      <Box sx={{ height: 300, width: "100%" }}>
+        <DataGrid
+          rows={team}
+          columns={columns}
+          pagination
+          pageSizeOptions={[5, 10, 25, 50, 100]}
+          onRowClick={handleRowSelection}
+        />
+
+        <Box sx={{ height: 400, width: "100%", overflow: "auto" }}>
+          <DataGrid
+            rows={teamMembers}
+            columns={teamMemberColumns}
             pagination
             pageSizeOptions={[5, 10, 25, 50, 100]}
           />
@@ -500,7 +532,11 @@ export default function UpdateTeam() {
       <Dialog open={dialogEditOpen} onClose={handleCloseEditDialog}>
         <DialogTitle>Edit Team</DialogTitle>
         <DialogContent>
-          <input type="text" defaultValue={selectedTeam?.name} ref={nameInputRef} />
+          <input
+            type="text"
+            defaultValue={selectedTeam?.name}
+            ref={nameInputRef}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseEditDialog}>Cancel</Button>
@@ -520,8 +556,13 @@ export default function UpdateTeam() {
       <Dialog open={dialogAddUserOpen} onClose={handleCloseAddUserDialog}>
         <DialogTitle>Add User To Team</DialogTitle>
         <DialogContent>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <FormControl sx={{ m: 1, minWidth: 250 }} size="small">
               <InputLabel id="select-user-label">User Name</InputLabel>
               <Select
@@ -539,7 +580,6 @@ export default function UpdateTeam() {
               </Select>
               <FormHelperText>Select a user</FormHelperText>
             </FormControl>
-
           </div>
           <div>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
@@ -553,7 +593,9 @@ export default function UpdateTeam() {
                 defaultValue={Role.MEMBER}
               >
                 <MenuItem value={Role.LEADER}>{Role.LEADER}</MenuItem>
-                <MenuItem value={Role.TEMPORARY_LEADER}>{Role.TEMPORARY_LEADER}</MenuItem>
+                <MenuItem value={Role.TEMPORARY_LEADER}>
+                  {Role.TEMPORARY_LEADER}
+                </MenuItem>
                 <MenuItem value={Role.MEMBER}>{Role.MEMBER}</MenuItem>
               </Select>
             </FormControl>
@@ -563,7 +605,7 @@ export default function UpdateTeam() {
           <Button onClick={handleCloseAddUserDialog}>Cancel</Button>
           <Button onClick={handleAddTeamUser}>Add</Button>
         </DialogActions>
-      </Dialog >
+      </Dialog>
       <Dialog open={dialogEditRoleOpen} onClose={handleCloseEditRoleDialog}>
         <DialogTitle>Edit Team Role</DialogTitle>
         <DialogContent>
@@ -579,7 +621,9 @@ export default function UpdateTeam() {
                 defaultValue={Role.MEMBER}
               >
                 <MenuItem value={Role.LEADER}>{Role.LEADER}</MenuItem>
-                <MenuItem value={Role.TEMPORARY_LEADER}>{Role.TEMPORARY_LEADER}</MenuItem>
+                <MenuItem value={Role.TEMPORARY_LEADER}>
+                  {Role.TEMPORARY_LEADER}
+                </MenuItem>
                 <MenuItem value={Role.MEMBER}>{Role.MEMBER}</MenuItem>
               </Select>
             </FormControl>
@@ -589,7 +633,7 @@ export default function UpdateTeam() {
           <Button onClick={handleCloseEditRoleDialog}>Cancel</Button>
           <Button onClick={handleEditTeamRole}>Save</Button>
         </DialogActions>
-      </Dialog >
+      </Dialog>
     </>
   );
 }

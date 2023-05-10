@@ -24,6 +24,7 @@ const ThinkColumn = ({
   boardSection,
   setFocusedNoteRef,
   focusedNoteRef,
+  teamRole,
 }: any) => {
   const [sectionName, setSectionName] = useState("");
   const [sectionDesc, setSectionDesc] = useState("");
@@ -101,6 +102,7 @@ const ThinkColumn = ({
             className={stageStyles.section_heading}
             value={sectionDesc}
             autoFocus={true}
+            disabled={teamRole === "MEMBER"}
             onChange={onChangeSectionDescription}
             placeholder={"Add New Description"}
           />
@@ -109,16 +111,19 @@ const ThinkColumn = ({
             value={sectionName}
             onChange={onChangeBoardSecionName}
             autoFocus={true}
+            disabled={teamRole === "MEMBER"}
             placeholder={"Add New Name"}
           />
-          <Button
-            onClick={deleteColumn}
-            variant="text"
-            color="error"
-            sx={{ marginTop: -1, marginBottom: -1 }}
-          >
-            Delete
-          </Button>
+          {teamRole !== "MEMBER" && (
+            <Button
+              onClick={deleteColumn}
+              variant="text"
+              color="error"
+              sx={{ marginTop: -1, marginBottom: -1 }}
+            >
+              Delete
+            </Button>
+          )}
         </Box>
         <Box
           className={stageStyles.add__note__button}

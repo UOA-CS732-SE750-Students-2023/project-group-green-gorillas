@@ -108,6 +108,7 @@ const Login = () => {
           <FormControlLabel
             control={
               <Checkbox
+                id="remember-me"
                 onChange={onIsRememberMeChange}
                 checked={isRememberedMe}
                 value="remember"

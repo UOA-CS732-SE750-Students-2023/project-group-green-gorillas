@@ -14,11 +14,11 @@ function GroupColumn({ id, column }: any) {
         width: "33% !important",
       }}
     >
-      <Box className={stageStyles.column__header}>
+      <Box className={stageStyles.new__column__header}>
         <div>
           <Box
             className={styles.select__heading}
-            sx={{ height: 70, overflow: "scroll" }}
+            sx={{ height: 70, overflowY: "scroll" }}
           >
             {column.description}
           </Box>

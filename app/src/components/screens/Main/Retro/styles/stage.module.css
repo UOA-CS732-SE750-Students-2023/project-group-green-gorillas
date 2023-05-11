@@ -187,7 +187,7 @@
 .section_heading {
   resize: none;
   outline: none;
-  overflow: scroll !important;
+  overflow-y: scroll !important;
   width: 100%;
   border: none;
   background: transparent;
@@ -280,6 +280,10 @@
 }
 
 .column__header {
+  justify-content: flex-end;
+}
+
+.new__column__header {
   justify-content: flex-start;
 }
 

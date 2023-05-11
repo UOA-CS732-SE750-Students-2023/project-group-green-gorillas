@@ -127,7 +127,6 @@ export const SingleRetroHistory = () => {
     });
   };
 
-  console.log("🚀 ~ file: index.tsx:12 ~ SingleRetroHistory ~ retro:", retro);
   if (!retro || !team) return null;
 
   if (isLoadingRetroData) {

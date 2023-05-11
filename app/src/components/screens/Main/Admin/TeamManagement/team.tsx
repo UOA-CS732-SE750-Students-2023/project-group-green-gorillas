@@ -108,8 +108,6 @@ export default function UpdateTeam() {
   };
 
   const handleRemove = async (removedTeamId: string, removedUserId: string) => {
-    console.log("teamId: " + removedTeamId);
-    console.log("userId: " + removedUserId);
     // Make API request to remove user from team
     const removedTeamUser = {
       teamId: removedTeamId,
@@ -293,8 +291,6 @@ export default function UpdateTeam() {
           teamMembers: teamMembers,
         };
       });
-      console.log(teamMembers);
-      console.log(teamsWithMembers);
       setTeam(teamsWithMembers);
     } catch (error) {
       console.log(error);
@@ -343,14 +339,11 @@ export default function UpdateTeam() {
 
   const handleRowSelection = (params: GridRowParams) => {
     setSelectedRow(params.row as Team);
-    console.log(`Row ${params.id} clicked!`);
-    console.log(`Team Name ${params.row.name} clicked!`);
+
     const teamMembers = params.row.teamMembers;
     const selectedTeamId = params.row.id;
     setSelectedTeamId(selectedTeamId);
     setTeamMembers(teamMembers);
-    console.log(`Team ID ${selectedTeamId} clicked!`);
-    console.log(`Team Members:`, teamMembers);
   };
 
   const handleEditTeam = () => {
@@ -375,9 +368,7 @@ export default function UpdateTeam() {
         console.error("Failed to update team", error);
         // Handle error, e.g. display a message to the user
       }
-      console.log(
-        `Updating team ${selectedTeam.id} name to "${nameInputRef.current.value}"`
-      );
+
       handleCloseEditDialog();
     }
   };
@@ -408,7 +399,6 @@ export default function UpdateTeam() {
     try {
       const { data } = await request.get<TeamUser[]>(USER_LIST());
       setUsers(data);
-      console.log("All users data: " + data.toString());
       setDialogAddUserOpen(true);
     } catch (error) {
       console.error("Failed to fetch users", error);
@@ -424,9 +414,7 @@ export default function UpdateTeam() {
       userTeamRole: selectedTeamRole,
       teamId: selectedTeamId,
     };
-    console.log("userId: " + selectedUserId);
-    console.log("userTeamRole: " + selectedTeamRole);
-    console.log("teamId: " + selectedTeamId);
+
     try {
       await request
         .post(ADD_TEAM_USER(), newTeamUser, {
@@ -454,9 +442,7 @@ export default function UpdateTeam() {
       userTeamRole: selectedTeamRole,
       teamId: selectedTeamId,
     };
-    console.log("userId: " + selectedUserId);
-    console.log("userTeamRole: " + selectedTeamRole);
-    console.log("teamId: " + selectedTeamId);
+
     try {
       await request
         .put(UPDATE_TEAM_USER(), newTeamUser, {
@@ -489,13 +475,11 @@ export default function UpdateTeam() {
   const handleUserNameChange = (event: SelectChangeEvent) => {
     const userId = event.target.value;
     setSelectedUserId(userId);
-    console.log("handleChange UserId: " + userId);
   };
 
   const handleTeamRoleChange = (event: SelectChangeEvent) => {
     const teamRole = event.target.value as Role;
     setSelectedTeamRole(teamRole);
-    console.log("handleChange TeamRole: " + teamRole);
   };
 
   return (

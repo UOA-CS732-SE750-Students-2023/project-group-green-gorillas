@@ -34,11 +34,11 @@ function VoteColumn({ column, isSingleRetroHistory }: Props) {
         width: "33% !important",
       }}
     >
-      <Box className={stageStyles.column__header}>
+      <Box className={stageStyles.new__column__header}>
         <div>
           <Box
             className={stageStyles.select__heading}
-            sx={{ height: 70, overflow: "scroll" }}
+            sx={{ height: 70, overflowY: "scroll" }}
           >
             {column.description}
           </Box>

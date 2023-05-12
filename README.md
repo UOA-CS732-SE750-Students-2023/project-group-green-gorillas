@@ -38,6 +38,13 @@ yarn install
 # launch
 yarn dev
 ```
+### How to watch the database
+```bash
+cd platform
+
+yarn start:dynamo-admin
+```
+Navigate to the http://0.0.0.0:8001/
 
 #### 1. How well have you mastered React, git, and other tools / frameworks introduced in this course?
 As a team, we have achieved a solid understanding of React, git, and other tools and frameworks introduced in this course. We have been able to effectively utilize React to create robust single-page applications with React Router, Context, and local browser storage.
@@ -75,10 +82,4 @@ In addition, we have made use of Jest's mocking and spying capabilities to isola
 Our team has made testing a core part of our development process, and we have integrated testing into our continuous integration and deployment pipeline to catch errors early and ensure that our code is of high quality.
 #### 5.Is there evidence of good project management, and appropriate contribution from all team members?
 
-### How to watch the database
-```bash
-cd platform
 
-yarn start:dynamo-admin
-```
-Navigate to the http://0.0.0.0:8001/

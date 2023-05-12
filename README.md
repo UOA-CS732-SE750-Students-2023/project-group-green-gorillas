@@ -1,5 +1,11 @@
 # project-group-green-gorillas
 
+## How to run the app
+
+### We use docker to run the server
+- if you do not have docker installed, please go to https://docs.docker.com/desktop/install/windows-install/ to install the docker
+- Make sure your docker daemon is running
+
 ### We use `yarn` as node management tool
 if you do not have yarn installed, please run
 ```bash
@@ -22,7 +28,9 @@ yarn start:docker-dev
 
 # Once the Backend App launch successfully, 
 # Please open another terminal and run the script below to seed data
-curl -X POST http://localhost:8080/api/data-seeder/seed
+curl -X POST http://localhost:8080/api/data-seeder/seed 
+# Warning: It is very important to make sure your server has started before running this code in your terminal
+
 ```
 
 
@@ -38,13 +46,9 @@ yarn install
 # launch
 yarn dev
 ```
-### How to watch the database
-```bash
-cd platform
 
-yarn start:dynamo-admin
-```
-Navigate to the http://0.0.0.0:8001/
+### How to use the App once server and client has been launched ?
+
 
 #### 1. How well have you mastered React, git, and other tools / frameworks introduced in this course?
 As a team, we have achieved a solid understanding of React, git, and other tools and frameworks introduced in this course. We have been able to effectively utilize React to create robust single-page applications with React Router, Context, and local browser storage.

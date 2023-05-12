@@ -17,7 +17,6 @@ import {
     DialogActions,
     Fade
 } from "@mui/material";
-import { SelectChangeEvent } from "@mui/material/Select";
 
 import {useHistory} from 'react-router-dom';
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
@@ -50,9 +49,6 @@ export const ProfileScreen = () => {
         address: user!.address,
         gender: user!.gender,
     });
-
-
-
 
 
     // Avatar animation
@@ -93,13 +89,9 @@ export const ProfileScreen = () => {
         setCurrentLastName(event.target.value);
     }
 
-    const[currentGender, setCurrentGender] = useState<boolean>(userData!.gender);
-    const handleGenderChange = (event: SelectChangeEvent<boolean>) => {
-        if (event.target.value == "male"){
-            setCurrentGender(true)
-        }{
-            setCurrentGender(false)
-        }
+    const[currentGender, setCurrentGender] = useState<string>(userData!.gender ? 'male':'female');
+    const handleGenderChange = (event: any) => {
+        setCurrentGender(event.target.value);
     }
 
 
@@ -126,7 +118,7 @@ export const ProfileScreen = () => {
         userData!.lastName = currentLastName;
         userData!.phone = currentPhone;
         userData!.address = currentAddress;
-        userData!.gender = currentGender;
+        userData!.gender = currentGender === "male";
 
 
         try {
@@ -222,7 +214,7 @@ export const ProfileScreen = () => {
 
   // @ts-ignore
     return (
-      <React.Fragment>
+      <>
           <CssBaseline />
           <Container sx={{
               marginTop: '10px',
@@ -354,9 +346,9 @@ export const ProfileScreen = () => {
                                             width:'100%'
                                         }}
                                   >
-                                      <Select value={userData!.gender} onChange={handleGenderChange}>
-                                          <MenuItem value={true}>Male</MenuItem>
-                                          <MenuItem value={false}>Female</MenuItem>
+                                      <Select value={currentGender} onChange={handleGenderChange}>
+                                          <MenuItem value="male">Male</MenuItem>
+                                          <MenuItem value="female">Female</MenuItem>
                                       </Select>
 
                                   </FormControl>
@@ -418,7 +410,6 @@ export const ProfileScreen = () => {
                                      align:"left",
                                      marginLeft: '3%'
                                  }} >
-                              {/*//TODO*/}
                               <Typography>Phone </Typography>
                           </Grid>
                           <Grid item xs={3}
@@ -560,6 +551,6 @@ export const ProfileScreen = () => {
               </Box>
 
           </Container>
-      </React.Fragment>
+      </>
   );
 };

@@ -1,17 +1,18 @@
 # project-group-green-gorillas
+***
 
 ## How to run the app
 
-### We use docker to run the server
+We use docker to run the server
 - if you do not have docker installed, please go to https://docs.docker.com/desktop/install/windows-install/ to install the docker
 - Make sure your docker daemon is running
 
-### We use `yarn` as node management tool
+We use `yarn` as node management tool
 if you do not have yarn installed, please run
 ```bash
 npm install --global yarn
 ```
-
+***
 ### How to launch the backend app locally?
 ```bash
 # navigate to the backend folder
@@ -32,7 +33,7 @@ curl -X POST http://localhost:8080/api/data-seeder/seed
 # Warning: It is very important to make sure your server has started before running this code in your terminal
 
 ```
-
+***
 
 ### How to launch the frontend app locally?
 ```bash
@@ -46,9 +47,19 @@ yarn install
 # launch
 yarn dev
 ```
+***
 
-### How to use the App once server and client has been launched ?
+### How to play the App?
+1.Open the link: \
+Local:   http://localhost:3000/  \
+<img width="729" alt="image" src="https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/assets/80732580/b033f6f5-9483-4232-b892-fa8f15fcbdd2">
 
+
+2.Input the email address and password.\
+Feel free to use the following email address and password.\
+Email: review@aucklanduni.ac.nz Password: 123456\
+Email: marker@aucklanduni.ac.nz Password: 123456
+***
 
 #### 1. How well have you mastered React, git, and other tools / frameworks introduced in this course?
 As a team, we have achieved a solid understanding of React, git, and other tools and frameworks introduced in this course. We have been able to effectively utilize React to create robust single-page applications with React Router, Context, and local browser storage.

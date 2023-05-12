@@ -20,9 +20,9 @@ import {
 } from "../../../../../../api/api";
 import Styles from "../../../Retro/styles/styles.module.css";
 import { Avatar } from "../../../../../common/Avatar";
-import { ActionList } from "../../Dashboard/ActionList";
+import { ActionList } from "../../Dashboard/ActionList/ActionList";
 import { useTeamRole } from "../../../../../../hooks/useTeamRole";
-import { ActionListItem } from "../../Dashboard/ActionListItem";
+import { ActionListItem } from "../../Dashboard/ActionListItem/ActionListItem";
 import { ActionItemStatus } from "../../../../../../types/actionItems";
 import Vote from "../../../Retro/Vote";
 import retroStyles from "../../../Retro/styles/retro.module.css";

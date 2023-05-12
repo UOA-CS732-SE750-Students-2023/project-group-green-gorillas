@@ -1,14 +1,14 @@
 import { Box, FormControlLabel, Switch, Typography } from "@mui/material";
-import { useActionItems } from "../../../../../hooks/useActionItems";
+import { useActionItems } from "../../../../../../hooks/useActionItems";
 import { useEffect, useState } from "react";
-import { User } from "../../../../../types/user";
-import { ActionListItem } from "./ActionListItem";
-import { TeamRole } from "../../../../../types/teamRole";
-import { ActionItem } from "../../../../../types/actionItems";
+import { User } from "../../../../../../types/user";
+import { ActionListItem } from "../ActionListItem/ActionListItem";
+import { TeamRole } from "../../../../../../types/teamRole";
+import React from "react";
 
 type Props = {
   teamId: string | null;
-  user: User | null;
+  user: any;
   teamRole: TeamRole | null;
   isSingleRetro?: boolean;
 };
@@ -23,7 +23,7 @@ export const ActionList = ({
     teamId || ""
   );
 
-  const [newActionItems, setNewActionItems] = useState<ActionItem[] | null>();
+  const [newActionItems, setNewActionItems] = useState<any>();
 
   useEffect(() => {
     setNewActionItems(actionItems);
@@ -95,7 +95,7 @@ export const ActionList = ({
           >
             Outstanding Action Items
           </Typography>
-          {newActionItems?.map((actionItem) => (
+          {newActionItems?.map((actionItem:any) => (
             <ActionListItem
               key={actionItem.id}
               actionItem={actionItem}

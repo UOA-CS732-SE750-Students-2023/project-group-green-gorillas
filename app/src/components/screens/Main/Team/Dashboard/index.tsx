@@ -9,7 +9,7 @@ import { InProgressRetro } from "./InProgressRetro";
 import { TeamMembers } from "./TeamMembers";
 import { NewRetroButton } from "./NewRetroButton";
 import { TeamSkeleton } from "./TeamSkeleton";
-import { ActionList } from "./ActionList";
+import { ActionList } from "./ActionList/ActionList";
 import { InsightChart } from "./InsightChart";
 
 export const TeamDashboardScreen = () => {

@@ -49,6 +49,10 @@ export class BoardSectionService {
     return this.boardSectionRepository.save(boardSection);
   }
 
+  public async save(boardSection: BoardSection): Promise<BoardSection> {
+    return this.boardSectionRepository.save(boardSection);
+  }
+
   public async updateDescription(
     id: UUID,
     boardId: UUID,

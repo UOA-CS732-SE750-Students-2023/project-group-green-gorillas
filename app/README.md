@@ -22,6 +22,7 @@ yarn dev
 Once you notice that <h4>VITE v4.2.2  ready in xxx ms</h3>
 which means the client launch successfully
 
+You could open up the browser to navigate to http://localhost:3000
 ## Test
 
 ```bash

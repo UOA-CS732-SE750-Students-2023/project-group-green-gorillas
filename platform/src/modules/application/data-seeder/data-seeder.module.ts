@@ -11,6 +11,9 @@ import { BoardModule } from '../../domain/board/board.module';
 import { ActionItemModule } from '../../domain/action-item/action-item.module';
 import { ActionItemAssigneeModule } from '../../domain/action-item-assignee/action-item-assignee.module';
 import { TeamDashboardModule } from '../../domain/team-dashboard/team-dashboard.module';
+import { BoardSection } from '../../domain/board-section/board-section';
+import { BoardNoteModule } from '../../domain/board-note/board-note.module';
+import { BoardSectionModule } from '../../domain/board-section/board-section.module';
 
 @Module({
   imports: [
@@ -24,6 +27,8 @@ import { TeamDashboardModule } from '../../domain/team-dashboard/team-dashboard.
     ActionItemModule,
     ActionItemAssigneeModule,
     TeamDashboardModule,
+    BoardSectionModule,
+    BoardNoteModule,
   ],
   providers: [DataSeederService],
   controllers: [DataSeederController],

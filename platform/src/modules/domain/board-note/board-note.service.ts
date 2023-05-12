@@ -13,6 +13,10 @@ export class BoardNoteService {
     return this.boardNoteRepository.listByBoardId(boardId);
   }
 
+  public save(boardNote: BoardNote): Promise<BoardNote> {
+    return this.boardNoteRepository.save(boardNote);
+  }
+
   public create(
     boardSectionId: UUID,
     boardId: UUID,

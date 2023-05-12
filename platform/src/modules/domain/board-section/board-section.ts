@@ -15,8 +15,6 @@ export class BoardSection {
 
   public name: string;
 
-  // TODO: color
-
   public description: string;
 
   public order: number;

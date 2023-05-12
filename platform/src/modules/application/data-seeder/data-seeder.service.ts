@@ -31,6 +31,12 @@ import { ActionItemAssignee } from '../../domain/action-item-assignee/action-ite
 import { TeamDashboardService } from '../../domain/team-dashboard/team-dashboard.service';
 import { teamDashboards } from './data/team-dashboards';
 import { TeamDashboard } from '../../domain/team-dashboard/team-dashboard';
+import { BoardSectionService } from '../../domain/board-section/board-section.service';
+import { boardSections } from './data/board-sections';
+import { BoardSection } from '../../domain/board-section/board-section';
+import { boardNotes } from './data/board-notes';
+import { BoardNoteService } from '../../domain/board-note/board-note.service';
+import { BoardNote } from '../../domain/board-note/board-note';
 
 @Injectable()
 export class DataSeederService {
@@ -45,6 +51,8 @@ export class DataSeederService {
     private readonly actionItemService: ActionItemService,
     private readonly actionItemAssigneeService: ActionItemAssigneeService,
     private readonly teamDashboardService: TeamDashboardService,
+    private readonly boardSectionService: BoardSectionService,
+    private readonly boardNoteService: BoardNoteService,
   ) {}
 
   public async seed(): Promise<void> {
@@ -59,7 +67,25 @@ export class DataSeederService {
       this.seedActionItems(),
       this.seedActionItemAssignees(),
       this.seedTeamDashboards(),
+      this.seedBoardSections(),
+      this.seedBoardNotes(),
     ]);
+  }
+
+  public async seedBoardNotes(): Promise<void> {
+    await Promise.all(
+      boardNotes.map((boardNote) =>
+        this.boardNoteService.save(plainToClass(BoardNote, boardNote)),
+      ),
+    );
+  }
+
+  public async seedBoardSections(): Promise<void> {
+    await Promise.all(
+      boardSections.map((boardSection) =>
+        this.boardSectionService.save(plainToClass(BoardSection, boardSection)),
+      ),
+    );
   }
 
   public async seedOrganisations(): Promise<void> {

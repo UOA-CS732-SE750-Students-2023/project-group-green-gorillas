@@ -75,6 +75,10 @@ Email: reviewer@aucklanduni.ac.nz Password: 123456\
 Email: marker@aucklanduni.ac.nz Password: 123456
 ***
 
+***
+# Response to Assignments Questions
+
+
 #### 1. How well have you mastered React, git, and other tools / frameworks introduced in this course?
 As a team, we have achieved a solid understanding of React, git, and other tools and frameworks introduced in this course. We have been able to effectively utilize React to create robust single-page applications with React Router, Context, and local browser storage.
 

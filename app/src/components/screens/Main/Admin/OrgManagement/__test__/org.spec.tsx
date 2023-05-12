@@ -17,7 +17,9 @@ jest.mock("../../../../../../hooks/useCurrentUser", () => ({
                 updatedAt: "2023-05-11T12:09:10.020+00:00"
             },
         },
-    })})
+    }
+
+    )})
 );
 
 import {render, screen} from '@testing-library/react'

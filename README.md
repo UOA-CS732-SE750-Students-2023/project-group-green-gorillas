@@ -2,9 +2,10 @@
 ***
 
 ## How to run the app
+You can follow the implement command and also can follow the [implement video](https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/wiki/Implement-video).
 
 We use docker to run the server
-- if you do not have docker installed, please go to https://docs.docker.com/desktop/install/windows-install/ to install the docker
+- If you do not have docker installed, please go to https://docs.docker.com/desktop/install/windows-install/ to install the docker
 - Make sure your docker daemon is running
 
 We use `yarn` as node management tool
@@ -63,7 +64,7 @@ yarn dev
 ### How to play the App?
 
 1.Open the link: \
-Local:   http://localhost:3000/  \
+Local:   http://localhost:3000/  
 
 <img width="729" alt="image" src="https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/assets/80732580/b033f6f5-9483-4232-b892-fa8f15fcbdd2">
 

@@ -109,10 +109,12 @@ In addition, we have made use of Jest's mocking and spying capabilities to isola
 
 Our team has made testing a core part of our development process, and we have integrated testing into our continuous integration and deployment pipeline to catch errors early and ensure that our code is of high quality.
 #### 5.Is there evidence of good project management, and appropriate contribution from all team members?
+
 [Project-Management](https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/wiki/Project-Management)
 * [Task Breakdown with Assignees](https://docs.google.com/spreadsheets/d/1PfMBGzP6S07vUS5GrxpW0-qTBU9FCGQMnis5TYSS9ww/edit?usp=sharing)
 * [Project Meetings](https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/wiki/Project-Meeting)
 * [Team Memebers](https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/wiki/Team-members)
+
 ![github com_UOA-CS732-SE750-Students-2023_project-group-green-gorillas_graphs_contributors](https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/assets/80732580/5faf084b-4417-4607-a398-cf860f3d431e)
 
 

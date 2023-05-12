@@ -29,6 +29,8 @@ $ yarn start:docker-dev
 Once you notice that <h4>main.ts info:  Retrospective Monster is listening to port: 8080</h3>
 which means the server launch successfully
 
+The server is up in http://localhost:8080
+
 Then, you need run commands below to seed the data 
 ```bash
 curl -X POST http://localhost:8080/api/data-seeder/seed

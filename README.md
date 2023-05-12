@@ -103,9 +103,9 @@ Overall, our team has demonstrated the ability to learn and apply new tools and 
 
 ### 3. Has your code been developed according to best-practices within your applied frameworks? Is it understandable and maintainable?
 #### a.Front-end:
-Please refer to the [frontend README](https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/wiki/How-to-run-Retrospective-Monster-Client%3F)for instructions on how to run and develop the frontend of the application.
+Please refer to the [frontend README](https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/wiki/How-to-run-Retrospective-Monster-Client%3F)for instructions on how to run and test the frontend of the application.
 #### b.Back-end:
-Please refer to the [backend README](https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/wiki/How-to-run-Retrospective-Monster-Server%3F) for instructions on how to run and develop the backend of the application.
+Please refer to the [backend README](https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/wiki/How-to-run-Retrospective-Monster-Server%3F) for instructions on how to run and test the backend of the application.
 #### c.Wiki:
 Please refer to the Here's a link to [wiki](https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/wiki).
 for architecture diagrams and further explanation of the project's design decisions and implementation details.

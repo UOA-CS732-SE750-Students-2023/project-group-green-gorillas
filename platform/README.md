@@ -20,7 +20,7 @@ $ yarn install
 
 ```bash
 # move the sample environment variables to actual environment
-$ mv .sample.env .env
+$ mv .env.sample .env
 
 # launch the app within the docker
 $ yarn start:docker-dev

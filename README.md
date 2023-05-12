@@ -80,6 +80,11 @@ As a team, we have achieved a solid understanding of React, git, and other tools
 
 In addition, we have learned to consume APIs from both Node.js/Express and React using fetch() and axios. To ensure that our code is of high quality, we have extensively tested our JavaScript code using Jest, including testing async code, and mocking, and mocking API calls. We have also tested our Express APIs, and have used React Testing Library to test our React components.
 
+We use git to build and test automatically our code when we push our code to project each time.
+
+<img width="1511" alt="image" src="https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/assets/80732580/f1d1099a-7055-4514-9035-ed03351252b5">
+
+
 Overall, we feel confident in our ability to use these tools and frameworks to develop robust and maintainable applications, while adhering to best practices and applying effective project management techniques.
 #### 2. Have you shown the ability to carry out further learning beyond the course material to add value to your prototype?
 As a team, we have also gained knowledge in additional frameworks and tools beyond the course material (which has been allowed by the lecturer before starting the project), including Nest.js, TypeScript, Material UI, DynamoDB, and so forth

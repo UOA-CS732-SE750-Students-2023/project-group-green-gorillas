@@ -77,7 +77,7 @@ Email: marker@aucklanduni.ac.nz Password: 123456
 #### 1. How well have you mastered React, git, and other tools / frameworks introduced in this course?
 As a team, we have achieved a solid understanding of React, git, and other tools and frameworks introduced in this course. We have been able to effectively utilize React to create robust single-page applications with React Router, Context, and local browser storage.
 
-In addition, we have learned to consume APIs from both Node.js/Express and React using fetch() and axios. To ensure that our code is of high quality, we have extensively tested our JavaScript code using Jest, including testing async code, spying and mocking, and mocking API calls. We have also tested our Express APIs, and have used React Testing Library to test our React components.
+In addition, we have learned to consume APIs from both Node.js/Express and React using fetch() and axios. To ensure that our code is of high quality, we have extensively tested our JavaScript code using Jest, including testing async code, and mocking, and mocking API calls. We have also tested our Express APIs, and have used React Testing Library to test our React components.
 
 Overall, we feel confident in our ability to use these tools and frameworks to develop robust and maintainable applications, while adhering to best practices and applying effective project management techniques.
 #### 2. Have you shown the ability to carry out further learning beyond the course material to add value to your prototype?

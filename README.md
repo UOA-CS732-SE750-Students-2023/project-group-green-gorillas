@@ -103,11 +103,12 @@ Our team has developed the frontend and backend code according to best practices
 #### 4.Has your code been tested? How?
 Yes, our team has tested our code extensively using Jest, a popular JavaScript testing framework.
 
-We have used Jest to write unit tests, integration tests, and end-to-end tests to ensure that our code functions as expected and is free from bugs. Our tests cover a wide range of scenarios, including testing both synchronous and asynchronous code, testing edge cases, and testing error handling.
+We have used Jest to write unit tests to ensure that our code functions as expected and is free from bugs. Our tests cover a wide range of scenarios, including testing both synchronous and asynchronous code and manurally testing. 
 
-In addition, we have made use of Jest's mocking and spying capabilities to isolate parts of our code and test them in isolation. We have also used Jest to mock external dependencies, such as APIs, to ensure that our tests are consistent and reliable.
+In addition, we have made use of Jest's mocking capabilities to isolate parts of our code and test them in isolation. We have also used Jest to mock external dependencies, such as APIs, to ensure that our tests are consistent and reliable.
 
 Our team has made testing a core part of our development process, and we have integrated testing into our continuous integration and deployment pipeline to catch errors early and ensure that our code is of high quality.
+
 #### 5.Is there evidence of good project management, and appropriate contribution from all team members?
 
 [Project-Management](https://github.com/UOA-CS732-SE750-Students-2023/project-group-green-gorillas/wiki/Project-Management)
